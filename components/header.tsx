@@ -1,0 +1,194 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Bell, User, LogOut, Settings, Map, DollarSign, Calendar, Gamepad2, Database } from 'lucide-react'
+
+export function Header() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [user, setUser] = useState<any>(null)
+  const [unreadCount, setUnreadCount] = useState(0)
+  const supabase = createClient()
+
+  useEffect(() => {
+    // 사용자 정보 가져오기
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      // 읽지 않은 알림 개수 가져오기 (추후 구현)
+      if (user) {
+        // const { count } = await supabase
+        //   .from('notifications')
+        //   .select('*', { count: 'exact', head: true })
+        //   .eq('user_id', user.id)
+        //   .eq('read', false)
+        // setUnreadCount(count || 0)
+      }
+    }
+
+    getUser()
+
+    // 인증 상태 변경 구독
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
+  const getInitials = (email: string) => {
+    return email.substring(0, 2).toUpperCase()
+  }
+
+  const getUserName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+    }
+    return user?.email || '사용자'
+  }
+
+  const isActive = (path: string) => {
+    return pathname === path
+  }
+
+  return (
+    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* 로고 */}
+        <Link href={user ? '/roadmap' : '/'} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+          <span className="text-2xl">💍</span>
+          <h1 className="text-xl font-bold text-slate-900">MarryRoad</h1>
+        </Link>
+
+        {/* 네비게이션 메뉴 */}
+        <nav className="hidden md:flex items-center space-x-1">
+          <Link href="/roadmap">
+            <Button 
+              variant={isActive('/roadmap') ? 'default' : 'ghost'}
+              className="gap-2"
+            >
+              <Map className="h-4 w-4" />
+              로드맵
+            </Button>
+          </Link>
+          <Link href="/calendar">
+            <Button 
+              variant={isActive('/calendar') ? 'default' : 'ghost'}
+              className="gap-2"
+            >
+              <Calendar className="h-4 w-4" />
+              캘린더
+            </Button>
+          </Link>
+          <Link href="/database">
+            <Button 
+              variant={isActive('/database') ? 'default' : 'ghost'}
+              className="gap-2"
+            >
+              <Database className="h-4 w-4" />
+              데이터베이스
+            </Button>
+          </Link>
+        </nav>
+
+        {/* 우측 메뉴 */}
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <>
+              {/* 알림 버튼 */}
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  >
+                    {unreadCount}
+                  </Badge>
+                )}
+              </Button>
+
+              {/* 사용자 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-slate-200 text-slate-700">
+                        {getInitials(user.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:inline text-sm font-medium">
+                      {getUserName()}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{getUserName()}</p>
+                      <p className="text-xs text-slate-500">{user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      프로필
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      설정
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600 focus:text-red-600"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    로그아웃
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            /* 비로그인 상태 */
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">로그인</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/auth/signup">시작하기</Link>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  )
+}

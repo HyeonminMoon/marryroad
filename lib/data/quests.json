@@ -1,0 +1,3508 @@
+[
+  {
+    "id": "1",
+    "title": "결혼 준비 기획 & 예산 관리",
+    "icon": "ClipboardList",
+    "color": "#6366F1",
+    "xp": 100,
+    "dependencies": [],
+    "tasks": [
+      {
+        "id": "1.1.1",
+        "title": "택일 방식 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-365",
+        "estimatedDuration": "1~2주",
+        "checklist": [
+          {
+            "text": "택일 방식 선택하기",
+            "isOptional": false,
+            "tips": "부모님 사주 택일: 전통 방식, 날짜 범위를 먼저 받음 / 커플 직접 선택: 기념일이나 원하는 날짜로 지정 / 웨딩홀 빈자리 맞춤: 원하는 홀이 정해져 있을 때 / 참고: 결혼 날짜는 내가 정하는 것이 아닐 수 있음 (부모님 택일, 웨딩홀 빈자리)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.1.2",
+        "title": "시기 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-365",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "결혼 계절 선택하기",
+            "isOptional": false,
+            "tips": "봄 (3~5월): 성수기, 날씨↑ 비용↑ 예약경쟁↑ / 여름 (6~8월): 비수기, 비용↓ 더위 주의 / 가을 (9~11월): 성수기, 가장 인기, 1년 전 예약 필수 / 겨울 (12~2월): 비수기, 비용↓ 추위·교통 고려"
+          },
+          {
+            "text": "요일 선택하기",
+            "isOptional": false,
+            "tips": "토요일: 가장 인기, 비용↑ / 일요일: 토요일 대비 비용↓ / 평일: 특수한 경우, 비용 최저"
+          },
+          {
+            "text": "시간대 선택하기",
+            "isOptional": false,
+            "tips": "골든타임 (12~2시): 가장 인기, 견적↑ / 첫 타임 (오전): 원판사진 사전 촬영 가능, 할인 / 늦은 오후: 할인 혜택, 저녁 분위기 연출"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.1.3",
+        "title": "택일 vs 웨딩홀 조율",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-355",
+        "estimatedDuration": "1~2주",
+        "checklist": [
+          {
+            "text": "택일 날짜와 웨딩홀 가용일 교차 확인",
+            "isOptional": false,
+            "tips": "택일 받은 날짜가 여러 개일 경우 우선순위 정하기 / 원하는 웨딩홀에 해당 날짜 빈자리 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.2.1",
+        "title": "총 예산 범위 설정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-365",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "양가 부모님과 예산 논의",
+            "isOptional": false,
+            "tips": "부모님 지원 금액 확인 / 커플 자체 자금 산정 / 축의금 예상 (보수적으로 잡기)"
+          },
+          {
+            "text": "총 예산 확정",
+            "isOptional": false,
+            "tips": "3천만 원 이하: 비수기 + 가성비 전략 필수 / 3천~5천만 원: 평균 범위, 밸런스 배분 / 5천~7천만 원: 여유 범위 / 7천만 원 이상: 프리미엄 웨딩 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.2.2",
+        "title": "비용 분담 방식 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-355",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "양가 분담 비율 합의",
+            "isOptional": false,
+            "tips": "양가 반반 / 항목별 분담 (예: 신랑측 웨딩홀, 신부측 스드메) / 각자 부담 (신랑은 신랑 것, 신부는 신부 것) / 참고: 상견례 전 반드시 사전 조율"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.2.3",
+        "title": "항목별 예산 배분",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-350",
+        "estimatedDuration": "3시간",
+        "checklist": [
+          {
+            "text": "우선순위별 예산 배분표 작성",
+            "isOptional": false,
+            "tips": ""
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.3.1",
+        "title": "정보 수집 채널 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-360",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "주요 정보 채널 결정",
+            "isOptional": false,
+            "tips": "웨딩카페 (더웨딩 등): 솔직한 후기 다수 / 인스타그램: 비주얼 위주 탐색 / 블로그: 상세 후기/비교 / 지인 추천: 경험자 실질 팁 / 참고자료: `[웨딩카페 링크]` `[인스타 해시태그 목록]`"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.3.2",
+        "title": "웨딩박람회 참석 여부 결정",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-350",
+        "estimatedDuration": "반나절",
+        "checklist": [
+          {
+            "text": "박람회 참석 여부 및 일정 확인",
+            "isOptional": false,
+            "tips": "장점: 다양한 업체 한 곳에서 비교 가능 / 주의: 소규모 업체 계약 시 선택 폭 좁아짐 / 당일 계약 혜택 vs 충동 계약 위험성 인지 / 참고자료: `[월별 웨딩박람회 일정]`"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "1.4.1",
+        "title": "마스터 일정표 작성",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-350",
+        "estimatedDuration": "3시간",
+        "checklist": [
+          {
+            "text": "결혼 준비 전체 일정표 작성",
+            "isOptional": false,
+            "tips": "D-day 기준 역산으로 주요 마일스톤 설정 / 양가 공유용 일정표 별도 작성 / 참고자료: `[결혼준비 타임라인 템플릿]`"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "기획",
+          "예산",
+          "일정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "상견례 / 첫인사",
+    "icon": "Users",
+    "color": "#8B5CF6",
+    "xp": 100,
+    "dependencies": [
+      "1"
+    ],
+    "tasks": [
+      {
+        "id": "2.1.1",
+        "title": "양가 사전 조율 (커플 간 먼저 논의)",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-360",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "예단/예물 범위 사전 합의",
+            "isOptional": false,
+            "tips": "예단 유무, 범위, 금액대 방향성 / 예물 종류 (반지, 시계, 가방 등) 방향성 / 참고: 가장 민감한 부분, 커플끼리 먼저 맞춘 후 부모님께 전달"
+          },
+          {
+            "text": "비용 분담 큰 틀 합의",
+            "isOptional": false,
+            "tips": "누가 뭘 부담하는지 큰 그림 합의"
+          },
+          {
+            "text": "신혼집 방향성 합의",
+            "isOptional": false,
+            "tips": "매매 vs 전세 vs 월세 / 대략적 지역/예산 범위 / 양가 지원 여부"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 40000,
+        "typicalCostMax": 100000
+      },
+      {
+        "id": "2.1.2",
+        "title": "상견례 형식 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-355",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "첫인사 vs 상견례 분리 여부 결정",
+            "isOptional": false,
+            "tips": "첫인사 (가벼운 식사) 따로 → 상견례 (본격 논의) 따로 / 한 번에 진행 (첫인사 겸 상견례)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 40000,
+        "typicalCostMax": 100000
+      },
+      {
+        "id": "2.2.1",
+        "title": "장소 선정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-350",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "상견례 장소 후보 리스트업",
+            "isOptional": false,
+            "tips": "호텔 레스토랑: 격식↑, 무난, 비용↑ / 한정식: 어른 선호도↑ / 웨딩홀 시식: 비용 절약 + 웨딩홀 음식 확인 일석이조 / 양가 중간 지점 식당: 이동 부담↓ / 참고: 개인룸/룸 있는 곳 추천"
+          },
+          {
+            "text": "장소 예약",
+            "isOptional": false,
+            "tips": ""
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 300000,
+        "typicalCostMax": 800000
+      },
+      {
+        "id": "2.2.2",
+        "title": "비용 부담 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-345",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "상견례 식사비 부담 주체 결정",
+            "isOptional": false,
+            "tips": "신랑측 부담 (전통 방식) / 양가 반반 (요즘 트렌드) / 번갈아 (첫인사/상견례 분리 시)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 40000,
+        "typicalCostMax": 100000
+      },
+      {
+        "id": "2.3.1",
+        "title": "복장 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-310",
+        "estimatedDuration": "쇼핑 반나절",
+        "checklist": [
+          {
+            "text": "신부 복장 준비",
+            "isOptional": false,
+            "tips": "무릎 길이 원피스 (단정, 밝은 색) / 블라우스 + 스커트 (세미 정장) / 절 가능한 길이 확인 (치마 너무 짧지 않게)"
+          },
+          {
+            "text": "신랑 복장 준비",
+            "isOptional": false,
+            "tips": "셔츠 + 슬랙스 (깔끔, 부담 없이) / 정장 (격식 차리고 싶을 때)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 40000,
+        "typicalCostMax": 100000
+      },
+      {
+        "id": "2.3.2",
+        "title": "선물 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-305",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "양가 선물 준비",
+            "isOptional": false,
+            "tips": "과일 세트: 무난, 정성 / 한우 세트: 고급 인상 / 건강식품/홍삼: 어른 선호 / 위스키/와인: 아버님 술 좋아하시면 (확인 필수, 어머님 의견도) / 참고: 빈손 방문은 피하기"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 50000,
+        "typicalCostMax": 150000
+      },
+      {
+        "id": "2.3.3",
+        "title": "상견례 대화 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-305",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "상견례 논의 안건 정리",
+            "isOptional": false,
+            "tips": "사전 조율 완료된 내용 확인 (예단, 비용분담, 신혼집) / 결혼 예상 시기 공유 / 민감한 주제는 커플이 중재 역할 / 참고: 요즘은 민감한 이야기 사전 조율 후 상견례는 가볍게 진행하는 추세"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "상견례",
+          "양가",
+          "예절"
+        ],
+        "typicalCostMin": 40000,
+        "typicalCostMax": 100000
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "title": "웨딩홀 선정 & 플래너",
+    "icon": "Building2",
+    "color": "#EC4899",
+    "xp": 100,
+    "dependencies": [
+      "1",
+      "2"
+    ],
+    "tasks": [
+      {
+        "id": "3.1.1",
+        "title": "직접 준비 vs 플래너 활용 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-330",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "플래너 사용 여부 결정",
+            "isOptional": false,
+            "tips": "플래너 활용 시: 시간·노력 절약, 제휴 할인, 동행 서비스 / 직접 준비 시: 발품 팔면 더 저렴 가능, 대신 시간↑ / 참고: 플래너에게 별도 비용 없음 (업체 수수료로 운영, 도매가 개념)"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "플래너",
+          "업체"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "3.2.1",
+        "title": "업체 규모 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-325",
+        "estimatedDuration": "리서치 3시간",
+        "checklist": [
+          {
+            "text": "플래너 업체 규모 선택",
+            "isOptional": false,
+            "tips": "대형 업체 (연 3만쌍+): 제휴처↑, 예약 수월, 인기 스드메 가능 / 중형 업체: 적당한 케어, 가격 경쟁력 / 소형/개인 플래너: 밀착 케어, 제휴 범위↓"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "플래너",
+          "업체"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "3.2.2",
+        "title": "플래너 선택 기준 정리",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-325",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "나에게 중요한 기준 우선순위 정하기",
+            "isOptional": false,
+            "tips": "제휴 업체 범위: 내가 원하는 스드메 포함 여부 / 플래너 경력/리뷰: 시니어 플래너 = 업무 능력↑ / 비용/패키지 가격: 같은 업체라도 구성 다름 / 스타일 (인스타 확인): 본인 취향과 매칭"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "플래너",
+          "업체"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "3.2.3",
+        "title": "플래너 상담 및 계약",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-320",
+        "estimatedDuration": "각 1~2시간",
+        "checklist": [
+          {
+            "text": "플래너 후보 3곳 이상 상담",
+            "isOptional": false,
+            "tips": "제휴 업체 리스트 확인 / 패키지 구성 및 가격 비교 / 참고자료: `[플래너 업체 비교표 템플릿]`"
+          },
+          {
+            "text": "플래너 계약",
+            "isOptional": false,
+            "tips": "계약서 항목 꼼꼼히 확인 / 해지/변경 조건 확인 / 포함 서비스 목록 명확히 (동행 횟수, 본식 당일 케어 등)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "플래너",
+          "업체"
+        ],
+        "typicalCostMin": 3000000,
+        "typicalCostMax": 7000000
+      },
+      {
+        "id": "3.3.1",
+        "title": "플래너 기대 서비스 확인",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-305",
+        "estimatedDuration": "30분",
+        "checklist": [
+          {
+            "text": "플래너 제공 서비스 범위 확인",
+            "isOptional": false,
+            "tips": "스드메 예약·일정 조율 / 드레스 투어·촬영 동행 / 견적 비교·협상 / 본식 당일 케어 / 참고: 동행 횟수 제한 있는지 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "플래너",
+          "업체"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "4.1.1",
+        "title": "예식 형태 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-330",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "예식 형태 결정",
+            "isOptional": false,
+            "tips": ""
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.1.2",
+        "title": "웨딩홀 유형 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-330",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "선호 웨딩홀 유형 결정",
+            "isOptional": false,
+            "tips": "호텔: 고급, 비용↑ / 컨벤션홀: 일반적인 예식장 / 하우스/채플/한옥: 특별한 분위기 / 레스토랑/가든: 소규모, 프라이빗"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.1.3",
+        "title": "식사 형태 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-325",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "하객 식사 유형 선택",
+            "isOptional": false,
+            "tips": "뷔페: 음식 종류↑, 하객 만족도↑ / 코스: 정갈, 고급스러움 / 한상차림: 한식 맛집 웨딩홀도 있음 / 참고: 식대가 전체 비용 중 큰 비중 (1인당 5~10만 원)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.2.1",
+        "title": "하객 규모 산정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-325",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "양가 하객 수 추정",
+            "isOptional": false,
+            "tips": "신랑측 하객 수: ___명 (본인 ___명 + 부모님 ___명) / 신부측 하객 수: ___명 (본인 ___명 + 부모님 ___명) / 총 예상 하객: ___명 / 참고: 부모님 하객이 더 많은 경우가 일반적"
+          },
+          {
+            "text": "보증 인원 결정",
+            "isOptional": false,
+            "tips": "웨딩홀 최소 보증 인원 확인 (보통 200~250명) / 예상 하객 수 대비 적절한 보증 인원 협의 / 참고: 보증 인원 미달 시에도 식대 지불해야 함"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.2.2",
+        "title": "위치 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-325",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "예식장 지역 결정",
+            "isOptional": false,
+            "tips": "신부측 지역: 전통 방식 / 신랑측 지역: 하객 많은 쪽 / 중간 지점: 양가 타협 / 고려: 대중교통 접근성, 주차 시설, 장거리 하객 유무"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.3.1",
+        "title": "후보 리스트업",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-320",
+        "estimatedDuration": "3~5시간",
+        "checklist": [
+          {
+            "text": "웨딩홀 후보 5~10곳 리스트업",
+            "isOptional": false,
+            "tips": "플래너 추천 리스트 + 본인 리서치 / 후기, 사진, 가격대 사전 조사 / 참고자료: `[웨딩홀 비교표 템플릿]`"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.3.2",
+        "title": "웨딩홀 투어 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-315",
+        "estimatedDuration": "2~3주 (주말)",
+        "checklist": [
+          {
+            "text": "웨딩홀 투어 일정 잡기 (주말 집중)",
+            "isOptional": false,
+            "tips": "하루 2~3곳 몰아서 투어 권장 / **반드시 예식 있는 날 방문** (실제 분위기 확인)"
+          },
+          {
+            "text": "투어 시 체크리스트 확인",
+            "isOptional": false,
+            "tips": "홀 분위기 (밝기, 조명, 천장 높이) / 버진로드 (길이, 단차, 형태: 일자/S자) / 단독홀 여부 (다른 예식과 겹치는지) / 신부대기실 크기/컨디션 / 하객 대기 공간 쾌적성 / 주차장 규모 및 편리성 / **식사(밥) 맛 반드시 확인** (하객 만족도 핵심) / 미디어아트/조명 연출 가능 여부 / 신부입장 연출 (안개, 조명 등)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.3.3",
+        "title": "웨딩홀 시식",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-315",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "웨딩홀 시식 참가",
+            "isOptional": false,
+            "tips": "투어 시 시식 가능 여부 확인 / 시식권 활용 시 상견례 장소로 활용 가능 (비용 절약) / 뷔페/코스 맛과 구성 직접 확인 / 참고: 하객 식사 만족도는 결혼식 성공의 핵심"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.3.4",
+        "title": "견적 비교",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-310",
+        "estimatedDuration": "3시간",
+        "checklist": [
+          {
+            "text": "웨딩홀별 상세 견적 비교표 작성",
+            "isOptional": false,
+            "tips": ""
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 1500000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "4.4.1",
+        "title": "최종 선정 및 계약",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-300",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "최종 웨딩홀 선정",
+            "isOptional": false,
+            "tips": ""
+          },
+          {
+            "text": "계약 진행",
+            "isOptional": false,
+            "tips": "당일 계약 혜택 최대한 활용 (대관료·식대 할인, 서비스 추가) / 계약서 필수 확인 항목: / 취소/변경 시 위약금 조건 / 보증 인원 변경 가능 시점 / 포함/불포함 항목 명확히 / 참고 꿀팁: 신축/프로모션 웨딩홀은 대관료 50%까지 절약 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "웨딩홀",
+          "예식장",
+          "장소"
+        ],
+        "typicalCostMin": 2000000,
+        "typicalCostMax": 5000000
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title": "스드메 패키지 (스튜디오+드레스+메이크업)",
+    "icon": "Camera",
+    "color": "#EF4444",
+    "xp": 100,
+    "dependencies": [
+      "1",
+      "3"
+    ],
+    "tasks": [
+      {
+        "id": "5.1.1",
+        "title": "촬영 유형 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-270",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "웨딩 촬영 유형 결정",
+            "isOptional": false,
+            "tips": "실내 스튜디오: 다양한 컨셉 배경, 날씨 무관 / 야외 스냅 (제주/서울 등): 자연스러운 분위기, 여행 겸 (~200만 원) / 세미웨딩: 간단한 촬영, 비용↓ / 셀프웨딩: 직접 준비, 비용 최저"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.1.2",
+        "title": "스튜디오 분위기 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-265",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "선호 스튜디오 분위기 결정",
+            "isOptional": false,
+            "tips": "화이트/내추럴: 밝고 깨끗 / 다크/모던: 세련, 시크 / 감성/빈티지: 따뜻, 로맨틱 / 다양한 컨셉: 여러 배경 다 촬영"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.1.3",
+        "title": "야외 웨딩스냅 별도 촬영 여부",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-265",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "야외 웨딩스냅 별도 촬영 여부 결정",
+            "isOptional": false,
+            "tips": "스튜디오 촬영과 별도로 야외 스냅 추가 여부 / 제주/서울 야외 스냅: 자연스러운 분위기, 여행 겸 가능 / 별도 업체 예약 시 일정 조율 필요 / 참고: 제주스냅 약 200만 원 선"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.1.4",
+        "title": "촬영 플라워디렉팅 여부",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-265",
+        "estimatedDuration": "리서치 1시간",
+        "checklist": [
+          {
+            "text": "촬영 플라워디렉팅 예약 여부 결정",
+            "isOptional": false,
+            "tips": "촬영 시 꽃 소품/배경 디렉팅 전문가 / 감성적인 촬영 분위기 연출 / 비용 추가 (별도 업체 예약)"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.1.5",
+        "title": "로드씬 포함 여부",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-265",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "로드씬(야외 촬영) 여부 결정",
+            "isOptional": false,
+            "tips": "포함: 도시 배경, 감성 컷 추가 / 미포함: 실내 촬영만 / 별도 업체: 로드씬 전문 업체 이용"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.2.1",
+        "title": "예산 설정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-260",
+        "estimatedDuration": "30분",
+        "checklist": [
+          {
+            "text": "촬영 예산 범위 설정",
+            "isOptional": false,
+            "tips": "100만 원 이하: 세미웨딩, 신규 스튜디오 / 100~200만 원: 일반 범위, 선택지↑ / 200~300만 원: 제주스냅 or 인기 스튜디오 / 300만 원 이상: 하이엔드/해외 스냅 / ⚠️ 추가금 반드시 고려 (원본, 앨범, 헬퍼비 등)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.2.2",
+        "title": "스튜디오 후보 선정 및 방문",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-255",
+        "estimatedDuration": "3~5시간",
+        "checklist": [
+          {
+            "text": "후보 스튜디오 3~5곳 리서치",
+            "isOptional": false,
+            "tips": "플래너 제휴 리스트 확인 / 인스타/카페 후기 및 샘플 확인 / 참고자료: `[스튜디오 비교표 템플릿]`"
+          },
+          {
+            "text": "스튜디오 상담/방문",
+            "isOptional": false,
+            "tips": "샘플북 확인 (보정 퀄리티, 포즈, 분위기) / 촬영 컷 수 (원본/보정본 각각 몇 장) / 촬영 시간 및 의상 수 / 추가금 항목 전체 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.2.3",
+        "title": "스튜디오 계약",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-240",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "스튜디오 계약",
+            "isOptional": false,
+            "tips": "계약 시 확인 사항: / 원본 파일 구매 포함 여부 (필수! 30~40만 원) / 보정본 컷 수 / 앨범/액자 포함 여부 / 헬퍼 이모님 비용 (현금 20~25만 원) / 촬영 날짜 변경 조건 / 꿀팁: 신규 스튜디오 오픈 할인 활용"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 1000000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "5.3.1",
+        "title": "촬영 일정 확정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-230",
+        "estimatedDuration": "조율 1~2일",
+        "checklist": [
+          {
+            "text": "촬영 날짜 확정",
+            "isOptional": false,
+            "tips": "결혼식 최소 6개월 전 촬영 (보정에 2~3개월 소요) / 모바일 청첩장용 사진 필요 시점 역산 / 드레스 셀렉 완료 후 촬영 날짜 잡기"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.3.2",
+        "title": "촬영 당일 준비물",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "촬영 준비물 체크",
+            "isOptional": false,
+            "tips": "속옷 (누드톤, 스트랩리스) / 구두 (드레스 기장에 맞는 굽 높이) / 소품 (부케, 웨딩밴드, 개인 소품) / 참고: 촬영 전날 충분한 수면"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.4.1",
+        "title": "사진 셀렉",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "촬영 후 2~4주",
+        "estimatedDuration": "3~5시간",
+        "checklist": [
+          {
+            "text": "촬영본 셀렉 진행",
+            "isOptional": false,
+            "tips": "계약 컷 수 내에서 선택 (추가 선택 = 추가금 주의!) / 다양한 컨셉/포즈 골고루 선택 / 표정, 라인, 드레스 핏 위주로 선택"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.4.2",
+        "title": "보정 방식 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "셀렉 후",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "보정 방식 선택",
+            "isOptional": false,
+            "tips": "스튜디오 보정: 퀄리티 보장, 비용↑ / 사설 보정 업체: 장당 4천 원 선, 훨씬 저렴 / 직접 보정: 포토샵/라이트룸 가능자 / 꿀팁: 추가 보정은 사설 업체가 가성비 최고"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 80000,
+        "typicalCostMax": 230000
+      },
+      {
+        "id": "5.4.3",
+        "title": "앨범/액자 제작",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "보정 완료 후",
+        "estimatedDuration": "1~2주",
+        "checklist": [
+          {
+            "text": "앨범·액자 제작 방식 결정",
+            "isOptional": false,
+            "tips": "스튜디오 패키지 포함: 기본 앨범+액자 / 외부 업체 제작: 더 저렴하거나 퀄리티↑ / 디지털만 보관: 제작 안 함"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "촬영",
+          "스튜디오",
+          "사진"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 500000
+      },
+      {
+        "id": "6.1.1",
+        "title": "드레스 용도별 수량 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-240",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "필요한 드레스 수 결정",
+            "isOptional": false,
+            "tips": "본식 1벌만: 본식 드레스에 올인 / 본식 + 촬영 (2벌): 촬영용은 다른 스타일 / 본식 + 촬영 + 2부 (3벌): 피로연 드레스까지"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.1.2",
+        "title": "드레스 라인 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-235",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "선호 드레스 라인 파악",
+            "isOptional": false,
+            "tips": "A라인: 체형 커버↑, 가장 무난 / 머메이드: 몸매 라인 강조, 섹시 / 볼가운: 풍성, 동화 느낌 (넓은 버진로드 추천) / 엠파이어: 키 커 보임 / 슬림: 심플, 모던 / 참고: 시착 전까지는 확정 짓지 말 것, 다양하게 입어봐야 함"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.1.3",
+        "title": "넥라인 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-235",
+        "estimatedDuration": "리서치 1시간",
+        "checklist": [
+          {
+            "text": "선호 넥라인 파악",
+            "isOptional": false,
+            "tips": "오프숄더: 쇄골 강조, 가장 인기 / V넥: 얼굴 갸름 효과 / 하이넥: 우아, 클래식 / 스트랩리스: 어깨라인 깔끔 / 홀터넥: 어깨 넓은 분 추천 / 참고: 체형별 추천 넥라인 사전 조사"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.1.4",
+        "title": "소재 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-235",
+        "estimatedDuration": "리서치 1시간",
+        "checklist": [
+          {
+            "text": "선호 소재 파악",
+            "isOptional": false,
+            "tips": "비즈: 화려, 어두운 홀에서 빛남 / 실크: 고급, 밝은 홀에서 빛남 / 레이스: 로맨틱, 클래식 / 새틴: 광택감, 고급 / ⚠️ 웨딩홀 분위기(밝기)와 매칭 필수"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.1.5",
+        "title": "유색 드레스 여부",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-230",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "유색/블랙 드레스 착용 여부 결정",
+            "isOptional": false,
+            "tips": "촬영용 유색 (핑크, 블루 등) / 촬영용 블랙드레스 / 2부 피로연용 유색 드레스 / 화이트만"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.2.1",
+        "title": "예산 범위 설정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-230",
+        "estimatedDuration": "30분",
+        "checklist": [
+          {
+            "text": "드레스 예산 설정",
+            "isOptional": false,
+            "tips": "100만 원 이하: 가성비 샵 / 100~200만 원: 일반 범위 / 200~300만 원: 디자이너 드레스 / 300만 원 이상: 하이엔드/수입 / ⚠️ 추가금 항목 별도 확인 필수"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.2.2",
+        "title": "드레스 샵 후보 리스트업",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-225",
+        "estimatedDuration": "3시간",
+        "checklist": [
+          {
+            "text": "드레스 샵 후보 선정",
+            "isOptional": false,
+            "tips": "가격대별 투어 계획 (200만 원대, 300만 원대, 400~500만 원대) / 꿀팁: 다양한 가격대를 봐야 퀄리티 차이 비교 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.3.1",
+        "title": "드레스 투어 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-220~D-180",
+        "estimatedDuration": "각 2~3시간",
+        "checklist": [
+          {
+            "text": "드레스 샵 3곳 이상 투어",
+            "isOptional": false,
+            "tips": "**플래너 동행 추천** (더 좋은 신상 드레스 가능성↑) / 투어 시 주의사항: / ❌ 다른 샵 정보 절대 노출 금지 (경쟁 심함) / ✅ 신상 드레스 위주 요청 (추가금 방어) / ✅ 다양한 스타일 시착 (확신해도 다른 것도 입어볼 것) / ✅ 사진/영상 촬영 가능 여부 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 1000000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "6.3.2",
+        "title": "추가금 항목 확인",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "",
+        "estimatedDuration": "투어 중 확인",
+        "checklist": [
+          {
+            "text": "드레스 추가금 전체 확인",
+            "isOptional": false,
+            "tips": "드레스 업그레이드 비용 / 악세사리 (베일, 티아라, 귀걸이 등) / 속치마/속옷 / 헬퍼 이모님 비용 (현금 20~25만 원) / 드레스 피팅/수선비 / 촬영용 드레스 추가 대여비"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.3.3",
+        "title": "촬영드레스 가봉",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-160~D-150",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "촬영용 드레스 가봉",
+            "isOptional": false,
+            "tips": "촬영 드레스의 핏 확인 및 수선 / 촬영일 기준 2~3주 전 가봉 추천"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "6.3.4",
+        "title": "최종 드레스 셀렉",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-150",
+        "estimatedDuration": "최종 방문 2시간",
+        "checklist": [
+          {
+            "text": "본식 드레스 최종 선택",
+            "isOptional": false,
+            "tips": "본식 드레스 확정 / 촬영용 드레스 확정 (다른 스타일 추천) / 피팅 일정 잡기"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "드레스",
+          "의상",
+          "신부"
+        ],
+        "typicalCostMin": 90000,
+        "typicalCostMax": 280000
+      },
+      {
+        "id": "7.1.1",
+        "title": "메이크업 필요 시점 파악",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-210",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "메이크업 필요 시점 결정",
+            "isOptional": false,
+            "tips": "촬영 + 본식 둘 다: 세트 계약 시 할인 / 본식만: 촬영은 스튜디오 제공 메이크업 / 참고: 스드메 패키지에 포함되어 있는 경우가 많음"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "7.2.1",
+        "title": "메이크업 스타일 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-200",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "선호 메이크업 스타일 결정",
+            "isOptional": false,
+            "tips": "내추럴: 본인 얼굴 살리기 / 글로우/윤광: 촉촉, 빛나는 피부 / 또렷한 메이크업: 이목구비 강조, 사진발↑ / 참고: 리허설 때 여러 스타일 테스트 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "7.2.2",
+        "title": "헤어변형 여부 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-200",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "헤어변형 할지 결정",
+            "isOptional": false,
+            "tips": "헤어변형 함 (강력 추천): 중간에 헤어 체인지, 만족도↑↑ / 안 함: 한 스타일로 쭉, 비용↓ / 참고: 촬영 시작 30분 뒤에 헤어변형 실장 부르는 것이 적절"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "7.2.3",
+        "title": "레퍼런스 수집",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "메이크업 레퍼런스 사진 수집",
+            "isOptional": false,
+            "tips": "인스타 저장 5~10장 (원하는 스타일) / 헤어스타일 레퍼런스도 함께 수집 / 참고: 메이크업샵 상담 전 준비 필수"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "7.3.1",
+        "title": "계약 시간 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-190",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "메이크업 계약 시간 선택",
+            "isOptional": false,
+            "tips": "4시간: 기본, 촉박할 수 있음 / 4시간 30분: 추천! 여유 있게 진행 / 5시간 이상: 헤어변형 2회 이상 시"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "7.3.2",
+        "title": "메이크업 계약 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "메이크업 계약",
+            "isOptional": false,
+            "tips": "포함 항목 확인 (리허설, 헤어변형, 악세사리) / 본식 당일 출장 여부/비용"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 500000,
+        "typicalCostMax": 1500000
+      },
+      {
+        "id": "7.3.3",
+        "title": "리허설 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-90~D-60",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "메이크업 리허설",
+            "isOptional": false,
+            "tips": "본식 메이크업 + 헤어 테스트 / 수정 사항 피드백 / 당일 타임테이블 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "메이크업",
+          "뷰티",
+          "신부"
+        ],
+        "typicalCostMin": 70000,
+        "typicalCostMax": 220000
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "title": "신랑 준비 (예복+관리)",
+    "icon": "User",
+    "color": "#F59E0B",
+    "xp": 100,
+    "dependencies": [
+      "4"
+    ],
+    "tasks": [
+      {
+        "id": "8.1.1",
+        "title": "맞춤 vs 기성복 vs 대여",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-300",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "예복 형태 결정",
+            "isOptional": false,
+            "tips": "맞춤 양복: 핏↑↑, 제작 2개월 소요, 비용↑ / 기성복 구매: 빠르고 가성비, 수선 가능 / 대여: 1회성이면 합리적, 핏 아쉬울 수 있음"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.2.1",
+        "title": "원단 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-290",
+        "estimatedDuration": "매장 방문 2시간",
+        "checklist": [
+          {
+            "text": "원단 종류 결정",
+            "isOptional": false,
+            "tips": "영국 원단: 클래식, 내구성↑, 가격↑ / 이태리 원단: 부드럽고 광택, 고급 느낌 / 국내 원단: 가성비↑, 퀄리티 충분"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.2.2",
+        "title": "색상 선택",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-290",
+        "estimatedDuration": "매장 방문 시 결정",
+        "checklist": [
+          {
+            "text": "예복 색상 결정",
+            "isOptional": false,
+            "tips": "네이비: 가장 인기, 무난, 세련 / 차콜/다크그레이: 모던, 시크 / 블랙: 클래식, 격식↑ / 와인/브라운: 개성 있는 선택 / ⚠️ 신부 드레스 & 웨딩홀 분위기와 조화 고려"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.2.3",
+        "title": "셔츠/타이/구두",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-280",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "셔츠 선택",
+            "isOptional": false,
+            "tips": "화이트: 가장 무난 / 연한 블루/핑크: 포인트 / 맞춤 셔츠: 핏↑, 사진 퀄리티↑"
+          },
+          {
+            "text": "타이/보타이 선택",
+            "isOptional": false,
+            "tips": "넥타이: 클래식, 격식 / 보타이: 캐주얼, 트렌디 / 둘 다: 촬영/본식 구분"
+          },
+          {
+            "text": "구두 준비",
+            "isOptional": false,
+            "tips": "새로 구매 (결혼 후에도 활용 가능한 것으로) / 기존 구두 활용 (깔끔하면 OK)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 400000
+      },
+      {
+        "id": "8.3.1",
+        "title": "예복 매장 방문 및 주문",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-280",
+        "estimatedDuration": "각 1~2시간",
+        "checklist": [
+          {
+            "text": "예복 매장 2~3곳 방문",
+            "isOptional": false,
+            "tips": "원단 직접 확인 / 핏팅 및 체형 측정 / 제작 기간 확인 (보통 2개월)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 500000,
+        "typicalCostMax": 2000000
+      },
+      {
+        "id": "8.3.2",
+        "title": "신랑 촬영 대여복 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-200",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "촬영용 대여복 준비 여부 결정",
+            "isOptional": false,
+            "tips": "본식 예복과 별도로 촬영용 의상 필요 여부 / 대여 vs 구매: 촬영 컨셉에 맞는 의상 (캐주얼룩 등) / 대여 업체 예약 및 사이즈 확인"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.3.3",
+        "title": "예복 가봉 단계별 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-240",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "1차 가봉",
+            "isOptional": false,
+            "tips": "기본 핏 확인, 수선 방향 결정"
+          },
+          {
+            "text": "2차 가봉",
+            "isOptional": false,
+            "tips": "1차 수선 반영 확인 / 세부 조정 (소매 길이, 바지 기장 등)"
+          },
+          {
+            "text": "최종 가봉",
+            "isOptional": false,
+            "tips": "최종 핏 확인 / 체중 변화 반영 여부 체크"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.3.4",
+        "title": "아버님 양복 함께 맞춤 여부",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-280",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "아버님 양복 동시 맞춤 여부 결정",
+            "isOptional": false,
+            "tips": "같은 곳 맞춤: 할인 가능 / 별도 준비: 아버님 선호에 따라"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "8.3.5",
+        "title": "예복 수령 및 피팅",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-210~D-180",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "예복 수령 및 최종 피팅",
+            "isOptional": false,
+            "tips": "수선 필요 시 추가 1~2주 소요"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예복",
+          "의상",
+          "신랑"
+        ],
+        "typicalCostMin": 60000,
+        "typicalCostMax": 220000
+      },
+      {
+        "id": "16.1.1",
+        "title": "피부 관리 계획 수립",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "주 1~2회 방문",
+        "checklist": [
+          {
+            "text": "피부 관리 시작",
+            "isOptional": false,
+            "tips": "피부과: 레이저, 필링 등 (최소 2개월 전 시작) / 경락/관리샵: 피부결 정리 / 홈케어: 수분팩, 선크림"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "뷰티",
+          "관리",
+          "건강"
+        ],
+        "typicalCostMin": 160000,
+        "typicalCostMax": 500000
+      },
+      {
+        "id": "16.2.1",
+        "title": "체형 관리",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "꾸준히",
+        "checklist": [
+          {
+            "text": "다이어트/운동 계획",
+            "isOptional": false,
+            "tips": "드레스 핏에 맞는 목표 설정 / 상체 라인 (어깨, 팔, 등) 관리 / 참고: 무리한 다이어트보다 건강한 관리"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "뷰티",
+          "관리",
+          "건강"
+        ],
+        "typicalCostMin": 160000,
+        "typicalCostMax": 500000
+      },
+      {
+        "id": "16.3.1",
+        "title": "D-7 최종 관리",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-7",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "염색",
+            "isOptional": false,
+            "tips": "메이크업 실장과 색상 사전 협의"
+          },
+          {
+            "text": "네일",
+            "isOptional": false,
+            "tips": "젤네일 추천 (오래 유지) / 색상: 누드/핑크 톤 (드레스와 조화)"
+          },
+          {
+            "text": "제모/왁싱",
+            "isOptional": false,
+            "tips": "드레스 노출 부위 기준 (팔, 겨드랑이, 등)"
+          },
+          {
+            "text": "치아 미백",
+            "isOptional": false,
+            "tips": "선택사항, 사진 촬영 시 효과↑"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "뷰티",
+          "관리",
+          "건강"
+        ],
+        "typicalCostMin": 50000,
+        "typicalCostMax": 100000
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "title": "예물 / 예단",
+    "icon": "Gem",
+    "color": "#10B981",
+    "xp": 100,
+    "dependencies": [
+      "2"
+    ],
+    "tasks": [
+      {
+        "id": "9.1.1",
+        "title": "양가 예물/예단 방향 합의",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-300",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "예물/예단 범위 양가 합의",
+            "isOptional": false,
+            "tips": "예물 (신랑↔신부 교환): 반지, 시계, 가방 등 범위 / 예단 (신부측→신랑측): 이불, 옷, 현금 등 범위 / 참고: 생략/간소화 추세, 집안 가치관에 따라 상이"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      },
+      {
+        "id": "9.2.1",
+        "title": "반지 유형 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-300",
+        "estimatedDuration": "리서치 3시간",
+        "checklist": [
+          {
+            "text": "웨딩밴드 유형 선택",
+            "isOptional": false,
+            "tips": "브랜드 반지: 데일리 활용도↑, 패션↑, 가격↑, 흔할 수 있음 / 종로 반지: 가성비↑, 디자인 모방 가능성 / 해외 구매: 여행 시 구매 가능, A/S 어려움 / 참고: 결혼식 10개월 전 구매해야 촬영 시기에 수령 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      },
+      {
+        "id": "9.2.2",
+        "title": "반지 쇼핑 및 구매",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-290",
+        "estimatedDuration": "각 1시간",
+        "checklist": [
+          {
+            "text": "반지 매장 3곳 이상 방문",
+            "isOptional": false,
+            "tips": "디자인 선택 (심플 vs 스톤 세팅 vs 각인) / 사이즈 체크: **여러 번 껴보고 신중하게** (컨디션에 따라 달라짐) / 제작 기간 확인 (보통 4~8주)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 1000000,
+        "typicalCostMax": 5000000
+      },
+      {
+        "id": "9.2.3",
+        "title": "반지 수령",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-240~D-210",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "반지 수령 및 사이즈 최종 확인",
+            "isOptional": false,
+            "tips": "촬영 전 수령 필수 / 사이즈 안 맞으면 수선 요청 (1~2주)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      },
+      {
+        "id": "9.3.1",
+        "title": "추가 예물 범위 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-280",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "추가 예물 항목 결정",
+            "isOptional": false,
+            "tips": "시계: 양가 합의 시 / 가방: 양가 합의 시 / 참고: 필수 아님, 양가 협의에 따라"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      },
+      {
+        "id": "9.4.1",
+        "title": "예단 품목 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-250",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "예단 품목 및 규모 확정",
+            "isOptional": false,
+            "tips": "이불 세트 / 현금 예단 (꾸밈비) / 한복/옷 (요즘은 생략 추세) / 참고: 예단 비용은 집안마다 천차만별"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      },
+      {
+        "id": "9.4.2",
+        "title": "폐백/이바지 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "폐백/이바지 여부 결정",
+            "isOptional": false,
+            "tips": "전통 폐백: 대추, 밤 등 전통 방식 / 현대식 간소화: 절만 하고 생략 / 이바지 음식: 준비 vs 생략 / 참고자료: `[폐백 업체 리스트]`"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "예물",
+          "예단",
+          "양가"
+        ],
+        "typicalCostMin": 140000,
+        "typicalCostMax": 720000
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "title": "청첩장 / 하객 관리",
+    "icon": "Mail",
+    "color": "#EC4899",
+    "xp": 100,
+    "dependencies": [
+      "3"
+    ],
+    "tasks": [
+      {
+        "id": "14.1.1",
+        "title": "청첩장 형태 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-120",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "청첩장 유형 결정",
+            "isOptional": false,
+            "tips": "종이 청첩장: 전통적, 어른 선호 (돈 아끼는 것 추천) / 모바일 청첩장: 간편, 비용↓↓, 요즘 트렌드 / 둘 다: 어른에게 종이, 친구에게 모바일"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      },
+      {
+        "id": "14.1.2",
+        "title": "디자인 스타일 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-110",
+        "estimatedDuration": "리서치 2~3시간",
+        "checklist": [
+          {
+            "text": "청첩장 디자인 선택",
+            "isOptional": false,
+            "tips": "업체 기성 디자인: 편리, 선택지 다양 / 직접 디자인+인쇄 의뢰: 비용↓, 개성↑ / 참고: 웨딩 사진 보정본 필요 (모바일 청첩장용)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      },
+      {
+        "id": "14.2.1",
+        "title": "문구 작성",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-100",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "청첩장 문구 작성",
+            "isOptional": false,
+            "tips": "양가 부모님 성함 확인 / 식순 정보 (시간, 장소, 교통 안내) / 계좌번호 포함 여부"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      },
+      {
+        "id": "14.2.2",
+        "title": "모바일 청첩장 제작",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "3~5시간",
+        "checklist": [
+          {
+            "text": "모바일 청첩장 제작",
+            "isOptional": false,
+            "tips": "플랫폼: 모바일청첩장 앱/사이트 (바른폰트, 보이스카드 등) / 사진 선택 (웨딩촬영 보정본 중) / 지도/교통 안내 삽입 / 참고자료: `[모바일 청첩장 플랫폼 비교]`"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 100000
+      },
+      {
+        "id": "14.2.3",
+        "title": "종이 청첩장 인쇄",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "주문~배송 2주",
+        "checklist": [
+          {
+            "text": "종이 청첩장 인쇄 의뢰",
+            "isOptional": false,
+            "tips": "수량: 하객 수 기준 + 여분 10~20부 / 꿀팁: 직접 디자인 후 인쇄만 맡기면 비용↓"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 300000
+      },
+      {
+        "id": "14.3.1",
+        "title": "하객 명단 정리",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "3~5시간",
+        "checklist": [
+          {
+            "text": "전체 하객 명단 작성",
+            "isOptional": false,
+            "tips": "신랑측: 본인 + 부모님 하객 각각 정리 / 신부측: 본인 + 부모님 하객 각각 정리 / 발송 방법 구분 (종이/모바일/구두)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      },
+      {
+        "id": "14.3.2",
+        "title": "청첩장 발송",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-60~D-45",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "청첩장 발송",
+            "isOptional": false,
+            "tips": "종이: 직접 전달 or 우편 / 모바일: 카톡/문자 발송 / 참고: 너무 일찍 보내면 잊힘, 너무 늦으면 일정 충돌"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      },
+      {
+        "id": "14.3.3",
+        "title": "청첩장 모임 진행",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-90~D-60",
+        "estimatedDuration": "각 2~3시간",
+        "checklist": [
+          {
+            "text": "청첩장 모임 일정 잡기",
+            "isOptional": false,
+            "tips": "친구 그룹별 모임 / 직장 동료 알림 / 참고: 결혼식 3개월 전부터 시작"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "청첩장",
+          "하객"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 40000
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "title": "신혼집 준비",
+    "icon": "Home",
+    "color": "#3B82F6",
+    "xp": 100,
+    "dependencies": [
+      "2"
+    ],
+    "tasks": [
+      {
+        "id": "11.1.1",
+        "title": "주거 형태 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-240",
+        "estimatedDuration": "양가 상의 2~3회",
+        "checklist": [
+          {
+            "text": "매매/전세/월세 결정",
+            "isOptional": false,
+            "tips": "매매: 장기 투자, 목돈 필요 / 전세: 목돈 필요하나 매매보다 부담↓ / 월세: 초기 자금↓, 매달 비용 발생"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "신혼집",
+          "부동산"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "11.1.2",
+        "title": "지역 선정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-235",
+        "estimatedDuration": "리서치 1주일",
+        "checklist": [
+          {
+            "text": "신혼집 지역 결정",
+            "isOptional": false,
+            "tips": "양가 중간 지점 / 직장 출퇴근 거리 / 생활 인프라 (마트, 병원, 교통) / 참고: 지역에 따라 가격 차이↑↑"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "신혼집",
+          "부동산"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "11.1.3",
+        "title": "평수/구조 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-230",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "원하는 평수 및 구조 결정",
+            "isOptional": false,
+            "tips": "투룸: 신혼 시작, 비용↓ / 쓰리룸: 여유 공간, 아이 계획 시 / 고려: 빌트인 가전 유무, 주방 구조, 베란다"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "신혼집",
+          "부동산"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "11.2.1",
+        "title": "매물 탐색",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-220~D-120",
+        "estimatedDuration": "꾸준히 2~3개월",
+        "checklist": [
+          {
+            "text": "부동산 앱/직방/네이버부동산으로 매물 탐색",
+            "isOptional": false,
+            "tips": "온라인 탐색 + 부동산 방문 병행 / 마음에 드는 매물 3~5곳 실사 방문"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "신혼집",
+          "부동산"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "11.2.2",
+        "title": "계약 진행",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-90~D-60",
+        "estimatedDuration": "1~2주",
+        "checklist": [
+          {
+            "text": "신혼집 계약",
+            "isOptional": false,
+            "tips": "등기부등본 확인 (권리 관계) / 특약 사항 꼼꼼히 / 중개수수료 확인 / 결혼식 최소 1개월 전까지 계약 및 세팅 완료 / 참고: 집이 정해져야 가전/가구 사이즈 결정 가능"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "신혼집",
+          "부동산"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "title": "인테리어",
+    "icon": "Hammer",
+    "color": "#6366F1",
+    "xp": 100,
+    "dependencies": [
+      "8"
+    ],
+    "tasks": [
+      {
+        "id": "12.1.1",
+        "title": "인테리어 유형 선택",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "리서치 1주일",
+        "checklist": [
+          {
+            "text": "인테리어 방식 결정",
+            "isOptional": false,
+            "tips": "셀프: 비용↓↓, 시간↑↑, 마감 품질 들쑥날쑥 / 반셀프: 일부 업체 + 일부 직접, 밸런스 / 턴키: 업체 일괄, 비용↑, 편리↑↑, 마감↑"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "인테리어",
+          "신혼집"
+        ],
+        "typicalCostMin": 1250000,
+        "typicalCostMax": 7500000
+      },
+      {
+        "id": "12.1.2",
+        "title": "인테리어 스타일 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-170",
+        "estimatedDuration": "리서치 3시간",
+        "checklist": [
+          {
+            "text": "선호 스타일 결정",
+            "isOptional": false,
+            "tips": "화이트/미니멀: 깔끔, 공간 넓어 보임 / 내추럴 우드: 따뜻, 편안 / 모던: 세련, 시크 / 북유럽: 심플, 감성 / 참고: 오늘의집 등에서 레퍼런스 수집"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "인테리어",
+          "신혼집"
+        ],
+        "typicalCostMin": 1250000,
+        "typicalCostMax": 7500000
+      },
+      {
+        "id": "12.2.1",
+        "title": "업체 선정 (턴키/반셀프 시)",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-150",
+        "estimatedDuration": "2주",
+        "checklist": [
+          {
+            "text": "인테리어 업체 3곳 이상 견적 비교",
+            "isOptional": false,
+            "tips": "포트폴리오 확인 / 견적서 상세 비교 (자재, 인건비, 부가세) / 계약 전 필독: 호갱 방지 체크리스트 / 참고: 10% 할인 쿠폰/프로모션 활용"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "인테리어",
+          "신혼집"
+        ],
+        "typicalCostMin": 30000000,
+        "typicalCostMax": 30000000
+      },
+      {
+        "id": "12.2.2",
+        "title": "인테리어 진행 및 감리",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-90~D-45",
+        "estimatedDuration": "3~6주",
+        "checklist": [
+          {
+            "text": "인테리어 공사 진행",
+            "isOptional": false,
+            "tips": "주기적 현장 방문 (주 1~2회) / 자재 변경/추가금 발생 시 즉시 확인 / 하자 체크리스트 작성"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "인테리어",
+          "신혼집"
+        ],
+        "typicalCostMin": 1250000,
+        "typicalCostMax": 7500000
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "title": "혼수 / 가전 / 가구",
+    "icon": "Sofa",
+    "color": "#8B5CF6",
+    "xp": 100,
+    "dependencies": [
+      "8",
+      "9"
+    ],
+    "tasks": [
+      {
+        "id": "13.1.1",
+        "title": "필요 품목 리스트업",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-150",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "가전·가구 필요 품목 전체 리스트 작성",
+            "isOptional": false,
+            "tips": "신혼집 구조에 맞는 가전/가구 사이즈 측정 / 빌트인 가전 유무 확인 후 구매 목록 조정"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 720000,
+        "typicalCostMax": 2860000
+      },
+      {
+        "id": "13.2.1",
+        "title": "가전 구매 전략 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-140",
+        "estimatedDuration": "리서치 3시간",
+        "checklist": [
+          {
+            "text": "가전 구매처 결정",
+            "isOptional": false,
+            "tips": "백화점: 프로모션+상품권 활용, VIP 혜택 (7% 세일리지) / 하이마트/전자랜드: 가전 전문, 묶음 할인 / 온라인 (쿠팡/네이버 등): 최저가 검색, 카드 할인 / 참고 꿀팁: 월초 주말 오전이 프로모션 가장 좋음"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 720000,
+        "typicalCostMax": 2860000
+      },
+      {
+        "id": "13.2.2",
+        "title": "대형 가전 구매",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-120",
+        "estimatedDuration": "매장 방문 반나절",
+        "checklist": [
+          {
+            "text": "냉장고 선택 및 구매",
+            "isOptional": false,
+            "tips": "사이즈 (용량): 신혼집 주방 공간 확인 / 브랜드 (LG/삼성): 선호도 + 프로모션 비교 / 타입: 양문형/4도어/김치냉장고 별도 여부"
+          },
+          {
+            "text": "세탁기/건조기 선택 및 구매",
+            "isOptional": false,
+            "tips": "세탁기 용량 (신혼 기준 17~21kg) / 건조기 필요 여부 / 세탁기+건조기 세트 할인"
+          },
+          {
+            "text": "TV 선택 및 구매",
+            "isOptional": false,
+            "tips": "사이즈: 거실 크기 기준 / OLED vs QLED"
+          },
+          {
+            "text": "에어컨 선택 및 구매",
+            "isOptional": false,
+            "tips": "스탠드형 vs 벽걸이 vs 시스템 / 방 수에 따른 수량"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 1000000,
+        "typicalCostMax": 3000000
+      },
+      {
+        "id": "13.2.3",
+        "title": "소형 가전 구매",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "소형 가전 필요 목록 정리",
+            "isOptional": false,
+            "tips": "식기세척기, 정수기, 인덕션: 대형 가전과 함께 구매 시 웨딩 혜택 / 커피머신, 공기청정기, 로봇청소기 / 음식물처리기: 지원사업 확인 / 꿀팁: 사은품으로 오는 것도 있으니 가장 나중에 구매"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 720000,
+        "typicalCostMax": 2860000
+      },
+      {
+        "id": "13.3.1",
+        "title": "가구 구매 전략 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-130",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "가구 구매 전략 결정",
+            "isOptional": false,
+            "tips": "브랜드 가구 (한샘, 일룸, 까사미아): 품질↑, 비용↑ / 가성비 가구 (온라인/소규모): 비용↓, 직접 확인 어려움 / 참고: 세일리지·프로모션 활용, 가전과 동시 구매 혜택"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 720000,
+        "typicalCostMax": 2860000
+      },
+      {
+        "id": "13.3.2",
+        "title": "주요 가구 구매",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-110",
+        "estimatedDuration": "매장 방문 반나절",
+        "checklist": [
+          {
+            "text": "침대/매트리스 선택",
+            "isOptional": false,
+            "tips": "사이즈: 퀸 vs 킹 vs 싱글 2개 / 매트리스: 스프링 vs 라텍스 vs 메모리폼 / 참고: 직접 누워보고 결정 필수"
+          },
+          {
+            "text": "소파 선택",
+            "isOptional": false,
+            "tips": "사이즈: 거실 크기 기준 / 소재: 패브릭 vs 가죽 / 색상: 인테리어 스타일과 매칭"
+          },
+          {
+            "text": "식탁 선택",
+            "isOptional": false,
+            "tips": "인원수: 2인 vs 4인 vs 6인 / 소재: 원목 vs 세라믹 vs 대리석"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 300000,
+        "typicalCostMax": 1500000
+      },
+      {
+        "id": "13.3.3",
+        "title": "주방/생활용품",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "그릇세트 구매",
+            "isOptional": false,
+            "tips": "꿀팁: **가장 나중에 구매** (선물/사은품으로 많이 들어옴) / 필요한 것만 낱개로 구매하는 것이 합리적"
+          },
+          {
+            "text": "침구류 구매",
+            "isOptional": false,
+            "tips": "이불, 베개, 토퍼 등 / 계절별 필요 여부"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼수",
+          "가전",
+          "가구"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 300000
+      }
+    ]
+  },
+  {
+    "id": "11",
+    "title": "혼주 의상 & 본식 준비",
+    "icon": "Heart",
+    "color": "#06B6D4",
+    "xp": 100,
+    "dependencies": [
+      "3",
+      "4",
+      "7"
+    ],
+    "tasks": [
+      {
+        "id": "10.1.1",
+        "title": "혼주 의상 형태 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "혼주 의상 유형 결정",
+            "isOptional": false,
+            "tips": "한복 (대여): 전통적, 대여와 구매 가격 차이 크지 않은 경우도 / 한복 (구매): 두고두고 활용 가능 / 양장 (어머님): 현대적, 편안함 / 정장 (아버님): 보통 신랑 예복 맞출 때 함께"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼주",
+          "양가",
+          "의상"
+        ],
+        "typicalCostMin": 250000,
+        "typicalCostMax": 750000
+      },
+      {
+        "id": "10.1.2",
+        "title": "혼주 한복 쇼핑",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-150~D-120",
+        "estimatedDuration": "반나절",
+        "checklist": [
+          {
+            "text": "혼주 한복 매장 방문",
+            "isOptional": false,
+            "tips": "양가 어머님 색상 조율 (겹치지 않게) / 아버님 한복 or 정장 결정"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼주",
+          "양가",
+          "의상"
+        ],
+        "typicalCostMin": 300000,
+        "typicalCostMax": 800000
+      },
+      {
+        "id": "10.2.1",
+        "title": "혼주 메이크업 예약",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-120",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "혼주 메이크업 업체 선정 및 예약",
+            "isOptional": false,
+            "tips": "동선·주차 편리성 가장 중요 / 출장 메이크업 vs 매장 방문 / 양가 어머님 + 형제자매 메이크업 포함 여부"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼주",
+          "양가",
+          "의상"
+        ],
+        "typicalCostMin": 150000,
+        "typicalCostMax": 400000
+      },
+      {
+        "id": "10.2.2",
+        "title": "혼주 헤어/메이크업 레퍼런스",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "혼주 헤어/메이크업 레퍼런스 준비",
+            "isOptional": false,
+            "tips": "참고: 중년 여배우 시상식/영부인 헤어 스타일 참고 / 어머님 선호 스타일 사전 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "혼주",
+          "양가",
+          "의상"
+        ],
+        "typicalCostMin": 250000,
+        "typicalCostMax": 750000
+      },
+      {
+        "id": "15.1.1",
+        "title": "스냅/DVD 필요 여부 결정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "상의 1회",
+        "checklist": [
+          {
+            "text": "본식 스냅 촬영 여부 결정",
+            "isOptional": false,
+            "tips": "강력 추천: 신부대기실 밖 상황, 부모님 표정 등 기록 / 참고: 예식 날짜 확정 후 바로 예약 (인기 업체 빨리 마감)"
+          },
+          {
+            "text": "서브스냅 추가 여부 결정",
+            "isOptional": false,
+            "tips": "메인스냅 외 추가 앵글 촬영 / 하객 반응, 뒷모습 등 다양한 각도 / 비용 추가 (50~100만 원)"
+          },
+          {
+            "text": "아이폰스냅 추가 여부 결정",
+            "isOptional": false,
+            "tips": "아이폰으로 감성적인 영상/사진 촬영 / 릴스/숏츠 형태의 트렌디한 결과물 / SNS 공유용으로 인기"
+          },
+          {
+            "text": "본식 DVD 영상 여부 결정",
+            "isOptional": false,
+            "tips": "촬영: 평생 추억, 부모님 선호 / 미촬영: 비용 절약 / 참고: 하이라이트 영상만 가능한 업체도 있음"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.1.2",
+        "title": "스냅/DVD 업체 선정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-170",
+        "estimatedDuration": "리서치 3시간",
+        "checklist": [
+          {
+            "text": "스냅/DVD 업체 예약",
+            "isOptional": false,
+            "tips": "대표/실장 지정 촬영 필수 (신입X) / 포트폴리오·후기 확인 / 참고자료: `[본식 스냅 업체 비교표]`"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 800000,
+        "typicalCostMax": 1500000
+      },
+      {
+        "id": "15.2.1",
+        "title": "예식 형태별 식순 구성",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-120",
+        "estimatedDuration": "상의 2~3회",
+        "checklist": [
+          {
+            "text": "주례/사회자 결정",
+            "isOptional": false,
+            "tips": "주례 있는 예식: 전통적, 지인/목사님/주례 전문가 / 주례 없는 예식: 사회자 중심, 요즘 트렌드 / 사회자: 전문 사회자 vs 지인"
+          },
+          {
+            "text": "식순 세부 구성",
+            "isOptional": false,
+            "tips": "개식사, 신랑입장, 신부입장, 주례사/축사, 성혼선언, 축가, 행진 등 / 참고: 사회자가 틀만 정해주므로 직접 준비 필요"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.2.2",
+        "title": "축가 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-90",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "축가 가수/곡 선정",
+            "isOptional": false,
+            "tips": "축가 가수: 친구/가족 중 선정 / 곡 선택: 분위기에 맞는 곡 (팝/발라드/듀엣) / MR 준비: 웨딩홀에 USB 전달"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.2.3",
+        "title": "음원 및 영상 준비",
+        "description": "",
+        "priority": "하",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "제작 1~2주",
+        "checklist": [
+          {
+            "text": "식전 영상 제작",
+            "isOptional": false,
+            "tips": "성장 영상, 커플 영상 등 / 직접 제작 vs 업체 의뢰"
+          },
+          {
+            "text": "식전 영상 웨딩홀 전달",
+            "isOptional": false,
+            "tips": "USB에 담아 웨딩홀 담당자에게 전달 / 재생 테스트 필수 (포맷, 화질 확인)"
+          },
+          {
+            "text": "본식 음원 리스트 선정",
+            "isOptional": false,
+            "tips": "신랑 입장곡 / 신부 입장곡 / 행진곡 / 식전/식후 BGM / 축가 MR (축가자가 직접 부를 경우)"
+          },
+          {
+            "text": "본식 음원 웨딩홀 전달",
+            "isOptional": false,
+            "tips": "USB에 곡 순서대로 담아 전달 / 재생 순서, 볼륨 테스트 요청"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 300000
+      },
+      {
+        "id": "15.2.4",
+        "title": "성혼선언문 / 사회자 대본 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-30",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "성혼선언문 준비",
+            "isOptional": false,
+            "tips": "주례 있는 예식: 주례사+성혼선언 포함 / 주례 없는 예식: 사회자 또는 커플이 직접 선언문 준비 / 참고: 감동적인 선언문 샘플 검색 후 커스텀"
+          },
+          {
+            "text": "사회자 대본 준비",
+            "isOptional": false,
+            "tips": "전체 식순 흐름에 맞는 멘트 작성 / 사회자와 사전 공유 및 피드백 / 하객 안내 멘트 포함 (사진촬영, 착석 등)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.3.1",
+        "title": "부케 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "부케 스타일 및 업체 선정",
+            "isOptional": false,
+            "tips": "생화 vs 조화 / 스타일: 라운드/캐스케이드/내추럴 / 부케 토스용 별도 준비 여부"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 300000
+      },
+      {
+        "id": "15.3.2",
+        "title": "부케순이/가방순이 섭외",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "부케순이 섭외",
+            "isOptional": false,
+            "tips": "부케 받을 미혼 친구 1명 섭외 / 리허설 시 동선 설명 / 선택사항 (부케 토스로 대체 가능)"
+          },
+          {
+            "text": "가방순이 섭외",
+            "isOptional": false,
+            "tips": "신부 핸드백/부케를 들어줄 친구 1명 섭외 / 본식 당일 신부 옆에서 서포트 / 대기실~홀 이동 시 소지품 관리"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.3.3",
+        "title": "포토테이블 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-30",
+        "estimatedDuration": "2~3시간",
+        "checklist": [
+          {
+            "text": "포토테이블용 사진/액자 준비",
+            "isOptional": false,
+            "tips": "웨딩 사진 중 베스트컷 선택 / 액자 크기/수량 결정 / 포토테이블 장식 소품 (캔들, 꽃 등)"
+          }
+        ],
+        "isOptional": true,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 50000,
+        "typicalCostMax": 150000
+      },
+      {
+        "id": "15.3.4",
+        "title": "부케/부토니아/코사지 예약",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-30",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "부케 예약",
+            "isOptional": false,
+            "tips": "생화 vs 조화 / 스타일: 라운드/캐스케이드/내추럴 / 부케 토스용 별도 준비 여부"
+          },
+          {
+            "text": "부토니아 (신랑 가슴꽃) 예약",
+            "isOptional": false,
+            "tips": "부케와 같은 업체에서 세트로 주문"
+          },
+          {
+            "text": "코사지 (혼주 꽃) 예약",
+            "isOptional": false,
+            "tips": "양가 어머님/아버님 코사지 / 부케 업체에서 함께 주문"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 20000,
+        "typicalCostMax": 50000
+      },
+      {
+        "id": "15.3.5",
+        "title": "답례품 준비",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-45",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "답례품 선정 및 주문",
+            "isOptional": false,
+            "tips": "간식류 (초콜릿, 마카롱 등) / 실용품 (핸드크림, 차, 꿀) / 수량: 예상 하객 수 기준 + 여분"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.3.6",
+        "title": "기타 준비물",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-14",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "본식 당일 준비물 체크리스트",
+            "isOptional": false,
+            "tips": "속옷 (누드톤, 스트랩리스) / 구두 (드레스 기장 맞는 굽) / 웨딩밴드 / 비상 키트 (안전핀, 바느질 세트, 밴드, 진통제) / 세숫대야/돌잔치 소품 (폐백 시)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.4.1",
+        "title": "당일 타임테이블 작성",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-14",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "본식 당일 분단위 타임테이블 작성",
+            "isOptional": false,
+            "tips": "메이크업 시작 시간 (보통 예식 3~4시간 전) / 원판 사진 촬영 시간 / 하객 맞이 시간 / 예식 시작~종료 / 폐백/피로연 시간"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.4.2",
+        "title": "역할 배정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-14",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "당일 역할 배정",
+            "isOptional": false,
+            "tips": "접수/축의금 담당 (양가 각 1~2명) / 하객 안내 담당 / 화동 (있을 경우): 나이 확인, 리허설 / 주차 안내 담당 (필요 시)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      },
+      {
+        "id": "15.4.3",
+        "title": "웨딩홀 최종 미팅",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-7~D-3",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "웨딩홀 최종 미팅",
+            "isOptional": false,
+            "tips": "최종 하객 수 통보 / 식순·음원 USB 전달 / 꽃장식/포토존 최종 확인 / 주차·동선 최종 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "본식",
+          "당일",
+          "진행"
+        ],
+        "typicalCostMin": 100000,
+        "typicalCostMax": 200000
+      }
+    ]
+  },
+  {
+    "id": "12",
+    "title": "허니문 (신혼여행)",
+    "icon": "Plane",
+    "color": "#EF4444",
+    "xp": 100,
+    "dependencies": [
+      "1"
+    ],
+    "tasks": [
+      {
+        "id": "17.1.1",
+        "title": "기본 조건 결정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-240",
+        "estimatedDuration": "상의 1~2회",
+        "checklist": [
+          {
+            "text": "국내 vs 해외 결정",
+            "isOptional": false,
+            "tips": "해외: 유럽/동남아/일본/몰디브/하와이 등 / 국내: 제주/강원 등 / 고려: 예산, 휴가 기간, 여권 유효기간"
+          },
+          {
+            "text": "여행 기간 결정",
+            "isOptional": false,
+            "tips": "5~7일: 일반적 / 7~14일: 장기 (유럽 등) / 2~3일: 단기 (국내/일본)"
+          },
+          {
+            "text": "여행 시기 결정",
+            "isOptional": false,
+            "tips": "결혼식 직후 출발 / 1~2주 후 출발 (휴식 후) / 추후 출발 (바쁜 경우)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "허니문",
+          "여행"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 1400000
+      },
+      {
+        "id": "17.1.2",
+        "title": "예산 설정",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-230",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "허니문 예산 설정",
+            "isOptional": false,
+            "tips": "100~200만 원: 국내/동남아 가성비 / 200~400만 원: 일반적 해외 / 400~700만 원: 유럽/몰디브 등 프리미엄 / 700만 원 이상: 럭셔리"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "허니문",
+          "여행"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 1400000
+      },
+      {
+        "id": "17.2.1",
+        "title": "항공권 예약",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-210",
+        "estimatedDuration": "리서치 3~5시간",
+        "checklist": [
+          {
+            "text": "항공권 예약",
+            "isOptional": false,
+            "tips": "꿀팁: 비행기표는 1년 전 구매가 가장 저렴 / 좌석 선택: 이코노미 vs 프레스티지 (특별한 날이니!)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "허니문",
+          "여행"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 1400000
+      },
+      {
+        "id": "17.2.2",
+        "title": "숙소 예약",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-180",
+        "estimatedDuration": "리서치 3~5시간",
+        "checklist": [
+          {
+            "text": "숙소 예약",
+            "isOptional": false,
+            "tips": "호텔/리조트/에어비앤비 / 허니문 패키지 여부 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "허니문",
+          "여행"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 1400000
+      },
+      {
+        "id": "17.2.3",
+        "title": "여행 준비물",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-14",
+        "estimatedDuration": "2시간",
+        "checklist": [
+          {
+            "text": "여행 준비물 체크",
+            "isOptional": false,
+            "tips": "여권 유효기간 확인 (최소 6개월 이상) / 비자 필요 여부 / 여행자 보험 / 환전 / 짐 리스트 작성"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "허니문",
+          "여행"
+        ],
+        "typicalCostMin": 200000,
+        "typicalCostMax": 1400000
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "title": "이사 / 입주",
+    "icon": "Truck",
+    "color": "#F59E0B",
+    "xp": 100,
+    "dependencies": [
+      "10"
+    ],
+    "tasks": [
+      {
+        "id": "18.1.1",
+        "title": "이사 업체 선정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-60",
+        "estimatedDuration": "견적 3~5일",
+        "checklist": [
+          {
+            "text": "이사 업체 3곳 견적 비교",
+            "isOptional": false,
+            "tips": "포장이사 vs 반포장이사 vs 일반이사 / 후기 확인 (물건 파손/스크래치 주의) / 참고: 웨딩 제휴 할인 확인 (통인익스프레스 등 10% 할인)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "이사",
+          "입주"
+        ],
+        "typicalCostMin": 500000,
+        "typicalCostMax": 2000000
+      },
+      {
+        "id": "18.1.2",
+        "title": "이사 일정 확정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-45",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "이사 날짜 확정",
+            "isOptional": false,
+            "tips": "결혼식 최소 2주 전 입주 완료 추천"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "이사",
+          "입주"
+        ],
+        "typicalCostMin": 120000,
+        "typicalCostMax": 500000
+      },
+      {
+        "id": "18.2.1",
+        "title": "입주청소 업체 선정",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-30",
+        "estimatedDuration": "리서치 2시간",
+        "checklist": [
+          {
+            "text": "입주청소 업체 예약",
+            "isOptional": false,
+            "tips": "인테리어 후 필수 (분진, 접착제 등) / 셀프 vs 업체: 업체가 어려운 이유 있음 (전문 장비 필요) / 참고: 웨딩 제휴 할인 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "이사",
+          "입주"
+        ],
+        "typicalCostMin": 150000,
+        "typicalCostMax": 400000
+      },
+      {
+        "id": "18.3.1",
+        "title": "생활 인프라 세팅",
+        "description": "",
+        "priority": "중",
+        "recommendedTiming": "D-21",
+        "estimatedDuration": "설치 당일 2시간",
+        "checklist": [
+          {
+            "text": "인터넷/IPTV 설치",
+            "isOptional": false,
+            "tips": "통신사 비교 (KT/SKT/LG) / 사은품·현금지원 최대 활용"
+          },
+          {
+            "text": "정수기/렌탈 설치",
+            "isOptional": false,
+            "tips": "구매 vs 렌탈 결정 / 참고: 신혼부부 렌탈 할인 프로모션"
+          },
+          {
+            "text": "가전/가구 배송 및 설치 확인",
+            "isOptional": false,
+            "tips": "배송 일정 조율 (하루에 몰아서 vs 분산) / 설치 후 하자 확인"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "이사",
+          "입주"
+        ],
+        "typicalCostMin": 30000,
+        "typicalCostMax": 50000
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "title": "행정 / 재정",
+    "icon": "FileText",
+    "color": "#10B981",
+    "xp": 100,
+    "dependencies": [
+      "11"
+    ],
+    "tasks": [
+      {
+        "id": "19.1.1",
+        "title": "혼인 신고 준비",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "혼인 신고 서류 준비",
+            "isOptional": false,
+            "tips": "혼인신고서 (주민센터/온라인 다운로드) / 신분증 (양측) / 증인 2명 서명 (신분증 사본) / 참고: 결혼식 전/후 모두 가능, 혼인신고일 = 법적 결혼일"
+          },
+          {
+            "text": "혼인 신고 제출",
+            "isOptional": false,
+            "tips": "주민센터 방문 or 온라인 (정부24)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "행정",
+          "서류",
+          "재정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "19.2.1",
+        "title": "축의금 수합 및 정리",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "D-14",
+        "estimatedDuration": "1시간",
+        "checklist": [
+          {
+            "text": "축의금 수합 방법 결정",
+            "isOptional": false,
+            "tips": "현금 접수: 접수 담당자 배정 필수 / 계좌이체: 청첩장에 계좌번호 안내 / 축의금 봉투+명단 정리 양식 준비"
+          },
+          {
+            "text": "축의금 정리",
+            "isOptional": false,
+            "tips": "현금/계좌이체 합산 / 하객별 금액 정리 (추후 답례/경조사 참고)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "행정",
+          "서류",
+          "재정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "19.3.1",
+        "title": "감사 인사 발송",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "",
+        "estimatedDuration": "1~2시간",
+        "checklist": [
+          {
+            "text": "감사 카톡/문자 발송",
+            "isOptional": false,
+            "tips": "하객 명단 기반으로 발송 / 상황별 인사말 준비 (참석자/미참석자/축의금만) / 참고: 너무 늦지 않게 (3일 이내 추천)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "행정",
+          "서류",
+          "재정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      },
+      {
+        "id": "19.4.1",
+        "title": "명의/주소 변경",
+        "description": "",
+        "priority": "상",
+        "recommendedTiming": "",
+        "estimatedDuration": "30분",
+        "checklist": [
+          {
+            "text": "주소 변경 (전입신고)",
+            "isOptional": false,
+            "tips": "주민센터 또는 정부24 온라인"
+          },
+          {
+            "text": "각종 명의/주소 변경",
+            "isOptional": false,
+            "tips": "은행 계좌 주소 / 보험 수익자/주소 변경 / 카드 주소 변경 / 직장 인사 정보 변경 / 운전면허증 주소 변경 (필요시)"
+          }
+        ],
+        "isOptional": false,
+        "tags": [
+          "행정",
+          "서류",
+          "재정"
+        ],
+        "typicalCostMin": null,
+        "typicalCostMax": null
+      }
+    ]
+  }
+]
