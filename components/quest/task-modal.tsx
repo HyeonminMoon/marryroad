@@ -2,9 +2,22 @@
 
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Quest, Task } from '@/lib/types/quest';
+import { Quest, Task, TaskExtendedData } from '@/lib/types/quest';
 import { Button } from '@/components/ui/button';
-import * as Icons from 'lucide-react';
+import {
+  CheckCircle,
+  AlertCircle,
+  Circle,
+  CircleDot,
+  Edit3,
+  ChevronRight,
+  DollarSign,
+  FileText,
+  Calendar,
+  Building2,
+  Star,
+} from 'lucide-react';
+import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useQuestStore } from '@/lib/stores/quest-store';
@@ -25,12 +38,26 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
   const questProgress = progress.taskProgress[quest.id];
   const completedTaskIds = questProgress?.completedTaskIds || [];
   
-  const handleTaskComplete = (taskId: string, data: any) => {
-    completeTask(quest.id, taskId, data.cost);
-    
-    // TODO: Store extended data (memo, date, vendor, rating, photos)
-    // For now, just store in localStorage or extend the store
-    
+  const handleTaskComplete = (taskId: string, data: {
+    cost?: number;
+    memo?: string;
+    date?: string;
+    vendorInfo?: TaskExtendedData['vendorInfo'];
+    rating?: number;
+    photos?: string[];
+  }) => {
+    // Build extended data from the form submission
+    const extendedData = {
+      memo: data.memo,
+      completedDate: data.date || new Date().toISOString().split('T')[0],
+      vendorInfo: data.vendorInfo,
+      rating: data.rating,
+      photos: data.photos,
+    };
+
+    // Pass both cost and extended data to the store
+    completeTask(quest.id, taskId, data.cost, extendedData);
+
     confetti({
       particleCount: 50,
       spread: 60,
@@ -40,22 +67,22 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
     setExpandedTaskId(null);
   };
   
-  const Icon = (Icons as any)[quest.icon] || Icons.Circle;
+  const Icon = getQuestIcon(quest.icon);
   
   const getTaskIcon = (task: Task) => {
     const isCompleted = completedTaskIds.includes(task.id);
     
     if (isCompleted) {
-      return <Icons.CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />;
+      return <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />;
     }
     
     switch (task.priority) {
       case '상':
-        return <Icons.AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />;
+        return <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />;
       case '중':
-        return <Icons.Circle className="w-5 h-5 text-yellow-500 flex-shrink-0" />;
+        return <Circle className="w-5 h-5 text-yellow-500 flex-shrink-0" />;
       default:
-        return <Icons.CircleDot className="w-5 h-5 text-gray-500 flex-shrink-0" />;
+        return <CircleDot className="w-5 h-5 text-gray-500 flex-shrink-0" />;
     }
   };
   
@@ -99,6 +126,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
             {quest.tasks.map((task, index) => {
               const isCompleted = completedTaskIds.includes(task.id);
               const userCost = questProgress?.taskCosts[task.id];
+              const extData = questProgress?.taskExtendedData?.[task.id];
               const isExpanded = expandedTaskId === task.id;
               
               return (
@@ -149,7 +177,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
                             onClick={() => setExpandedTaskId(task.id)}
                             className="ml-2"
                           >
-                            <Icons.Edit3 className="w-4 h-4 mr-1" />
+                            <Edit3 className="w-4 h-4 mr-1" />
                             기록하기
                           </Button>
                         )}
@@ -160,7 +188,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
                           {task.checklist.map((item, idx) => (
                             <div key={idx} className="text-sm">
                               <div className="flex items-start gap-2">
-                                <Icons.ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400" />
+                                <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400" />
                                 <span className="text-gray-700 dark:text-gray-300">{item.text}</span>
                               </div>
                               {item.tips && (
@@ -197,54 +225,54 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
                         </motion.div>
                       )}
                       
-                      {/* 완료된 작업 정보 표시 */}
+                      {/* 완료된 작업 정보 표시 - extended data from store */}
                       {isCompleted && (
                         <div className="mt-3 space-y-2 p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
                           {userCost && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Icons.DollarSign className="w-4 h-4 text-gray-500" />
+                              <DollarSign className="w-4 h-4 text-gray-500" />
                               <span className="text-gray-600 dark:text-gray-400">비용:</span>
                               <span className="font-semibold">{userCost.toLocaleString()}원</span>
                             </div>
                           )}
-                          {task.userMemo && (
+                          {extData?.memo && (
                             <div className="flex items-start gap-2 text-sm">
-                              <Icons.FileText className="w-4 h-4 text-gray-500 mt-0.5" />
+                              <FileText className="w-4 h-4 text-gray-500 mt-0.5" />
                               <div>
                                 <span className="text-gray-600 dark:text-gray-400">메모:</span>
-                                <p className="text-gray-700 dark:text-gray-300 mt-1">{task.userMemo}</p>
+                                <p className="text-gray-700 dark:text-gray-300 mt-1">{extData.memo}</p>
                               </div>
                             </div>
                           )}
-                          {task.completedDate && (
+                          {extData?.completedDate && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Icons.Calendar className="w-4 h-4 text-gray-500" />
+                              <Calendar className="w-4 h-4 text-gray-500" />
                               <span className="text-gray-600 dark:text-gray-400">완료:</span>
-                              <span className="font-semibold">{task.completedDate}</span>
+                              <span className="font-semibold">{extData.completedDate}</span>
                             </div>
                           )}
-                          {task.vendorInfo && (
+                          {extData?.vendorInfo && (
                             <div className="flex items-start gap-2 text-sm">
-                              <Icons.Building2 className="w-4 h-4 text-gray-500 mt-0.5" />
+                              <Building2 className="w-4 h-4 text-gray-500 mt-0.5" />
                               <div>
                                 <span className="text-gray-600 dark:text-gray-400">업체:</span>
-                                <p className="font-semibold">{task.vendorInfo.name}</p>
-                                {task.vendorInfo.contact && (
-                                  <p className="text-xs text-gray-500">{task.vendorInfo.contact}</p>
+                                <p className="font-semibold">{extData.vendorInfo.name}</p>
+                                {extData.vendorInfo.contact && (
+                                  <p className="text-xs text-gray-500">{extData.vendorInfo.contact}</p>
                                 )}
                               </div>
                             </div>
                           )}
-                          {task.rating && (
+                          {extData?.rating && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Icons.Star className="w-4 h-4 text-yellow-500" />
+                              <Star className="w-4 h-4 text-yellow-500" />
                               <span className="text-gray-600 dark:text-gray-400">평점:</span>
                               <div className="flex">
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                  <Icons.Star
+                                  <Star
                                     key={i}
                                     className={`w-4 h-4 ${
-                                      i < task.rating!
+                                      i < extData.rating!
                                         ? 'fill-yellow-400 text-yellow-400'
                                         : 'text-gray-300'
                                     }`}

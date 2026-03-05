@@ -3,12 +3,13 @@
 import React, { memo } from 'react';
 import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { Quest } from '@/lib/types/quest';
-import * as Icons from 'lucide-react';
+import { Lock, CheckCircle, ListChecks, Sparkles } from 'lucide-react';
+import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion } from 'framer-motion';
 
 const QuestNode = memo((props: NodeProps<Node<Quest>>) => {
   const quest = props.data;
-  const Icon = (Icons as any)[quest.icon] || Icons.Circle;
+  const Icon = getQuestIcon(quest.icon);
   
   const getStatusStyle = () => {
     switch (quest.status) {
@@ -25,8 +26,8 @@ const QuestNode = memo((props: NodeProps<Node<Quest>>) => {
   };
   
   const getLockIcon = () => {
-    if (quest.status === 'locked') return <Icons.Lock className="w-5 h-5" />;
-    if (quest.status === 'completed') return <Icons.CheckCircle className="w-5 h-5" />;
+    if (quest.status === 'locked') return <Lock className="w-5 h-5" />;
+    if (quest.status === 'completed') return <CheckCircle className="w-5 h-5" />;
     return null;
   };
   
@@ -74,11 +75,11 @@ const QuestNode = memo((props: NodeProps<Node<Quest>>) => {
         {/* Task Count */}
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1">
-            <Icons.ListChecks className="w-4 h-4" />
+            <ListChecks className="w-4 h-4" />
             <span>{quest.tasks.length}개 작업</span>
           </div>
           <div className="flex items-center gap-1">
-            <Icons.Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4" />
             <span>+{quest.xp} XP</span>
           </div>
         </div>

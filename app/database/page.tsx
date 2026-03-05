@@ -7,8 +7,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Database, Search, Filter, ArrowUpDown, CheckCircle, Circle, AlertCircle } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion } from 'framer-motion';
+import { Task } from '@/lib/types/quest';
+
+/** 플랫 리스트용 확장 Task 타입 - Quest 메타정보 포함 */
+interface FlatTask extends Task {
+  questId: string;
+  questTitle: string;
+  questColor: string;
+  questIcon: string;
+  isCompleted: boolean;
+  userCost?: number;
+  completedDate?: string;
+}
 
 type SortField = 'title' | 'priority' | 'status' | 'completedDate' | 'cost';
 type SortOrder = 'asc' | 'desc';
@@ -24,7 +36,7 @@ export default function DatabasePage() {
 
   // 모든 작업을 플랫 리스트로 변환
   const allTasks = useMemo(() => {
-    const tasks: any[] = [];
+    const tasks: FlatTask[] = [];
 
     quests.forEach(quest => {
       const questProgress = progress.taskProgress[quest.id];
@@ -33,9 +45,11 @@ export default function DatabasePage() {
       quest.tasks.forEach(task => {
         const isCompleted = completedTaskIds.includes(task.id);
         const userCost = questProgress?.taskCosts[task.id];
+        const extData = questProgress?.taskExtendedData?.[task.id];
 
         tasks.push({
           ...task,
+          completedDate: extData?.completedDate,
           questId: quest.id,
           questTitle: quest.title,
           questColor: quest.color,
@@ -76,7 +90,7 @@ export default function DatabasePage() {
 
     // 정렬
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: string | number, bValue: string | number;
 
       switch (sortField) {
         case 'title':
@@ -121,7 +135,7 @@ export default function DatabasePage() {
     }
   };
 
-  const getStatusIcon = (task: any) => {
+  const getStatusIcon = (task: FlatTask) => {
     if (task.isCompleted) {
       return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
@@ -300,7 +314,7 @@ export default function DatabasePage() {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredAndSortedTasks.map((task, index) => {
-                  const Icon = (Icons as any)[task.questIcon] || Icons.Circle;
+                  const Icon = getQuestIcon(task.questIcon);
                   return (
                     <motion.tr
                       key={`${task.questId}-${task.id}`}

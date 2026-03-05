@@ -6,7 +6,16 @@ import { useQuestStore } from '@/lib/stores/quest-store';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
-import * as Icons from 'lucide-react';
+import { getQuestIcon } from '@/lib/utils/icon-map';
+import { Task } from '@/lib/types/quest';
+
+/** 캘린더 표시용 확장 Task 타입 */
+interface CalendarTask extends Task {
+  questTitle: string;
+  questColor: string;
+  questIcon: string;
+  completedDate?: string;
+}
 
 export default function CalendarPage() {
   const { quests, progress } = useQuestStore();
@@ -19,20 +28,26 @@ export default function CalendarPage() {
 
   // 모든 작업을 날짜별로 그룹화
   const tasksByDate = useMemo(() => {
-    const grouped: Record<string, any[]> = {};
+    const grouped: Record<string, CalendarTask[]> = {};
 
     quests.forEach(quest => {
       const questProgress = progress.taskProgress[quest.id];
-      
+      if (!questProgress) return;
+
       quest.tasks.forEach(task => {
+        const isCompleted = questProgress.completedTaskIds?.includes(task.id);
+        const extData = questProgress.taskExtendedData?.[task.id];
+
         // 완료된 작업 중 날짜가 있는 것만 캘린더에 표시
-        if (task.completedDate) {
-          const dateKey = task.completedDate;
+        // completedDate는 store의 taskExtendedData에서 읽음
+        if (isCompleted && extData?.completedDate) {
+          const dateKey = extData.completedDate;
           if (!grouped[dateKey]) {
             grouped[dateKey] = [];
           }
           grouped[dateKey].push({
             ...task,
+            completedDate: extData.completedDate,
             questTitle: quest.title,
             questColor: quest.color,
             questIcon: quest.icon,
@@ -99,7 +114,7 @@ export default function CalendarPage() {
 
           <div className="space-y-1">
             {tasksForDay.slice(0, 3).map((task, idx) => {
-              const Icon = (Icons as any)[task.questIcon] || Icons.Circle;
+              const Icon = getQuestIcon(task.questIcon);
               return (
                 <div
                   key={idx}

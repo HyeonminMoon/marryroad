@@ -1,24 +1,23 @@
 export * from './auth';
 export * from './quest';
-export * from './marryroad';
 
-// Temporary type definitions to fix build errors
+/**
+ * 커플 정보 타입
+ * Supabase couples 테이블과 매핑됩니다.
+ */
 export interface Couple {
   id: string;
   partner1Id: string;
   partner2Id?: string;
   weddingDate?: string;
   budget?: number;
-  [key: string]: any;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface CoupleStore {
-  couple: Couple | null;
-  isLoading: boolean;
-  setCouple: (couple: Couple | null) => void;
-  updateCouple: (updates: Partial<Couple>) => void;
-}
-
+/**
+ * 알림 타입
+ */
 export interface Notification {
   id: string;
   message: string;
@@ -27,31 +26,25 @@ export interface Notification {
   read: boolean;
 }
 
-export interface NotificationStore {
-  notifications: Notification[];
-  unreadCount: number;
-  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
-  setNotifications: (notifications: Notification[]) => void;
-  markAsRead: (id: string) => void;
-  markAllAsRead: () => void;
-  removeNotification: (id: string) => void;
-  clearNotifications: () => void;
-}
-
+/**
+ * 개별 스테이지 진행 정보
+ */
 export interface Progress {
   stage_id: string;
-  [key: string]: any;
+  completed: boolean;
+  completedDate?: string;
+  skipped: boolean;
+  cost?: number;
+  memo?: string;
 }
 
+/**
+ * 전체 진행률 요약 정보
+ */
 export interface ProgressSummary {
-  [key: string]: any;
-}
-
-export interface ProgressStore {
-  progress: Progress[];
-  summary: ProgressSummary | null;
-  isLoading: boolean;
-  setProgress: (progress: Progress[]) => void;
-  setSummary: (summary: ProgressSummary | null) => void;
-  updateStageProgress: (stageId: string, updates: Partial<Progress>) => void;
+  totalStages: number;
+  completedStages: number;
+  skippedStages: number;
+  totalCost: number;
+  completionPercent: number;
 }
