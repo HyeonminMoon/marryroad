@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -15,14 +15,23 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Bell, User, LogOut, Settings, Map, DollarSign, Calendar, Gamepad2, Database } from 'lucide-react'
+import { Bell, User, LogOut, Settings, Map, DollarSign, Calendar, Gamepad2, Database, Menu, X } from 'lucide-react'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 
 export function Header() {
   const router = useRouter()
   const pathname = usePathname()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<SupabaseUser | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
-  const supabase = createClient()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
     // 사용자 정보 가져오기
@@ -114,6 +123,54 @@ export function Header() {
           </Link>
         </nav>
 
+        {/* 모바일 햄버거 메뉴 */}
+        <div className="md:hidden">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="메뉴 열기">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px]">
+              <SheetHeader>
+                <SheetTitle className="flex items-center gap-2">
+                  <span className="text-xl">💍</span>
+                  MarryRoad
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 mt-6">
+                <Link href="/roadmap" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant={isActive('/roadmap') ? 'default' : 'ghost'}
+                    className="w-full justify-start gap-2"
+                  >
+                    <Map className="h-4 w-4" />
+                    로드맵
+                  </Button>
+                </Link>
+                <Link href="/calendar" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant={isActive('/calendar') ? 'default' : 'ghost'}
+                    className="w-full justify-start gap-2"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    캘린더
+                  </Button>
+                </Link>
+                <Link href="/database" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant={isActive('/database') ? 'default' : 'ghost'}
+                    className="w-full justify-start gap-2"
+                  >
+                    <Database className="h-4 w-4" />
+                    데이터베이스
+                  </Button>
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+
         {/* 우측 메뉴 */}
         <div className="flex items-center space-x-4">
           {user ? (
@@ -137,7 +194,7 @@ export function Header() {
                   <Button variant="ghost" className="gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-slate-200 text-slate-700">
-                        {getInitials(user.email)}
+                        {getInitials(user.email ?? '')}
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden md:inline text-sm font-medium">

@@ -1,12 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Task } from '@/lib/types/quest';
+import { Task, TaskExtendedData } from '@/lib/types/quest';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import * as Icons from 'lucide-react';
+import {
+  DollarSign,
+  ChevronDown,
+  FileText,
+  Calendar,
+  Building2,
+  Star,
+  Camera,
+  CheckCircle,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface TaskDetailFormProps {
@@ -16,7 +25,7 @@ interface TaskDetailFormProps {
     cost?: number;
     memo?: string;
     date?: string;
-    vendorInfo?: Task['vendorInfo'];
+    vendorInfo?: TaskExtendedData['vendorInfo'];
     rating?: number;
     photos?: string[];
   }) => void;
@@ -25,14 +34,14 @@ interface TaskDetailFormProps {
 export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailFormProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [formData, setFormData] = useState({
-    cost: task.userCost?.toString() || '',
-    memo: task.userMemo || '',
-    date: task.completedDate || new Date().toISOString().split('T')[0],
-    vendorName: task.vendorInfo?.name || '',
-    vendorContact: task.vendorInfo?.contact || '',
-    vendorWebsite: task.vendorInfo?.website || '',
-    vendorAddress: task.vendorInfo?.address || '',
-    rating: task.rating || 0,
+    cost: '',
+    memo: '',
+    date: new Date().toISOString().split('T')[0],
+    vendorName: '',
+    vendorContact: '',
+    vendorWebsite: '',
+    vendorAddress: '',
+    rating: 0,
   });
 
   const handleSubmit = () => {
@@ -60,7 +69,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           className="transition-transform hover:scale-110"
           disabled={isCompleted}
         >
-          <Icons.Star
+          <Star
             className={`w-6 h-6 ${
               star <= formData.rating
                 ? 'fill-yellow-400 text-yellow-400'
@@ -77,7 +86,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
       {/* 기본 정보: 비용 */}
       <div>
         <Label htmlFor={`cost-${task.id}`} className="text-sm font-semibold flex items-center gap-2">
-          <Icons.DollarSign className="w-4 h-4" />
+          <DollarSign className="w-4 h-4" />
           실제 비용
         </Label>
         {(task.typicalCostMin || task.typicalCostMax) && (
@@ -104,7 +113,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
         onClick={() => setShowDetails(!showDetails)}
         className="w-full"
       >
-        <Icons.ChevronDown className={`w-4 h-4 mr-2 transition-transform ${showDetails ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 mr-2 transition-transform ${showDetails ? 'rotate-180' : ''}`} />
         {showDetails ? '상세 정보 접기' : '상세 정보 추가하기'}
       </Button>
 
@@ -119,7 +128,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           {/* 메모 */}
           <div>
             <Label htmlFor={`memo-${task.id}`} className="text-sm font-semibold flex items-center gap-2">
-              <Icons.FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
               메모
             </Label>
             <Textarea
@@ -135,7 +144,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           {/* 완료 날짜 */}
           <div>
             <Label htmlFor={`date-${task.id}`} className="text-sm font-semibold flex items-center gap-2">
-              <Icons.Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4" />
               완료 날짜
             </Label>
             <Input
@@ -151,7 +160,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           {/* 업체 정보 */}
           <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <h4 className="text-sm font-semibold flex items-center gap-2">
-              <Icons.Building2 className="w-4 h-4" />
+              <Building2 className="w-4 h-4" />
               업체 정보
             </h4>
             
@@ -216,7 +225,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           {/* 평점 */}
           <div>
             <Label className="text-sm font-semibold flex items-center gap-2 mb-2">
-              <Icons.Star className="w-4 h-4" />
+              <Star className="w-4 h-4" />
               만족도
             </Label>
             <StarRating />
@@ -225,7 +234,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           {/* 사진 (추후 구현) */}
           <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border-2 border-dashed border-blue-300 dark:border-blue-700">
             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-1">
-              <Icons.Camera className="w-4 h-4" />
+              <Camera className="w-4 h-4" />
               <span className="text-sm font-semibold">사진 첨부</span>
             </div>
             <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -242,7 +251,7 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
           className="w-full"
           size="lg"
         >
-          <Icons.CheckCircle className="w-5 h-5 mr-2" />
+          <CheckCircle className="w-5 h-5 mr-2" />
           작업 완료하기
         </Button>
       )}

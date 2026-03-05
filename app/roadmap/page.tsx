@@ -14,12 +14,20 @@ import {
   NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useQuestStore } from '@/lib/stores/quest-store';
+import { useQuestStore, calculateLevelProgress } from '@/lib/stores/quest-store';
 import QuestNode from '@/components/quest/quest-node';
 import { TaskModal } from '@/components/quest/task-modal';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Trophy, TrendingUp } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { RotateCcw, Trophy, TrendingUp, Lock, AlertTriangle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 
@@ -41,6 +49,8 @@ export default function RoadmapPage() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [lockedMessage, setLockedMessage] = useState<string | null>(null);
 
   // Initialize on mount
   useEffect(() => {
@@ -58,14 +68,28 @@ export default function RoadmapPage() {
   // Handle node click
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     const quest = node.data as unknown as Quest;
-    
+
     if (quest.status === 'locked') {
-      return; // Can't open locked quests
+      // 선행 퀘스트 이름을 찾아서 안내
+      const { quests } = useQuestStore.getState();
+      const prereqNames = quest.dependencies
+        .filter((depId: string) => !progress.completedQuestIds.includes(depId))
+        .map((depId: string) => {
+          const dep = quests.find((q: Quest) => q.id === depId);
+          return dep ? `"${dep.title}"` : depId;
+        });
+      const message = prereqNames.length > 0
+        ? `이 퀘스트를 시작하려면 ${prereqNames.join(', ')}을(를) 먼저 완료하세요.`
+        : '이 퀘스트는 아직 잠겨 있습니다.';
+      setLockedMessage(message);
+      // 3초 후 자동 닫힘
+      setTimeout(() => setLockedMessage(null), 3500);
+      return;
     }
-    
+
     setSelectedQuest(quest);
     setModalOpen(true);
-  }, []);
+  }, [progress.completedQuestIds]);
 
   // Handle node hover to highlight edges
   const onNodeMouseEnter = useCallback((event: React.MouseEvent, node: Node) => {
@@ -102,9 +126,12 @@ export default function RoadmapPage() {
   }, [setEdges]);
 
   const handleReset = useCallback(() => {
-    if (confirm('정말 모든 진행 상황을 초기화하시겠습니까?')) {
-      resetProgress();
-    }
+    setResetDialogOpen(true);
+  }, []);
+
+  const confirmReset = useCallback(() => {
+    resetProgress();
+    setResetDialogOpen(false);
   }, [resetProgress]);
 
   // Level up effect
@@ -136,15 +163,22 @@ export default function RoadmapPage() {
               <Trophy className="w-5 h-5 text-yellow-500" />
               <span className="font-bold text-lg">레벨 {progress.level}</span>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              XP: {progress.xp} / {progress.level * 500}
-            </div>
-            <div className="mt-2 w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all" 
-                style={{ width: `${(progress.xp % 500) / 5}%` }}
-              />
-            </div>
+            {(() => {
+              const lvlProgress = calculateLevelProgress(progress.xp);
+              return (
+                <>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    XP: {lvlProgress.currentLevelXp} / {lvlProgress.nextLevelXp}
+                  </div>
+                  <div className="mt-2 w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all"
+                      style={{ width: `${lvlProgress.percent}%` }}
+                    />
+                  </div>
+                </>
+              );
+            })()}
           </div>
 
           <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200 dark:border-gray-700">
@@ -217,6 +251,40 @@ export default function RoadmapPage() {
           />
         </ReactFlow>
       </div>
+
+      {/* 잠긴 퀘스트 클릭 시 토스트 알림 */}
+      {lockedMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-3 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl border border-gray-700 max-w-md">
+            <Lock className="w-5 h-5 text-amber-400 flex-shrink-0" />
+            <p className="text-sm">{lockedMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* 초기화 확인 모달 */}
+      <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="w-5 h-5" />
+              진행 상황 초기화
+            </DialogTitle>
+            <DialogDescription>
+              정말 모든 진행 상황을 초기화하시겠습니까? 완료한 퀘스트, XP, 예산 기록이 모두 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setResetDialogOpen(false)}>
+              취소
+            </Button>
+            <Button variant="destructive" onClick={confirmReset}>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              초기화
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Task Modal */}
       <TaskModal

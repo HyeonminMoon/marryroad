@@ -1,11 +1,60 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Quest, QuestProgress, QuestStatus, Task } from '../types/quest';
+import { Quest, QuestProgress, QuestStatus, Task, TaskExtendedData } from '../types/quest';
 import questsData from '../data/quests.json';
 import { Node, Edge } from '@xyflow/react';
 import dagre from 'dagre';
 
 const QUESTS = questsData as Quest[];
+
+/** Task 1개 완료 시 부여하는 기본 XP */
+const TASK_XP = 10;
+
+/**
+ * 레벨업에 필요한 누적 XP를 계산
+ * 레벨 1->2: 500, 2->3: 600, 3->4: 700, ...
+ * 즉 레벨 N에 도달하려면 sum(500 + 100*(i-1), i=1..N-1) 만큼의 누적 XP가 필요
+ */
+function calculateLevel(totalXp: number): number {
+  let level = 1;
+  let xpNeeded = 500; // 레벨 1->2 에 필요한 XP
+  let cumulativeXp = 0;
+
+  while (cumulativeXp + xpNeeded <= totalXp) {
+    cumulativeXp += xpNeeded;
+    level++;
+    xpNeeded = 500 + (level - 1) * 100; // 다음 레벨업에 필요한 추가 XP
+  }
+
+  return level;
+}
+
+/**
+ * XP 바 표시를 위한 레벨 진행률 계산
+ * @returns { currentLevelXp: 현재 레벨에서 모은 XP, nextLevelXp: 다음 레벨까지 필요한 XP, percent: 0-100 }
+ */
+export function calculateLevelProgress(totalXp: number): {
+  currentLevelXp: number;
+  nextLevelXp: number;
+  percent: number;
+} {
+  let level = 1;
+  let xpNeeded = 500;
+  let cumulativeXp = 0;
+
+  while (cumulativeXp + xpNeeded <= totalXp) {
+    cumulativeXp += xpNeeded;
+    level++;
+    xpNeeded = 500 + (level - 1) * 100;
+  }
+
+  const currentLevelXp = totalXp - cumulativeXp;
+  return {
+    currentLevelXp,
+    nextLevelXp: xpNeeded,
+    percent: Math.round((currentLevelXp / xpNeeded) * 100),
+  };
+}
 
 interface QuestStore {
   // Data
@@ -16,9 +65,10 @@ interface QuestStore {
   
   // Actions
   initialize: () => void;
-  completeTask: (questId: string, taskId: string, cost?: number) => void;
+  completeTask: (questId: string, taskId: string, cost?: number, extendedData?: TaskExtendedData) => void;
   completeQuest: (questId: string) => void;
   resetProgress: () => void;
+  setBudgetTotal: (total: number) => void;
   
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -31,25 +81,50 @@ interface QuestStore {
 
 /**
  * Calculate if a quest is unlocked based on dependencies
+ * Now supports 'in-progress' status when some tasks are completed
  */
 function calculateQuestStatus(
-  questId: string, 
-  completedQuestIds: string[], 
-  quests: Quest[]
+  questId: string,
+  completedQuestIds: string[],
+  quests: Quest[],
+  taskProgress?: QuestProgress['taskProgress']
 ): QuestStatus {
   const quest = quests.find(q => q.id === questId);
   if (!quest) return 'locked';
-  
+
   // Check if all dependencies are completed
-  const allDependenciesCompleted = quest.dependencies.every(depId => 
+  const allDependenciesCompleted = quest.dependencies.every(depId =>
     completedQuestIds.includes(depId)
   );
-  
+
   if (!allDependenciesCompleted) return 'locked';
-  
+
   if (completedQuestIds.includes(questId)) return 'completed';
-  
+
+  // Check if any task has been completed -> in-progress
+  if (taskProgress) {
+    const questTaskProgress = taskProgress[questId];
+    if (questTaskProgress && questTaskProgress.completedTaskIds.length > 0) {
+      return 'in-progress';
+    }
+  }
+
   return 'available';
+}
+
+/**
+ * Edge 색상을 source Quest ID 기준으로 Phase별로 결정
+ * @param sourceId - 의존성의 source Quest ID
+ * @returns CSS 색상 코드
+ */
+function getEdgeColor(sourceId: string): string {
+  const source = parseInt(sourceId, 10);
+
+  if (source <= 2) return '#6366F1';   // 기획 단계
+  if (source <= 6) return '#8B5CF6';   // 핵심 계약
+  if (source === 7) return '#EC4899';  // 초대 준비
+  if (source <= 10) return '#10B981';  // 생활 준비
+  return '#F59E0B';                     // 본식 이후
 }
 
 /**
@@ -137,7 +212,7 @@ export const useQuestStore = create<QuestStore>()(
 
         // Map Quests with Dagre positions and calculated status
         const initialQuests: Quest[] = QUESTS.map(quest => {
-          const status = calculateQuestStatus(quest.id, progress.completedQuestIds, QUESTS);
+          const status = calculateQuestStatus(quest.id, progress.completedQuestIds, QUESTS, progress.taskProgress);
           const progressPercent = calculateQuestProgressPercent(quest.id, progress.taskProgress);
           
           const nodeWithPos = g.node(quest.id);
@@ -156,53 +231,97 @@ export const useQuestStore = create<QuestStore>()(
         set({ quests: initialQuests });
       },
 
-      completeTask: (questId: string, taskId: string, cost?: number) => {
+      completeTask: (questId: string, taskId: string, cost?: number, extendedData?: TaskExtendedData) => {
         set(state => {
-          const newProgress = { ...state.progress };
-          
-          // Initialize quest progress if needed
-          if (!newProgress.taskProgress[questId]) {
-            newProgress.taskProgress[questId] = {
-              completedTaskIds: [],
-              taskCosts: {},
+          // Deep-copy progress to ensure immutability
+          const prevQuestProgress = state.progress.taskProgress[questId];
+          const existingExtData = prevQuestProgress?.taskExtendedData ?? {};
+
+          const currentQuestProgress = prevQuestProgress
+            ? {
+                completedTaskIds: [...prevQuestProgress.completedTaskIds],
+                taskCosts: { ...prevQuestProgress.taskCosts },
+                taskExtendedData: { ...existingExtData },
+              }
+            : {
+                completedTaskIds: [] as string[],
+                taskCosts: {} as Record<string, number>,
+                taskExtendedData: {} as Record<string, TaskExtendedData>,
+              };
+
+          const isAlreadyCompleted = currentQuestProgress.completedTaskIds.includes(taskId);
+          let xpDelta = 0;
+
+          // Add task to completed list (prevent duplicates)
+          if (!isAlreadyCompleted) {
+            currentQuestProgress.completedTaskIds = [
+              ...currentQuestProgress.completedTaskIds,
+              taskId,
+            ];
+            xpDelta += TASK_XP;
+          }
+
+          // Record cost if provided, with proper spent recalculation
+          let spentDelta = 0;
+          if (cost !== undefined) {
+            const previousCost = currentQuestProgress.taskCosts[taskId] || 0;
+            currentQuestProgress.taskCosts = {
+              ...currentQuestProgress.taskCosts,
+              [taskId]: cost,
+            };
+            spentDelta = cost - previousCost;
+          }
+
+          // Store extended data (memo, date, vendor, rating, photos)
+          if (extendedData) {
+            currentQuestProgress.taskExtendedData = {
+              ...currentQuestProgress.taskExtendedData,
+              [taskId]: {
+                ...(currentQuestProgress.taskExtendedData[taskId] ?? {}),
+                ...extendedData,
+              },
             };
           }
-          
-          // Add task to completed list
-          if (!newProgress.taskProgress[questId].completedTaskIds.includes(taskId)) {
-            newProgress.taskProgress[questId].completedTaskIds.push(taskId);
-          }
-          
-          // Record cost if provided
-          if (cost !== undefined) {
-            newProgress.taskProgress[questId].taskCosts[taskId] = cost;
-            newProgress.budget.spent += cost;
-          }
-          
+
+          // Build new taskProgress immutably
+          const newTaskProgress = {
+            ...state.progress.taskProgress,
+            [questId]: currentQuestProgress,
+          };
+
           // Check if quest is fully completed
+          let newCompletedQuestIds = [...state.progress.completedQuestIds];
           const quest = QUESTS.find(q => q.id === questId);
           if (quest) {
-            const allTasksCompleted = quest.tasks.every(task => 
-              newProgress.taskProgress[questId].completedTaskIds.includes(task.id)
+            const allTasksCompleted = quest.tasks.every(task =>
+              currentQuestProgress.completedTaskIds.includes(task.id)
             );
-            
-            if (allTasksCompleted && !newProgress.completedQuestIds.includes(questId)) {
-              newProgress.completedQuestIds.push(questId);
-              newProgress.xp += quest.xp;
-              
-              // Level up logic
-              const newLevel = Math.floor(newProgress.xp / 500) + 1;
-              newProgress.level = newLevel;
+
+            if (allTasksCompleted && !newCompletedQuestIds.includes(questId)) {
+              newCompletedQuestIds = [...newCompletedQuestIds, questId];
+              xpDelta += quest.xp; // Quest completion bonus XP
             }
           }
-          
+
+          const newXp = state.progress.xp + xpDelta;
+          const newProgress: QuestProgress = {
+            completedQuestIds: newCompletedQuestIds,
+            taskProgress: newTaskProgress,
+            xp: newXp,
+            level: calculateLevel(newXp),
+            budget: {
+              total: state.progress.budget.total,
+              spent: state.progress.budget.spent + spentDelta,
+            },
+          };
+
           // Recalculate quest statuses
           const updatedQuests = state.quests.map(q => ({
             ...q,
-            status: calculateQuestStatus(q.id, newProgress.completedQuestIds, QUESTS),
-            progress: calculateQuestProgressPercent(q.id, newProgress.taskProgress),
+            status: calculateQuestStatus(q.id, newCompletedQuestIds, QUESTS, newTaskProgress),
+            progress: calculateQuestProgressPercent(q.id, newTaskProgress),
           }));
-          
+
           return {
             progress: newProgress,
             quests: updatedQuests,
@@ -221,6 +340,7 @@ export const useQuestStore = create<QuestStore>()(
       },
 
       resetProgress: () => {
+        const currentBudgetTotal = get().progress.budget.total;
         set({
           progress: {
             completedQuestIds: [],
@@ -228,19 +348,31 @@ export const useQuestStore = create<QuestStore>()(
             xp: 0,
             level: 1,
             budget: {
-              total: 30000000,
+              total: currentBudgetTotal, // Preserve user-set budget total
               spent: 0,
             },
           },
         });
-        
+
         // Re-initialize to reset statuses
         get().initialize();
       },
 
+      setBudgetTotal: (total: number) => {
+        set(state => ({
+          progress: {
+            ...state.progress,
+            budget: {
+              ...state.progress.budget,
+              total,
+            },
+          },
+        }));
+      },
+
       getQuestStatus: (questId: string) => {
         const { progress } = get();
-        return calculateQuestStatus(questId, progress.completedQuestIds, QUESTS);
+        return calculateQuestStatus(questId, progress.completedQuestIds, QUESTS, progress.taskProgress);
       },
 
       getQuestProgress: (questId: string) => {
@@ -261,30 +393,13 @@ export const useQuestStore = create<QuestStore>()(
       getFlowEdges: () => {
         const edges: Edge[] = [];
         const questMap = new Map(QUESTS.map(q => [q.id, q]));
-        
+
         QUESTS.forEach(quest => {
-          quest.dependencies.forEach((depId, index) => {
+          quest.dependencies.forEach((depId) => {
             const sourceQuest = questMap.get(depId);
             if (!sourceQuest) return;
-            
-            // Phase별 색상 구분
-            const getEdgeColor = (sourceId: string, targetId: string) => {
-              const source = parseInt(sourceId);
-              const target = parseInt(targetId);
-              
-              // 기획 단계
-              if (source <= 2) return '#6366F1';
-              // 핵심 계약
-              if (source <= 6) return '#8B5CF6';
-              // 초대 준비
-              if (source === 7) return '#EC4899';
-              // 생활 준비
-              if (source <= 10) return '#10B981';
-              // 본식 이후
-              return '#F59E0B';
-            };
-            
-            const edgeColor = getEdgeColor(depId, quest.id);
+
+            const edgeColor = getEdgeColor(depId);
             
             edges.push({
               id: `${depId}-${quest.id}`,
