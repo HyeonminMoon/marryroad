@@ -22,6 +22,10 @@ export interface Task {
   tags: string[];
   typicalCostMin: number | null;
   typicalCostMax: number | null;
+  // Task 간 종속성 (같은 Quest 내 또는 다른 Quest의 Task ID)
+  taskDependencies?: string[];
+  // 종속성 경고 메시지 (이 Task 시작 전 확인해야 할 사항)
+  prerequisiteNote?: string;
 }
 
 export interface Quest {

@@ -148,7 +148,7 @@
           {
             "text": "우선순위별 예산 배분표 작성",
             "isOptional": false,
-            "tips": ""
+            "tips": "보통 예식장 30%, 스드메 20%, 예물/예단 15%, 신혼집/혼수 25%, 허니문 10% 비율이 일반적. 본인 우선순위에 따라 조정하세요."
           }
         ],
         "isOptional": false,
@@ -420,7 +420,8 @@
           "예절"
         ],
         "typicalCostMin": 40000,
-        "typicalCostMax": 100000
+        "typicalCostMax": 100000,
+        "prerequisiteNote": "양가 민감한 주제(예단, 비용 분담 등)는 상견례 전에 커플끼리 미리 조율하세요."
       }
     ]
   },
@@ -526,7 +527,11 @@
           "업체"
         ],
         "typicalCostMin": 3000000,
-        "typicalCostMax": 7000000
+        "typicalCostMax": 7000000,
+        "prerequisiteNote": "웨딩홀 확정 후 플래너를 선정하세요. 홀에 따라 제휴 플래너가 다릅니다.",
+        "taskDependencies": [
+          "4.4.1"
+        ]
       },
       {
         "id": "3.3.1",
@@ -561,7 +566,7 @@
           {
             "text": "예식 형태 결정",
             "isOptional": false,
-            "tips": ""
+            "tips": "동시예식: 고급스러운 분위기, 비용 높음 | 분리예식: 가성비 좋음, 하객 관리 편리 | 야외예식: 분위기 최고지만 날씨 변수, 우천 대비 필수 | 스몰웨딩: 소규모 50인 이하, 개인적이지만 준비할 게 의외로 많음"
           }
         ],
         "isOptional": false,
@@ -755,7 +760,7 @@
           {
             "text": "웨딩홀별 상세 견적 비교표 작성",
             "isOptional": false,
-            "tips": ""
+            "tips": "반드시 부가세/봉사료 포함 최종 금액으로 비교하세요. 식대는 1인당 6~8만원이 일반적. 보증인원 미달 시 차액 부담 조건, 시간 초과 추가금도 확인. 주말 점심(골든타임)은 대관료가 2배 이상 차이날 수 있습니다."
           }
         ],
         "isOptional": false,
@@ -793,7 +798,11 @@
           "장소"
         ],
         "typicalCostMin": 2000000,
-        "typicalCostMax": 5000000
+        "typicalCostMax": 5000000,
+        "prerequisiteNote": "예식 날짜가 확정되어야 계약할 수 있습니다. 택일/날짜 조율을 먼저 완료하세요.",
+        "taskDependencies": [
+          "1.1.2"
+        ]
       }
     ]
   },
@@ -957,12 +966,12 @@
           {
             "text": "후보 스튜디오 3~5곳 리서치",
             "isOptional": false,
-            "tips": "플래너 제휴 리스트 확인 / 인스타/카페 후기 및 샘플 확인 / 참고자료: `[스튜디오 비교표 템플릿]`"
+            "tips": "플래너 제휴 리스트 확인 / 인스타/카페 후기 및 샘플 확인 / 보정 스타일(자연 vs 과보정)이 본인 취향에 맞는지 확인. 기본 컷 수가 적고 추가 비용으로 끌어올리는 구조가 많으니 최종 견적 기준으로 비교하세요."
           },
           {
             "text": "스튜디오 상담/방문",
             "isOptional": false,
-            "tips": "샘플북 확인 (보정 퀄리티, 포즈, 분위기) / 촬영 컷 수 (원본/보정본 각각 몇 장) / 촬영 시간 및 의상 수 / 추가금 항목 전체 확인"
+            "tips": "샘플북 확인 (보정 퀄리티, 포즈, 분위기) / 촬영 컷 수 (원본/보정본 각각 몇 장) / 촬영 시간 및 의상 수 / 추가금 항목 전체 확인 / 원본 제공 여부, 앨범 페이지 추가 비용(장당 약 3만원), 촬영 시간 초과 추가금을 반드시 확인하세요."
           }
         ],
         "isOptional": false,
@@ -972,7 +981,11 @@
           "사진"
         ],
         "typicalCostMin": 80000,
-        "typicalCostMax": 230000
+        "typicalCostMax": 230000,
+        "prerequisiteNote": "플래너가 있다면 제휴 스튜디오를 먼저 확인하세요. 제휴 할인을 받을 수 있습니다.",
+        "taskDependencies": [
+          "3.2.3"
+        ]
       },
       {
         "id": "5.2.3",
@@ -1018,7 +1031,11 @@
           "사진"
         ],
         "typicalCostMin": 80000,
-        "typicalCostMax": 230000
+        "typicalCostMax": 230000,
+        "prerequisiteNote": "웨딩링(반지)을 끼고 촬영하려면 반지가 미리 준비되어야 합니다. 맞춤 제작 시 4~8주 소요.",
+        "taskDependencies": [
+          "9.2.2"
+        ]
       },
       {
         "id": "5.3.2",
@@ -1041,7 +1058,11 @@
           "사진"
         ],
         "typicalCostMin": 80000,
-        "typicalCostMax": 230000
+        "typicalCostMax": 230000,
+        "prerequisiteNote": "웨딩링(반지)을 끼고 촬영하려면 반지가 미리 준비되어야 합니다. 맞춤 제작 시 4~8주 소요.",
+        "taskDependencies": [
+          "9.2.2"
+        ]
       },
       {
         "id": "5.4.1",
@@ -1064,7 +1085,11 @@
           "사진"
         ],
         "typicalCostMin": 80000,
-        "typicalCostMax": 230000
+        "typicalCostMax": 230000,
+        "prerequisiteNote": "스튜디오 촬영 완료 후 진행합니다. 보통 촬영 후 1~2주 내 셀렉 일정이 잡힙니다.",
+        "taskDependencies": [
+          "5.3.1"
+        ]
       },
       {
         "id": "5.4.2",
@@ -1087,7 +1112,11 @@
           "사진"
         ],
         "typicalCostMin": 80000,
-        "typicalCostMax": 230000
+        "typicalCostMax": 230000,
+        "prerequisiteNote": "셀렉 완료 후 원본 파일 구매 여부를 결정하세요. 사설 보정 시 원본이 필요합니다.",
+        "taskDependencies": [
+          "5.4.1"
+        ]
       },
       {
         "id": "5.4.3",
@@ -1271,7 +1300,11 @@
           "신부"
         ],
         "typicalCostMin": 90000,
-        "typicalCostMax": 280000
+        "typicalCostMax": 280000,
+        "prerequisiteNote": "플래너가 있다면 제휴 드레스 샵을 먼저 확인하세요. 제휴 할인을 받을 수 있습니다.",
+        "taskDependencies": [
+          "3.2.3"
+        ]
       },
       {
         "id": "6.3.1",
@@ -1340,7 +1373,11 @@
           "신부"
         ],
         "typicalCostMin": 90000,
-        "typicalCostMax": 280000
+        "typicalCostMax": 280000,
+        "prerequisiteNote": "체형 관리(다이어트/운동)와 병행하되, 최종 가봉은 촬영 2~3주 전에 진행하세요.",
+        "taskDependencies": [
+          "16.2.1"
+        ]
       },
       {
         "id": "6.3.4",
@@ -1363,7 +1400,11 @@
           "신부"
         ],
         "typicalCostMin": 90000,
-        "typicalCostMax": 280000
+        "typicalCostMax": 280000,
+        "prerequisiteNote": "본식 드레스를 먼저 결정한 후 촬영용 드레스를 선택하세요.",
+        "taskDependencies": [
+          "6.3.1"
+        ]
       },
       {
         "id": "7.1.1",
@@ -1501,7 +1542,11 @@
           "신부"
         ],
         "typicalCostMin": 500000,
-        "typicalCostMax": 1500000
+        "typicalCostMax": 1500000,
+        "prerequisiteNote": "플래너가 있다면 제휴 메이크업 업체를 먼저 확인하세요.",
+        "taskDependencies": [
+          "3.2.3"
+        ]
       },
       {
         "id": "7.3.3",
@@ -1661,7 +1706,8 @@
           "신랑"
         ],
         "typicalCostMin": 500000,
-        "typicalCostMax": 2000000
+        "typicalCostMax": 2000000,
+        "prerequisiteNote": "원단과 색상을 미리 결정해두면 매장 방문 시 효율적으로 진행할 수 있습니다."
       },
       {
         "id": "8.3.2",
@@ -1918,7 +1964,7 @@
           {
             "text": "반지 매장 3곳 이상 방문",
             "isOptional": false,
-            "tips": "디자인 선택 (심플 vs 스톤 세팅 vs 각인) / 사이즈 체크: **여러 번 껴보고 신중하게** (컨디션에 따라 달라짐) / 제작 기간 확인 (보통 4~8주)"
+            "tips": "디자인 선택 (심플 vs 스톤 세팅 vs 각인) / 사이즈 체크: **여러 번 껴보고 신중하게** (컨디션에 따라 달라짐) / 제작 기간 확인 (보통 4~8주) / ⚠️ 웨딩 촬영 전까지 반지가 도착해야 합니다. 맞춤 제작 시 4~8주 소요되므로 촬영 일정 역산하여 주문하세요."
           }
         ],
         "isOptional": false,
@@ -1928,7 +1974,11 @@
           "양가"
         ],
         "typicalCostMin": 1000000,
-        "typicalCostMax": 5000000
+        "typicalCostMax": 5000000,
+        "prerequisiteNote": "반지 사이즈를 먼저 측정한 후 주문하세요. 맞춤 제작 시 4~8주 소요됩니다.",
+        "taskDependencies": [
+          "9.2.1"
+        ]
       },
       {
         "id": "9.2.3",
@@ -2031,7 +2081,8 @@
     "color": "#EC4899",
     "xp": 100,
     "dependencies": [
-      "3"
+      "3",
+      "4"
     ],
     "tasks": [
       {
@@ -2120,7 +2171,12 @@
           "하객"
         ],
         "typicalCostMin": 100000,
-        "typicalCostMax": 100000
+        "typicalCostMax": 100000,
+        "prerequisiteNote": "스튜디오 촬영 후 보정본 사진이 필요합니다. 사진 셀렉/보정 완료 후 진행하세요.",
+        "taskDependencies": [
+          "5.4.1",
+          "5.4.2"
+        ]
       },
       {
         "id": "14.2.3",
@@ -2142,7 +2198,12 @@
           "하객"
         ],
         "typicalCostMin": 100000,
-        "typicalCostMax": 300000
+        "typicalCostMax": 300000,
+        "prerequisiteNote": "청첩장에 들어갈 스튜디오 사진이 필요합니다. 사진 보정 완료 후 진행하세요.",
+        "taskDependencies": [
+          "5.4.1",
+          "5.4.2"
+        ]
       },
       {
         "id": "14.3.1",
@@ -2208,7 +2269,11 @@
           "하객"
         ],
         "typicalCostMin": 20000,
-        "typicalCostMax": 40000
+        "typicalCostMax": 40000,
+        "prerequisiteNote": "모바일 청첩장이 완성되어야 모임을 시작할 수 있습니다.",
+        "taskDependencies": [
+          "14.2.2"
+        ]
       }
     ]
   },
@@ -2308,7 +2373,11 @@
           "부동산"
         ],
         "typicalCostMin": null,
-        "typicalCostMax": null
+        "typicalCostMax": null,
+        "prerequisiteNote": "지역과 평수/구조를 먼저 결정한 후 매물을 탐색하세요.",
+        "taskDependencies": [
+          "11.1.2"
+        ]
       },
       {
         "id": "11.2.2",
@@ -2466,7 +2535,11 @@
           "가구"
         ],
         "typicalCostMin": 720000,
-        "typicalCostMax": 2860000
+        "typicalCostMax": 2860000,
+        "prerequisiteNote": "신혼집 계약 후 빌트인 가전을 확인하고, 집 실측 후 사이즈에 맞는 가전을 리스트업하세요.",
+        "taskDependencies": [
+          "11.2.2"
+        ]
       },
       {
         "id": "13.2.1",
@@ -2527,7 +2600,11 @@
           "가구"
         ],
         "typicalCostMin": 1000000,
-        "typicalCostMax": 3000000
+        "typicalCostMax": 3000000,
+        "prerequisiteNote": "가전 품목 리스트를 확정한 후 구매하세요. VIP 실적 달성 시 가구 할인 연계도 가능합니다.",
+        "taskDependencies": [
+          "13.1.1"
+        ]
       },
       {
         "id": "13.2.3",
@@ -2606,7 +2683,11 @@
           "가구"
         ],
         "typicalCostMin": 300000,
-        "typicalCostMax": 1500000
+        "typicalCostMax": 1500000,
+        "prerequisiteNote": "가전 매장 VIP 실적이 있으면 가구 할인을 받을 수 있습니다. 가전 구매 후 진행을 권장합니다.",
+        "taskDependencies": [
+          "13.2.2"
+        ]
       },
       {
         "id": "13.3.3",
@@ -2634,7 +2715,11 @@
           "가구"
         ],
         "typicalCostMin": 100000,
-        "typicalCostMax": 300000
+        "typicalCostMax": 300000,
+        "prerequisiteNote": "가구/가전 구매 시 받은 사은품을 확인한 후, 부족한 것만 추가 구매하세요.",
+        "taskDependencies": [
+          "13.3.2"
+        ]
       }
     ]
   },
@@ -2717,7 +2802,11 @@
           "의상"
         ],
         "typicalCostMin": 150000,
-        "typicalCostMax": 400000
+        "typicalCostMax": 400000,
+        "prerequisiteNote": "혼주 메이크업 업체를 먼저 선정한 후 예약하세요. 본식 날짜 기준 2~3개월 전 예약 권장.",
+        "taskDependencies": [
+          "10.1.2"
+        ]
       },
       {
         "id": "10.2.2",
@@ -2801,7 +2890,11 @@
           "진행"
         ],
         "typicalCostMin": 800000,
-        "typicalCostMax": 1500000
+        "typicalCostMax": 1500000,
+        "prerequisiteNote": "예식 날짜 확정 후 빠르게 예약하세요. 인기 업체는 마감이 빠릅니다.",
+        "taskDependencies": [
+          "4.4.1"
+        ]
       },
       {
         "id": "15.2.1",
@@ -2941,7 +3034,12 @@
           "진행"
         ],
         "typicalCostMin": 100000,
-        "typicalCostMax": 300000
+        "typicalCostMax": 300000,
+        "prerequisiteNote": "드레스 색감/스타일에 맞춰 부케를 결정하세요. 드레스 최종 확정 후 진행 권장.",
+        "taskDependencies": [
+          "6.3.3",
+          "6.3.4"
+        ]
       },
       {
         "id": "15.3.2",
@@ -3025,7 +3123,11 @@
           "진행"
         ],
         "typicalCostMin": 20000,
-        "typicalCostMax": 50000
+        "typicalCostMax": 50000,
+        "prerequisiteNote": "부케 디자인을 먼저 결정한 후 부토니아/코사지를 함께 예약하세요.",
+        "taskDependencies": [
+          "15.3.1"
+        ]
       },
       {
         "id": "15.3.5",
@@ -3165,7 +3267,7 @@
           {
             "text": "국내 vs 해외 결정",
             "isOptional": false,
-            "tips": "해외: 유럽/동남아/일본/몰디브/하와이 등 / 국내: 제주/강원 등 / 고려: 예산, 휴가 기간, 여권 유효기간"
+            "tips": "국내: 제주/강원 리조트, 이동 편리, 짧은 일정 가능 | 해외 동남아: 가성비 최고, 비행 4~6시간 | 해외 유럽: 로맨틱하지만 비행 11시간+, 시차 큰 부담 | 해외 미주/오세아니아: 자연경관 좋지만 장거리. 결혼식 직후 피로도를 고려하세요."
           },
           {
             "text": "여행 기간 결정",
@@ -3264,6 +3366,21 @@
             "text": "여행 준비물 체크",
             "isOptional": false,
             "tips": "여권 유효기간 확인 (최소 6개월 이상) / 비자 필요 여부 / 여행자 보험 / 환전 / 짐 리스트 작성"
+          },
+          {
+            "text": "여권 유효기간 확인 (출국일 기준 6개월 이상)",
+            "isOptional": false,
+            "tips": "만료 임박 시 갱신에 2~4주 소요. 가장 먼저 확인하세요."
+          },
+          {
+            "text": "비자 필요 여부 확인",
+            "isOptional": false,
+            "tips": "미국(ESTA), 호주(ETA), 캐나다(eTA) 등 무비자가 아닌 국가는 사전 신청 필요. 동남아는 대부분 무비자."
+          },
+          {
+            "text": "예방접종 확인 (열대 지역)",
+            "isOptional": true,
+            "tips": "동남아/아프리카 등은 A형간염, 황열 예방접종 필요. 항체 형성까지 2~4주이므로 최소 한 달 전 접종."
           }
         ],
         "isOptional": false,
@@ -3450,7 +3567,11 @@
           "재정"
         ],
         "typicalCostMin": null,
-        "typicalCostMax": null
+        "typicalCostMax": null,
+        "prerequisiteNote": "예식 당일 축의금 관리자를 미리 지정하고, 예식 후 빠르게 정리하세요.",
+        "taskDependencies": [
+          "15.4.1"
+        ]
       },
       {
         "id": "19.3.1",
@@ -3473,7 +3594,11 @@
           "재정"
         ],
         "typicalCostMin": null,
-        "typicalCostMax": null
+        "typicalCostMax": null,
+        "prerequisiteNote": "축의금 정리가 완료된 후 감사 인사를 발송하세요.",
+        "taskDependencies": [
+          "19.2.1"
+        ]
       },
       {
         "id": "19.4.1",
