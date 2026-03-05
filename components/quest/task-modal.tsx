@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import {
   CheckCircle,
   AlertCircle,
+  AlertTriangle,
   Circle,
   CircleDot,
   Edit3,
@@ -169,8 +170,14 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
                               </span>
                             )}
                           </div>
+                          {task.prerequisiteNote && (
+                            <div className="flex items-start gap-2 mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+                              <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                              <p className="text-xs text-amber-700 dark:text-amber-300">{task.prerequisiteNote}</p>
+                            </div>
+                          )}
                         </div>
-                        
+
                         {!isCompleted && !isExpanded && (
                           <Button
                             size="sm"
