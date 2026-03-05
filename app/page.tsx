@@ -37,7 +37,7 @@ export default function Home() {
           
           <p className="text-lg text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
             137개의 복잡한 결혼 준비 과정을 19개의 퀘스트로 재구성했습니다. 
-            종속성을 이해하고, 당신만의 속도로 진행하세요.
+            한번에 여기서 모든 일을 차례대로, 당신의 속도대로 진행하세요.
           </p>
 
           <div className="flex gap-4 justify-center">
