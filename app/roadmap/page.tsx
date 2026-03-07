@@ -15,9 +15,15 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { RotateCcw, Trophy, AlertTriangle, Lock, Pencil, Check } from 'lucide-react';
+import { RotateCcw, Trophy, AlertTriangle, Lock, Pencil, Check, Map, Route } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
+import dynamic from 'next/dynamic';
+
+const FullMapView = dynamic(
+  () => import('@/components/quest/full-map-view').then(mod => ({ default: mod.FullMapView })),
+  { ssr: false, loading: () => <div className="flex items-center justify-center h-96 text-gray-400">맵 로딩중...</div> }
+);
 
 export default function RoadmapPage() {
   const {
@@ -33,6 +39,7 @@ export default function RoadmapPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [lockedMessage, setLockedMessage] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'path' | 'map'>('path');
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
 
@@ -208,10 +215,34 @@ export default function RoadmapPage() {
         </div>
       </div>
 
-      {/* 메인: Today 섹션 + Quest Path */}
-      <div className="max-w-lg mx-auto px-4 py-6">
-        {/* 초기화 버튼 */}
-        <div className="flex justify-end mb-4">
+      {/* 메인: Today 섹션 + Quest Path / Full Map */}
+      <div className={`mx-auto px-4 py-6 ${viewMode === 'path' ? 'max-w-lg' : 'max-w-6xl'}`}>
+        {/* 뷰 전환 + 초기화 */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 gap-1">
+            <button
+              onClick={() => setViewMode('path')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                viewMode === 'path'
+                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
+              <Route className="w-3.5 h-3.5" />
+              경로
+            </button>
+            <button
+              onClick={() => setViewMode('map')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                viewMode === 'map'
+                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
+              <Map className="w-3.5 h-3.5" />
+              전체 맵
+            </button>
+          </div>
           <Button
             variant="outline"
             size="sm"
@@ -223,22 +254,29 @@ export default function RoadmapPage() {
           </Button>
         </div>
 
-        {/* Today Section */}
-        <TodaySection
-          quests={quests}
-          progress={progress}
-          onTaskQuickComplete={onTaskQuickComplete}
-          onQuestClick={onQuestClick}
-        />
+        {viewMode === 'path' ? (
+          <>
+            {/* Today Section */}
+            <TodaySection
+              quests={quests}
+              progress={progress}
+              onTaskQuickComplete={onTaskQuickComplete}
+              onQuestClick={onQuestClick}
+            />
 
-        {/* Quest Path */}
-        <div className="relative" style={{ minHeight: '60vh' }}>
-          <QuestPath
-            quests={quests}
-            progress={progress}
-            onQuestClick={onQuestClick}
-          />
-        </div>
+            {/* Quest Path */}
+            <div className="relative" style={{ minHeight: '60vh' }}>
+              <QuestPath
+                quests={quests}
+                progress={progress}
+                onQuestClick={onQuestClick}
+              />
+            </div>
+          </>
+        ) : (
+          /* Full Map View (ReactFlow DAG) */
+          <FullMapView onQuestClick={onQuestClick} />
+        )}
       </div>
 
       {/* 잠긴 퀘스트 클릭 시 토스트 알림 */}
