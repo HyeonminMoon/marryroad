@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef, useMemo } from 'react';
 import { useQuestStore, calculateLevelProgress } from '@/lib/stores/quest-store';
 import QuestPath from '@/components/quest/quest-path';
 import { TodaySection } from '@/components/quest/today-section';
 import { TaskModal } from '@/components/quest/task-modal';
 import { CelebrationToast } from '@/components/quest/celebration-toast';
+import { AchievementGrid } from '@/components/quest/achievement-grid';
+import { AchievementToast } from '@/components/quest/achievement-toast';
+import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,11 +53,43 @@ export default function RoadmapPage() {
     taskId: string;
     taskTitle: string;
   }>({ visible: false, questId: '', taskId: '', taskTitle: '' });
+  const [achievementToast, setAchievementToast] = useState<AchievementDef | null>(null);
+  const achievementQueueRef = useRef<AchievementDef[]>([]);
 
   // Initialize on mount
   useEffect(() => {
     initialize();
   }, [initialize]);
+
+  // Achievement detection
+  const unlockedAchievementIds = useMemo(
+    () => getUnlockedAchievements(progress, quests),
+    [progress, quests]
+  );
+
+  useEffect(() => {
+    if (quests.length === 0) return;
+
+    const seenKey = 'marryroad-seen-achievements';
+    const seen: string[] = JSON.parse(localStorage.getItem(seenKey) || '[]');
+    const newAchievements = getNewAchievements(unlockedAchievementIds, seen);
+
+    if (newAchievements.length > 0) {
+      localStorage.setItem(seenKey, JSON.stringify(unlockedAchievementIds));
+
+      // First-visit flood prevention: if 3+ new achievements at once,
+      // only show the highest-tier one to avoid toast spam
+      if (newAchievements.length >= 3 && seen.length === 0) {
+        const best = newAchievements.sort((a, b) => b.xp - a.xp)[0];
+        if (best && !achievementToast) setAchievementToast(best);
+      } else {
+        achievementQueueRef.current = [...achievementQueueRef.current, ...newAchievements];
+        if (!achievementToast) {
+          setAchievementToast(achievementQueueRef.current.shift() ?? null);
+        }
+      }
+    }
+  }, [unlockedAchievementIds, quests.length, achievementToast]);
 
   // Handle quest click
   const onQuestClick = useCallback(
@@ -276,6 +311,11 @@ export default function RoadmapPage() {
           </Button>
         </div>
 
+        {/* Achievement Grid */}
+        <div className={`mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
+          <AchievementGrid unlockedIds={unlockedAchievementIds} />
+        </div>
+
         {viewMode === 'map' ? (
           <>
             {/* Today Section */}
@@ -358,6 +398,15 @@ export default function RoadmapPage() {
         onClose={() => {
           setModalOpen(false);
           setSelectedQuest(null);
+        }}
+      />
+
+      {/* Achievement Toast */}
+      <AchievementToast
+        achievement={achievementToast}
+        onDismiss={() => {
+          const next = achievementQueueRef.current.shift();
+          setAchievementToast(next ?? null);
         }}
       />
 
