@@ -370,8 +370,6 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
     <div
       ref={scrollRef}
       className="relative w-full h-full overflow-y-auto overflow-x-hidden overscroll-y-contain
-        bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50
-        dark:from-gray-900 dark:via-gray-900 dark:to-gray-800
         -webkit-overflow-scrolling-touch"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >

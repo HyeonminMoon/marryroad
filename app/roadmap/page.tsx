@@ -39,7 +39,7 @@ export default function RoadmapPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [lockedMessage, setLockedMessage] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'path' | 'map'>('path');
+  const [viewMode, setViewMode] = useState<'path' | 'map'>('map');
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
 
@@ -143,7 +143,7 @@ export default function RoadmapPage() {
 
       {/* 상단: 진행률 바 + 레벨/XP */}
       <div className="sticky top-16 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-lg mx-auto px-4 py-3">
+        <div className={`mx-auto px-4 py-3 ${viewMode === 'path' ? 'max-w-lg' : 'max-w-6xl'}`}>
           {/* 레벨 뱃지 + XP + 예산 */}
           <div className="flex items-center justify-between mb-2">
             {/* 레벨 뱃지 */}
@@ -221,17 +221,6 @@ export default function RoadmapPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 gap-1">
             <button
-              onClick={() => setViewMode('path')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                viewMode === 'path'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-              }`}
-            >
-              <Route className="w-3.5 h-3.5" />
-              경로
-            </button>
-            <button
               onClick={() => setViewMode('map')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                 viewMode === 'map'
@@ -241,6 +230,17 @@ export default function RoadmapPage() {
             >
               <Map className="w-3.5 h-3.5" />
               전체 맵
+            </button>
+            <button
+              onClick={() => setViewMode('path')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                viewMode === 'path'
+                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
+              <Route className="w-3.5 h-3.5" />
+              경로
             </button>
           </div>
           <Button
@@ -254,7 +254,22 @@ export default function RoadmapPage() {
           </Button>
         </div>
 
-        {viewMode === 'path' ? (
+        {viewMode === 'map' ? (
+          <>
+            {/* Today Section */}
+            <div className="max-w-lg mx-auto mb-6">
+              <TodaySection
+                quests={quests}
+                progress={progress}
+                onTaskQuickComplete={onTaskQuickComplete}
+                onQuestClick={onQuestClick}
+              />
+            </div>
+
+            {/* Full Map View (ReactFlow DAG) */}
+            <FullMapView onQuestClick={onQuestClick} />
+          </>
+        ) : (
           <>
             {/* Today Section */}
             <TodaySection
@@ -273,9 +288,6 @@ export default function RoadmapPage() {
               />
             </div>
           </>
-        ) : (
-          /* Full Map View (ReactFlow DAG) */
-          <FullMapView onQuestClick={onQuestClick} />
         )}
       </div>
 
