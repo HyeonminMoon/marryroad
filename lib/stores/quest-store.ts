@@ -66,6 +66,7 @@ interface QuestStore {
   // Actions
   initialize: () => void;
   completeTask: (questId: string, taskId: string, cost?: number, extendedData?: TaskExtendedData) => void;
+  updateTaskMemo: (questId: string, taskId: string, memo: string) => void;
   completeQuest: (questId: string) => void;
   resetProgress: () => void;
   setBudgetTotal: (total: number) => void;
@@ -325,6 +326,35 @@ export const useQuestStore = create<QuestStore>()(
           return {
             progress: newProgress,
             quests: updatedQuests,
+          };
+        });
+      },
+
+      updateTaskMemo: (questId: string, taskId: string, memo: string) => {
+        set(state => {
+          const prevQuestProgress = state.progress.taskProgress[questId];
+          if (!prevQuestProgress) return state;
+
+          const existingExtData = prevQuestProgress.taskExtendedData ?? {};
+          const taskExtData = existingExtData[taskId] ?? {};
+
+          return {
+            progress: {
+              ...state.progress,
+              taskProgress: {
+                ...state.progress.taskProgress,
+                [questId]: {
+                  ...prevQuestProgress,
+                  taskExtendedData: {
+                    ...existingExtData,
+                    [taskId]: {
+                      ...taskExtData,
+                      memo,
+                    },
+                  },
+                },
+              },
+            },
           };
         });
       },

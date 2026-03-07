@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { extractJourneyEvents, calculateJourneyStats } from '@/lib/utils/journey';
 import { Header } from '@/components/header';
@@ -15,8 +15,14 @@ export default function JourneyPage() {
     initialize();
   }, [initialize]);
 
-  const events = extractJourneyEvents(quests, progress);
-  const stats = calculateJourneyStats(events, progress);
+  const events = useMemo(
+    () => extractJourneyEvents(quests, progress),
+    [quests, progress]
+  );
+  const stats = useMemo(
+    () => calculateJourneyStats(events, progress),
+    [events, progress]
+  );
   const hasEvents = events.length > 0;
 
   return (

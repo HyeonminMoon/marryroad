@@ -5,6 +5,7 @@ import { useQuestStore, calculateLevelProgress } from '@/lib/stores/quest-store'
 import QuestPath from '@/components/quest/quest-path';
 import { TodaySection } from '@/components/quest/today-section';
 import { TaskModal } from '@/components/quest/task-modal';
+import { CelebrationToast } from '@/components/quest/celebration-toast';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,6 +33,7 @@ export default function RoadmapPage() {
     progress,
     resetProgress,
     completeTask,
+    updateTaskMemo,
     setBudgetTotal,
   } = useQuestStore();
 
@@ -42,6 +44,12 @@ export default function RoadmapPage() {
   const [viewMode, setViewMode] = useState<'path' | 'map'>('map');
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
+  const [celebrationToast, setCelebrationToast] = useState<{
+    visible: boolean;
+    questId: string;
+    taskId: string;
+    taskTitle: string;
+  }>({ visible: false, questId: '', taskId: '', taskTitle: '' });
 
   // Initialize on mount
   useEffect(() => {
@@ -78,8 +86,22 @@ export default function RoadmapPage() {
   const onTaskQuickComplete = useCallback(
     (questId: string, taskId: string) => {
       completeTask(questId, taskId);
+
+      // Find task title for toast
+      const quest = quests.find(q => q.id === questId);
+      const task = quest?.tasks.find(t => t.id === taskId);
+      if (task) {
+        setTimeout(() => {
+          setCelebrationToast({
+            visible: true,
+            questId,
+            taskId,
+            taskTitle: task.title,
+          });
+        }, 300);
+      }
     },
-    [completeTask]
+    [completeTask, quests]
   );
 
   const handleReset = useCallback(() => {
@@ -337,6 +359,19 @@ export default function RoadmapPage() {
           setModalOpen(false);
           setSelectedQuest(null);
         }}
+      />
+
+      {/* Celebration Memo Toast */}
+      <CelebrationToast
+        visible={celebrationToast.visible}
+        taskTitle={celebrationToast.taskTitle}
+        showJourneyLink={Object.values(progress.taskProgress).reduce(
+          (sum, tp) => sum + tp.completedTaskIds.length, 0
+        ) >= 5}
+        onSaveMemo={(memo) => {
+          updateTaskMemo(celebrationToast.questId, celebrationToast.taskId, memo);
+        }}
+        onDismiss={() => setCelebrationToast(prev => ({ ...prev, visible: false }))}
       />
     </div>
   );
