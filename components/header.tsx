@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Bell, User, LogOut, Settings, Map, DollarSign, Calendar, Gamepad2, Database, Menu, X } from 'lucide-react'
+import { Bell, User, LogOut, Settings, Home, DollarSign, Calendar, Gamepad2, Database, Menu, X } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import {
   Sheet,
@@ -95,27 +95,39 @@ export function Header() {
         {/* 네비게이션 메뉴 */}
         <nav className="hidden md:flex items-center space-x-1">
           <Link href="/roadmap">
-            <Button 
-              variant={isActive('/roadmap') ? 'default' : 'ghost'}
-              className="gap-2"
+            <Button
+              variant="ghost"
+              className={`gap-2 rounded-none border-b-[3px] transition-colors ${
+                isActive('/roadmap')
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold'
+                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
             >
-              <Map className="h-4 w-4" />
-              로드맵
+              <Home className="h-4 w-4" />
+              홈
             </Button>
           </Link>
           <Link href="/calendar">
-            <Button 
-              variant={isActive('/calendar') ? 'default' : 'ghost'}
-              className="gap-2"
+            <Button
+              variant="ghost"
+              className={`gap-2 rounded-none border-b-[3px] transition-colors ${
+                isActive('/calendar')
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold'
+                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
             >
               <Calendar className="h-4 w-4" />
               캘린더
             </Button>
           </Link>
           <Link href="/database">
-            <Button 
-              variant={isActive('/database') ? 'default' : 'ghost'}
-              className="gap-2"
+            <Button
+              variant="ghost"
+              className={`gap-2 rounded-none border-b-[3px] transition-colors ${
+                isActive('/database')
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold'
+                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
             >
               <Database className="h-4 w-4" />
               데이터베이스
@@ -141,17 +153,25 @@ export function Header() {
               <nav className="flex flex-col gap-2 mt-6">
                 <Link href="/roadmap" onClick={() => setMobileMenuOpen(false)}>
                   <Button
-                    variant={isActive('/roadmap') ? 'default' : 'ghost'}
-                    className="w-full justify-start gap-2"
+                    variant="ghost"
+                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
+                      isActive('/roadmap')
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-transparent'
+                    }`}
                   >
-                    <Map className="h-4 w-4" />
-                    로드맵
+                    <Home className="h-4 w-4" />
+                    홈
                   </Button>
                 </Link>
                 <Link href="/calendar" onClick={() => setMobileMenuOpen(false)}>
                   <Button
-                    variant={isActive('/calendar') ? 'default' : 'ghost'}
-                    className="w-full justify-start gap-2"
+                    variant="ghost"
+                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
+                      isActive('/calendar')
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-transparent'
+                    }`}
                   >
                     <Calendar className="h-4 w-4" />
                     캘린더
@@ -159,8 +179,12 @@ export function Header() {
                 </Link>
                 <Link href="/database" onClick={() => setMobileMenuOpen(false)}>
                   <Button
-                    variant={isActive('/database') ? 'default' : 'ghost'}
-                    className="w-full justify-start gap-2"
+                    variant="ghost"
+                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
+                      isActive('/database')
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-transparent'
+                    }`}
                   >
                     <Database className="h-4 w-4" />
                     데이터베이스

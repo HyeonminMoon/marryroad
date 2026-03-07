@@ -1,21 +1,9 @@
 'use client';
 
 import { useEffect, useCallback, useState } from 'react';
-import { 
-  ReactFlow, 
-  Background, 
-  Controls, 
-  MiniMap, 
-  useNodesState, 
-  useEdgesState, 
-  ConnectionMode, 
-  Node, 
-  Edge, 
-  NodeTypes,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 import { useQuestStore, calculateLevelProgress } from '@/lib/stores/quest-store';
-import QuestNode from '@/components/quest/quest-node';
+import QuestPath from '@/components/quest/quest-path';
+import { TodaySection } from '@/components/quest/today-section';
 import { TaskModal } from '@/components/quest/task-modal';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
@@ -27,103 +15,65 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { RotateCcw, Trophy, TrendingUp, Lock, AlertTriangle } from 'lucide-react';
+import { RotateCcw, Trophy, AlertTriangle, Lock, Pencil, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 
-// Custom Node Types
-const nodeTypes: NodeTypes = {
-  questNode: QuestNode,
-};
-
 export default function RoadmapPage() {
-  const { 
-    initialize, 
-    getFlowNodes, 
-    getFlowEdges, 
+  const {
+    initialize,
+    quests,
     progress,
     resetProgress,
+    completeTask,
+    setBudgetTotal,
   } = useQuestStore();
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [lockedMessage, setLockedMessage] = useState<string | null>(null);
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
 
   // Initialize on mount
   useEffect(() => {
     initialize();
   }, [initialize]);
 
-  // Sync nodes/edges from store
-  useEffect(() => {
-    const flowNodes = getFlowNodes();
-    const flowEdges = getFlowEdges();
-    setNodes(flowNodes);
-    setEdges(flowEdges);
-  }, [getFlowNodes, getFlowEdges, setNodes, setEdges, progress]);
+  // Handle quest click
+  const onQuestClick = useCallback(
+    (quest: Quest) => {
+      if (quest.status === 'locked') {
+        const { quests: allQuests } = useQuestStore.getState();
+        const prereqNames = quest.dependencies
+          .filter((depId: string) => !progress.completedQuestIds.includes(depId))
+          .map((depId: string) => {
+            const dep = allQuests.find((q: Quest) => q.id === depId);
+            return dep ? `"${dep.title}"` : depId;
+          });
+        const message =
+          prereqNames.length > 0
+            ? `이 퀘스트를 시작하려면 ${prereqNames.join(', ')}을(를) 먼저 완료하세요.`
+            : '이 퀘스트는 아직 잠겨 있습니다.';
+        setLockedMessage(message);
+        setTimeout(() => setLockedMessage(null), 3500);
+        return;
+      }
 
-  // Handle node click
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-    const quest = node.data as unknown as Quest;
+      setSelectedQuest(quest);
+      setModalOpen(true);
+    },
+    [progress.completedQuestIds]
+  );
 
-    if (quest.status === 'locked') {
-      // 선행 퀘스트 이름을 찾아서 안내
-      const { quests } = useQuestStore.getState();
-      const prereqNames = quest.dependencies
-        .filter((depId: string) => !progress.completedQuestIds.includes(depId))
-        .map((depId: string) => {
-          const dep = quests.find((q: Quest) => q.id === depId);
-          return dep ? `"${dep.title}"` : depId;
-        });
-      const message = prereqNames.length > 0
-        ? `이 퀘스트를 시작하려면 ${prereqNames.join(', ')}을(를) 먼저 완료하세요.`
-        : '이 퀘스트는 아직 잠겨 있습니다.';
-      setLockedMessage(message);
-      // 3초 후 자동 닫힘
-      setTimeout(() => setLockedMessage(null), 3500);
-      return;
-    }
-
-    setSelectedQuest(quest);
-    setModalOpen(true);
-  }, [progress.completedQuestIds]);
-
-  // Handle node hover to highlight edges
-  const onNodeMouseEnter = useCallback((event: React.MouseEvent, node: Node) => {
-    setEdges(edges => 
-      edges.map(edge => {
-        const isConnected = edge.source === node.id || edge.target === node.id;
-        return {
-          ...edge,
-          animated: isConnected,
-          style: {
-            ...edge.style,
-            strokeWidth: isConnected ? 3 : 2,
-            stroke: isConnected ? '#8B5CF6' : '#94a3b8',
-            opacity: isConnected ? 1 : 0.3,
-          },
-        };
-      })
-    );
-  }, [setEdges]);
-
-  const onNodeMouseLeave = useCallback(() => {
-    setEdges(edges =>
-      edges.map(edge => ({
-        ...edge,
-        animated: false,
-        style: {
-          ...edge.style,
-          strokeWidth: 2,
-          stroke: '#94a3b8',
-          opacity: 1,
-        },
-      }))
-    );
-  }, [setEdges]);
+  // Quick complete task from TodaySection
+  const onTaskQuickComplete = useCallback(
+    (questId: string, taskId: string) => {
+      completeTask(questId, taskId);
+    },
+    [completeTask]
+  );
 
   const handleReset = useCallback(() => {
     setResetDialogOpen(true);
@@ -147,109 +97,148 @@ export default function RoadmapPage() {
     }
   }, [progress.level]);
 
-  const totalQuests = nodes.length;
+  // Budget edit handlers
+  const startEditBudget = () => {
+    setBudgetInput((progress.budget.total / 10000).toString());
+    setEditingBudget(true);
+  };
+
+  const saveBudget = () => {
+    const value = parseFloat(budgetInput);
+    if (!isNaN(value) && value > 0) {
+      setBudgetTotal(value * 10000);
+    }
+    setEditingBudget(false);
+  };
+
+  const handleBudgetKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') saveBudget();
+    if (e.key === 'Escape') setEditingBudget(false);
+  };
+
+  // Computed values
+  const totalQuests = quests.length;
   const completedQuests = progress.completedQuestIds.length;
-  const overallProgress = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
+  const overallProgress =
+    totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
+  const lvlProgress = calculateLevelProgress(progress.xp);
+
+  const formatBudget = (amount: number) => {
+    if (amount >= 10000) {
+      return `${(amount / 10000).toLocaleString()}만`;
+    }
+    return amount.toLocaleString();
+  };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Header />
-      
-      <div className="flex-1 relative">
-        {/* Stats Overlay */}
-        <div className="absolute top-4 left-4 z-10 space-y-2">
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-2 mb-2">
-              <Trophy className="w-5 h-5 text-yellow-500" />
-              <span className="font-bold text-lg">레벨 {progress.level}</span>
+
+      {/* 상단: 진행률 바 + 레벨/XP */}
+      <div className="sticky top-16 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-lg mx-auto px-4 py-3">
+          {/* 레벨 뱃지 + XP + 예산 */}
+          <div className="flex items-center justify-between mb-2">
+            {/* 레벨 뱃지 */}
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-md">
+                <Trophy className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">레벨 {progress.level}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  {lvlProgress.currentLevelXp} / {lvlProgress.nextLevelXp} XP
+                </p>
+              </div>
             </div>
-            {(() => {
-              const lvlProgress = calculateLevelProgress(progress.xp);
-              return (
-                <>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    XP: {lvlProgress.currentLevelXp} / {lvlProgress.nextLevelXp}
-                  </div>
-                  <div className="mt-2 w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all"
-                      style={{ width: `${lvlProgress.percent}%` }}
-                    />
-                  </div>
-                </>
-              );
-            })()}
+
+            {/* 예산 요약 */}
+            <div className="text-right">
+              {editingBudget ? (
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={budgetInput}
+                    onChange={(e) => setBudgetInput(e.target.value)}
+                    onKeyDown={handleBudgetKeyDown}
+                    onBlur={saveBudget}
+                    autoFocus
+                    className="w-20 text-right text-sm border border-gray-300 dark:border-gray-600 rounded px-2 py-0.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    placeholder="만원"
+                  />
+                  <span className="text-xs text-gray-500">만원</span>
+                  <button
+                    onClick={saveBudget}
+                    className="p-0.5 text-green-600 hover:text-green-700"
+                  >
+                    <Check className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={startEditBudget}
+                  className="group flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                >
+                  <span>
+                    {formatBudget(progress.budget.spent)}원 / {formatBudget(progress.budget.total)}원
+                  </span>
+                  <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-blue-500" />
-              <span className="font-bold">전체 진행률</span>
-            </div>
-            <div className="text-2xl font-bold mb-1">{overallProgress}%</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              {completedQuests} / {totalQuests} 퀘스트
-            </div>
-            <div className="mt-2 w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all" 
+          {/* 전체 진행률 바 */}
+          <div className="relative">
+            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500"
                 style={{ width: `${overallProgress}%` }}
               />
             </div>
-          </div>
-
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200 dark:border-gray-700">
-            <div className="text-sm font-semibold mb-1">예산</div>
-            <div className="text-lg font-bold text-red-500">
-              {progress.budget.spent.toLocaleString()}원
-            </div>
-            <div className="text-xs text-gray-500">
-              / {progress.budget.total.toLocaleString()}원
+            <div className="flex justify-between mt-1">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {completedQuests}/{totalQuests} 퀘스트
+              </span>
+              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                {overallProgress}%
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Reset Button */}
-        <div className="absolute top-4 right-4 z-10">
+      {/* 메인: Today 섹션 + Quest Path */}
+      <div className="max-w-lg mx-auto px-4 py-6">
+        {/* 초기화 버튼 */}
+        <div className="flex justify-end mb-4">
           <Button
             variant="outline"
             size="sm"
             onClick={handleReset}
-            className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm"
+            className="text-xs"
           >
-            <RotateCcw className="w-4 h-4 mr-2" />
+            <RotateCcw className="w-3 h-3 mr-1" />
             초기화
           </Button>
         </div>
 
-        {/* React Flow Canvas */}
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={onNodeClick}
-          onNodeMouseEnter={onNodeMouseEnter}
-          onNodeMouseLeave={onNodeMouseLeave}
-          nodeTypes={nodeTypes}
-          connectionMode={ConnectionMode.Strict}
-          fitView
-          fitViewOptions={{ padding: 0.3, maxZoom: 0.9 }}
-          minZoom={0.3}
-          maxZoom={1.2}
-          defaultViewport={{ x: 0, y: 0, zoom: 0.7 }}
-        >
-          <Background color="#94a3b8" gap={20} size={1} />
-          <Controls />
-          <MiniMap 
-            nodeColor={(node) => {
-              const quest = node.data as unknown as Quest;
-              return quest.color;
-            }}
-            maskColor="rgba(0, 0, 0, 0.1)"
-            position="bottom-right"
+        {/* Today Section */}
+        <TodaySection
+          quests={quests}
+          progress={progress}
+          onTaskQuickComplete={onTaskQuickComplete}
+          onQuestClick={onQuestClick}
+        />
+
+        {/* Quest Path */}
+        <div className="relative" style={{ minHeight: '60vh' }}>
+          <QuestPath
+            quests={quests}
+            progress={progress}
+            onQuestClick={onQuestClick}
           />
-        </ReactFlow>
+        </div>
       </div>
 
       {/* 잠긴 퀘스트 클릭 시 토스트 알림 */}
@@ -271,11 +260,15 @@ export default function RoadmapPage() {
               진행 상황 초기화
             </DialogTitle>
             <DialogDescription>
-              정말 모든 진행 상황을 초기화하시겠습니까? 완료한 퀘스트, XP, 예산 기록이 모두 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+              정말 모든 진행 상황을 초기화하시겠습니까? 완료한 퀘스트, XP, 예산
+              기록이 모두 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setResetDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setResetDialogOpen(false)}
+            >
               취소
             </Button>
             <Button variant="destructive" onClick={confirmReset}>

@@ -21,6 +21,7 @@ import { motion } from 'framer-motion';
 interface TaskDetailFormProps {
   task: Task;
   isCompleted: boolean;
+  showCost?: boolean;
   onComplete: (data: {
     cost?: number;
     memo?: string;
@@ -31,7 +32,7 @@ interface TaskDetailFormProps {
   }) => void;
 }
 
-export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailFormProps) {
+export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete }: TaskDetailFormProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [formData, setFormData] = useState({
     cost: '',
@@ -83,27 +84,29 @@ export function TaskDetailForm({ task, isCompleted, onComplete }: TaskDetailForm
 
   return (
     <div className="space-y-4">
-      {/* 기본 정보: 비용 */}
-      <div>
-        <Label htmlFor={`cost-${task.id}`} className="text-sm font-semibold flex items-center gap-2">
-          <DollarSign className="w-4 h-4" />
-          실제 비용
-        </Label>
-        {(task.typicalCostMin || task.typicalCostMax) && (
-          <p className="text-xs text-gray-500 mt-1">
-            평균: {task.typicalCostMin?.toLocaleString()}~{task.typicalCostMax?.toLocaleString()}원
-          </p>
-        )}
-        <Input
-          id={`cost-${task.id}`}
-          type="number"
-          placeholder="실제 비용 입력"
-          value={formData.cost}
-          onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-          className="mt-2"
-          disabled={isCompleted}
-        />
-      </div>
+      {/* 기본 정보: 비용 (showCost가 true일 때만 표시) */}
+      {showCost && (
+        <div>
+          <Label htmlFor={`cost-${task.id}`} className="text-sm font-semibold flex items-center gap-2">
+            <DollarSign className="w-4 h-4" />
+            실제 비용
+          </Label>
+          {(task.typicalCostMin || task.typicalCostMax) && (
+            <p className="text-xs text-gray-500 mt-1">
+              평균: {task.typicalCostMin?.toLocaleString()}~{task.typicalCostMax?.toLocaleString()}원
+            </p>
+          )}
+          <Input
+            id={`cost-${task.id}`}
+            type="number"
+            placeholder="실제 비용 입력"
+            value={formData.cost}
+            onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+            className="mt-2"
+            disabled={isCompleted}
+          />
+        </div>
+      )}
 
       {/* 펼치기/접기 버튼 */}
       <Button
