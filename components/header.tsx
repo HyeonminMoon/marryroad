@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Bell, User, LogOut, Settings, Home, DollarSign, Calendar, Gamepad2, Database, Menu, X } from 'lucide-react'
+import { Bell, User, LogOut, Settings, Home, DollarSign, Calendar, Gamepad2, Database, Menu, X, BookHeart } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import {
   Sheet,
@@ -107,6 +107,19 @@ export function Header() {
               홈
             </Button>
           </Link>
+          <Link href="/journey">
+            <Button
+              variant="ghost"
+              className={`gap-2 rounded-none border-b-[3px] transition-colors ${
+                isActive('/journey')
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold'
+                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
+            >
+              <BookHeart className="h-4 w-4" />
+              여정
+            </Button>
+          </Link>
           <Link href="/calendar">
             <Button
               variant="ghost"
@@ -162,6 +175,19 @@ export function Header() {
                   >
                     <Home className="h-4 w-4" />
                     홈
+                  </Button>
+                </Link>
+                <Link href="/journey" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
+                      isActive('/journey')
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-transparent'
+                    }`}
+                  >
+                    <BookHeart className="h-4 w-4" />
+                    여정
                   </Button>
                 </Link>
                 <Link href="/calendar" onClick={() => setMobileMenuOpen(false)}>

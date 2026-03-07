@@ -75,3 +75,21 @@ export interface QuestProgress {
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';
+
+export interface JourneyEvent {
+  type: 'task' | 'quest-complete' | 'level-up';
+  date: string; // YYYY-MM-DD
+  questId: string;
+  questTitle: string;
+  questColor: string;
+  questIcon: string;
+  taskId?: string;
+  taskTitle?: string;
+  memo?: string;
+  photos?: string[];
+  cost?: number;
+  vendorName?: string;
+  rating?: number;
+  xpEarned?: number;
+  newLevel?: number;
+}
