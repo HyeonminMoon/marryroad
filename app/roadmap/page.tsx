@@ -61,7 +61,11 @@ export default function RoadmapPage() {
   }>({ visible: false, questId: '', taskId: '', taskTitle: '' });
   const [achievementToast, setAchievementToast] = useState<AchievementDef | null>(null);
   const achievementQueueRef = useRef<AchievementDef[]>([]);
-  const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(false);
+  const [editingCoupleNames, setEditingCoupleNames] = useState(false);
+  const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('marryroad-couple-setup-dismissed') === 'true';
+  });
 
   // Initialize on mount
   useEffect(() => {
@@ -330,15 +334,23 @@ export default function RoadmapPage() {
 
         {/* Couple Message / Setup */}
         <div className={`mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
-          {progress.coupleNames ? (
+          {progress.coupleNames && !editingCoupleNames ? (
             <DailyMessage
               userName={progress.coupleNames.user}
               partnerName={progress.coupleNames.partner}
+              onEditNames={() => setEditingCoupleNames(true)}
             />
-          ) : !coupleSetupDismissed ? (
+          ) : (editingCoupleNames || !coupleSetupDismissed) ? (
             <CoupleSetup
-              onSave={(user, partner) => setCoupleNames(user, partner)}
-              onSkip={() => setCoupleSetupDismissed(true)}
+              onSave={(user, partner) => {
+                setCoupleNames(user, partner);
+                setEditingCoupleNames(false);
+              }}
+              onSkip={() => {
+                setEditingCoupleNames(false);
+                setCoupleSetupDismissed(true);
+                localStorage.setItem('marryroad-couple-setup-dismissed', 'true');
+              }}
             />
           ) : null}
         </div>

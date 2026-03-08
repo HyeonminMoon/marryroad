@@ -72,9 +72,10 @@ export function CoupleSetup({ onSave, onSkip }: CoupleSetupProps) {
 interface DailyMessageProps {
   userName?: string;
   partnerName?: string;
+  onEditNames?: () => void;
 }
 
-export function DailyMessage({ userName, partnerName }: DailyMessageProps) {
+export function DailyMessage({ userName, partnerName, onEditNames }: DailyMessageProps) {
   const message = getDailyMessage(userName, partnerName);
 
   return (
@@ -82,11 +83,20 @@ export function DailyMessage({ userName, partnerName }: DailyMessageProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
-      className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-2xl border border-pink-200/50 dark:border-pink-800/50 px-5 py-4"
+      className="relative bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-2xl border border-pink-200/50 dark:border-pink-800/50 px-5 py-4"
     >
       <p className="text-sm text-gray-700 dark:text-gray-300 text-center leading-relaxed">
         {message}
       </p>
+      {onEditNames && (
+        <button
+          onClick={onEditNames}
+          className="absolute top-2 right-3 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          title="이름 수정"
+        >
+          수정
+        </button>
+      )}
     </motion.div>
   );
 }

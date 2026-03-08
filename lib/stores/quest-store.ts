@@ -313,11 +313,15 @@ export const useQuestStore = create<QuestStore>()(
 
           const newXp = state.progress.xp + xpDelta;
 
-          // Track active date for streak
+          // Track active date for streak (trim to last 90 days)
           const today = new Date().toISOString().split('T')[0];
-          const newActiveDates = state.progress.activeDates.includes(today)
-            ? state.progress.activeDates
-            : [...state.progress.activeDates, today];
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 90);
+          const cutoffStr = cutoff.toISOString().split('T')[0];
+          const trimmedDates = state.progress.activeDates.filter(d => d >= cutoffStr);
+          const newActiveDates = trimmedDates.includes(today)
+            ? trimmedDates
+            : [...trimmedDates, today];
 
           const newProgress: QuestProgress = {
             completedQuestIds: newCompletedQuestIds,

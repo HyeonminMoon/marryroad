@@ -144,6 +144,24 @@ export const ACHIEVEMENTS: AchievementDef[] = [
 
   // Gold (hard)
   {
+    id: 'two-week-streak',
+    name: '2주 연속',
+    description: '14일 연속으로 태스크를 완료하세요',
+    tier: 'gold',
+    xp: 75,
+    icon: '🔥',
+    check: (p) => calculateStreak(p.activeDates || []) >= 14,
+  },
+  {
+    id: 'month-streak',
+    name: '한 달 연속',
+    description: '30일 연속으로 태스크를 완료하세요',
+    tier: 'gold',
+    xp: 100,
+    icon: '💥',
+    check: (p) => calculateStreak(p.activeDates || []) >= 30,
+  },
+  {
     id: 'half-way',
     name: '절반의 성공',
     description: '전체 태스크의 50%를 완료하세요',
