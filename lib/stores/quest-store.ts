@@ -70,6 +70,8 @@ interface QuestStore {
   completeQuest: (questId: string) => void;
   resetProgress: () => void;
   setBudgetTotal: (total: number) => void;
+  setWeddingDate: (date: string | null) => void;
+  grantAchievementXp: (xp: number) => void;
   
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -155,6 +157,7 @@ export const useQuestStore = create<QuestStore>()(
           total: 30000000,
           spent: 0,
         },
+        weddingDate: null,
       },
 
       initialize: () => {
@@ -314,6 +317,7 @@ export const useQuestStore = create<QuestStore>()(
               total: state.progress.budget.total,
               spent: state.progress.budget.spent + spentDelta,
             },
+            weddingDate: state.progress.weddingDate,
           };
 
           // Recalculate quest statuses
@@ -371,6 +375,7 @@ export const useQuestStore = create<QuestStore>()(
 
       resetProgress: () => {
         const currentBudgetTotal = get().progress.budget.total;
+        const currentWeddingDate = get().progress.weddingDate;
         set({
           progress: {
             completedQuestIds: [],
@@ -381,6 +386,7 @@ export const useQuestStore = create<QuestStore>()(
               total: currentBudgetTotal, // Preserve user-set budget total
               spent: 0,
             },
+            weddingDate: currentWeddingDate, // Preserve wedding date
           },
         });
 
@@ -398,6 +404,28 @@ export const useQuestStore = create<QuestStore>()(
             },
           },
         }));
+      },
+
+      setWeddingDate: (date: string | null) => {
+        set(state => ({
+          progress: {
+            ...state.progress,
+            weddingDate: date,
+          },
+        }));
+      },
+
+      grantAchievementXp: (xp: number) => {
+        set(state => {
+          const newXp = state.progress.xp + xp;
+          return {
+            progress: {
+              ...state.progress,
+              xp: newXp,
+              level: calculateLevel(newXp),
+            },
+          };
+        });
       },
 
       getQuestStatus: (questId: string) => {

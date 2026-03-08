@@ -8,6 +8,7 @@ import { TaskModal } from '@/components/quest/task-modal';
 import { CelebrationToast } from '@/components/quest/celebration-toast';
 import { AchievementGrid } from '@/components/quest/achievement-grid';
 import { AchievementToast } from '@/components/quest/achievement-toast';
+import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,8 @@ export default function RoadmapPage() {
     completeTask,
     updateTaskMemo,
     setBudgetTotal,
+    setWeddingDate,
+    grantAchievementXp,
   } = useQuestStore();
 
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
@@ -76,6 +79,10 @@ export default function RoadmapPage() {
 
     if (newAchievements.length > 0) {
       localStorage.setItem(seenKey, JSON.stringify(unlockedAchievementIds));
+
+      // Grant achievement XP to store
+      const totalNewXp = newAchievements.reduce((sum, a) => sum + a.xp, 0);
+      if (totalNewXp > 0) grantAchievementXp(totalNewXp);
 
       // First-visit flood prevention: if 3+ new achievements at once,
       // only show the highest-tier one to avoid toast spam
@@ -318,6 +325,16 @@ export default function RoadmapPage() {
 
         {viewMode === 'map' ? (
           <>
+            {/* D-Day Dashboard */}
+            <div className="max-w-lg mx-auto mb-4">
+              <DdayDashboard
+                quests={quests}
+                progress={progress}
+                onSetWeddingDate={setWeddingDate}
+                onQuestClick={onQuestClick}
+              />
+            </div>
+
             {/* Today Section */}
             <div className="max-w-lg mx-auto mb-6">
               <TodaySection
@@ -333,6 +350,16 @@ export default function RoadmapPage() {
           </>
         ) : (
           <>
+            {/* D-Day Dashboard */}
+            <div className="mb-4">
+              <DdayDashboard
+                quests={quests}
+                progress={progress}
+                onSetWeddingDate={setWeddingDate}
+                onQuestClick={onQuestClick}
+              />
+            </div>
+
             {/* Today Section */}
             <TodaySection
               quests={quests}

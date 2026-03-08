@@ -72,6 +72,7 @@ export interface QuestProgress {
     total: number;
     spent: number;
   };
+  weddingDate: string | null; // ISO date string, e.g. "2026-11-15"
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';
