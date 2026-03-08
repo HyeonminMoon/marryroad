@@ -28,6 +28,17 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 
+function CoupleNamesBadge() {
+  const coupleNames = useQuestStore((state) => state.progress.coupleNames)
+  if (!coupleNames) return null
+
+  return (
+    <span className="hidden sm:inline text-xs font-medium text-gray-500 dark:text-gray-400">
+      {coupleNames.user} & {coupleNames.partner}
+    </span>
+  )
+}
+
 function DdayBadge() {
   const weddingDate = useQuestStore((state) => state.progress.weddingDate)
   if (!weddingDate) return null
@@ -127,6 +138,7 @@ export function Header() {
             <span className="text-2xl">💍</span>
             <h1 className="text-xl font-bold text-slate-900">MarryRoad</h1>
           </Link>
+          <CoupleNamesBadge />
           <DdayBadge />
           <StreakBadge />
         </div>

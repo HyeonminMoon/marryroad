@@ -10,6 +10,7 @@ import { AchievementGrid } from '@/components/quest/achievement-grid';
 import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
+import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
@@ -42,6 +43,7 @@ export default function RoadmapPage() {
     setBudgetTotal,
     setWeddingDate,
     grantAchievementXp,
+    setCoupleNames,
   } = useQuestStore();
 
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
@@ -59,6 +61,7 @@ export default function RoadmapPage() {
   }>({ visible: false, questId: '', taskId: '', taskTitle: '' });
   const [achievementToast, setAchievementToast] = useState<AchievementDef | null>(null);
   const achievementQueueRef = useRef<AchievementDef[]>([]);
+  const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(false);
 
   // Initialize on mount
   useEffect(() => {
@@ -323,6 +326,21 @@ export default function RoadmapPage() {
         <div className={`space-y-4 mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
           <AchievementGrid unlockedIds={unlockedAchievementIds} />
           <BudgetChart quests={quests} progress={progress} />
+        </div>
+
+        {/* Couple Message / Setup */}
+        <div className={`mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
+          {progress.coupleNames ? (
+            <DailyMessage
+              userName={progress.coupleNames.user}
+              partnerName={progress.coupleNames.partner}
+            />
+          ) : !coupleSetupDismissed ? (
+            <CoupleSetup
+              onSave={(user, partner) => setCoupleNames(user, partner)}
+              onSkip={() => setCoupleSetupDismissed(true)}
+            />
+          ) : null}
         </div>
 
         {viewMode === 'map' ? (

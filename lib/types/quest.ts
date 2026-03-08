@@ -74,6 +74,7 @@ export interface QuestProgress {
   };
   weddingDate: string | null; // ISO date string, e.g. "2026-11-15"
   activeDates: string[]; // Dates when user completed at least 1 task, e.g. ["2026-03-05"]
+  coupleNames: { user: string; partner: string } | null;
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';

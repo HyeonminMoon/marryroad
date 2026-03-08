@@ -73,6 +73,7 @@ interface QuestStore {
   setBudgetTotal: (total: number) => void;
   setWeddingDate: (date: string | null) => void;
   grantAchievementXp: (xp: number) => void;
+  setCoupleNames: (user: string, partner: string) => void;
   
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -160,6 +161,7 @@ export const useQuestStore = create<QuestStore>()(
         },
         weddingDate: null,
         activeDates: [],
+        coupleNames: null,
       },
 
       initialize: () => {
@@ -328,6 +330,7 @@ export const useQuestStore = create<QuestStore>()(
             },
             weddingDate: state.progress.weddingDate,
             activeDates: newActiveDates,
+            coupleNames: state.progress.coupleNames,
           };
 
           // Recalculate quest statuses
@@ -397,7 +400,8 @@ export const useQuestStore = create<QuestStore>()(
               spent: 0,
             },
             weddingDate: currentWeddingDate,
-            activeDates: [], // Reset streak on full reset
+            activeDates: [],
+            coupleNames: get().progress.coupleNames, // Preserve couple names
           },
         });
 
@@ -437,6 +441,15 @@ export const useQuestStore = create<QuestStore>()(
             },
           };
         });
+      },
+
+      setCoupleNames: (user: string, partner: string) => {
+        set(state => ({
+          progress: {
+            ...state.progress,
+            coupleNames: { user, partner },
+          },
+        }));
       },
 
       getQuestStatus: (questId: string) => {
