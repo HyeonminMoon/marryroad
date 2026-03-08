@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { useQuestStore } from '@/lib/stores/quest-store'
+import { getDdayCount } from '@/lib/utils/dday'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -24,6 +26,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+
+function DdayBadge() {
+  const weddingDate = useQuestStore((state) => state.progress.weddingDate)
+  if (!weddingDate) return null
+
+  const dday = getDdayCount(weddingDate)
+  const label = dday > 0 ? `D-${dday}` : dday === 0 ? 'D-Day' : `D+${Math.abs(dday)}`
+  const colorClass =
+    dday <= 30
+      ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400'
+      : dday <= 90
+      ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400'
+      : 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400'
+
+  return (
+    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${colorClass}`}>
+      {label}
+    </span>
+  )
+}
 
 export function Header() {
   const router = useRouter()
@@ -86,11 +108,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* 로고 */}
-        <Link href={user ? '/roadmap' : '/'} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-          <span className="text-2xl">💍</span>
-          <h1 className="text-xl font-bold text-slate-900">MarryRoad</h1>
-        </Link>
+        {/* 로고 + D-Day */}
+        <div className="flex items-center gap-3">
+          <Link href={user ? '/roadmap' : '/'} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+            <span className="text-2xl">💍</span>
+            <h1 className="text-xl font-bold text-slate-900">MarryRoad</h1>
+          </Link>
+          <DdayBadge />
+        </div>
 
         {/* 네비게이션 메뉴 */}
         <nav className="hidden md:flex items-center space-x-1">

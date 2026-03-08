@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { getDdayCount, getUrgentTasks, type TaskUrgency, type UrgentTask } from '@/lib/utils/dday';
 import { getQuestIcon } from '@/lib/utils/icon-map';
-import { Calendar, Clock, AlertTriangle, ChevronDown, ChevronUp, Heart } from 'lucide-react';
+import { Calendar, Clock, AlertTriangle, ChevronDown, ChevronUp, Heart, Pencil, Check as CheckIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DdayDashboardProps {
@@ -78,7 +78,16 @@ function WeddingDatePicker({ onSetDate }: { onSetDate: (date: string) => void })
   );
 }
 
-function DdayCountdown({ weddingDate }: { weddingDate: string }) {
+function DdayCountdown({
+  weddingDate,
+  onChangeDate,
+}: {
+  weddingDate: string;
+  onChangeDate: (date: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [dateInput, setDateInput] = useState(weddingDate);
+
   const dday = getDdayCount(weddingDate);
   const weddingDateObj = new Date(weddingDate);
   const formattedDate = weddingDateObj.toLocaleDateString('ko-KR', {
@@ -88,17 +97,46 @@ function DdayCountdown({ weddingDate }: { weddingDate: string }) {
     weekday: 'long',
   });
 
-  // Calculate progress: assume 365 days total planning period
   const totalDays = 365;
   const elapsed = totalDays - Math.max(0, dday);
   const progressPercent = Math.min(100, Math.max(0, Math.round((elapsed / totalDays) * 100)));
+
+  const saveDate = () => {
+    if (dateInput) onChangeDate(dateInput);
+    setEditing(false);
+  };
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-purple-500" />
-          <span className="text-sm text-gray-500 dark:text-gray-400">{formattedDate}</span>
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateInput}
+                onChange={(e) => setDateInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') saveDate();
+                  if (e.key === 'Escape') setEditing(false);
+                }}
+                autoFocus
+                className="border border-gray-300 dark:border-gray-600 rounded px-2 py-0.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+              />
+              <button onClick={saveDate} className="p-0.5 text-green-600 hover:text-green-700">
+                <CheckIcon className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => { setDateInput(weddingDate); setEditing(true); }}
+              className="group flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+            >
+              <span>{formattedDate}</span>
+              <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          )}
         </div>
         <span className={`text-2xl font-black ${
           dday <= 30 ? 'text-red-500' : dday <= 90 ? 'text-amber-500' : 'text-purple-600 dark:text-purple-400'
@@ -245,7 +283,7 @@ export function DdayDashboard({ quests, progress, onSetWeddingDate, onQuestClick
 
   return (
     <div className="space-y-3">
-      <DdayCountdown weddingDate={weddingDate} />
+      <DdayCountdown weddingDate={weddingDate} onChangeDate={onSetWeddingDate} />
 
       {overdueCount > 0 && (
         <div className="flex items-center gap-2 px-1">

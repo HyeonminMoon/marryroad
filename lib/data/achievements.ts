@@ -6,6 +6,7 @@
  */
 
 import { Quest, QuestProgress } from '@/lib/types/quest';
+import { DEFAULT_BUDGET } from '@/lib/constants';
 
 export type AchievementTier = 'bronze' | 'silver' | 'gold';
 
@@ -81,7 +82,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     tier: 'bronze',
     xp: 25,
     icon: '💰',
-    check: (p) => p.budget.total !== 30000000, // Changed from default
+    check: (p) => p.budget.total !== DEFAULT_BUDGET,
   },
   {
     id: 'cost-tracker',

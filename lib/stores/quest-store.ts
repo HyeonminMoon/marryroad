@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Quest, QuestProgress, QuestStatus, Task, TaskExtendedData } from '../types/quest';
 import questsData from '../data/quests.json';
+import { DEFAULT_BUDGET } from '../constants';
 import { Node, Edge } from '@xyflow/react';
 import dagre from 'dagre';
 
@@ -154,7 +155,7 @@ export const useQuestStore = create<QuestStore>()(
         xp: 0,
         level: 1,
         budget: {
-          total: 30000000,
+          total: DEFAULT_BUDGET,
           spent: 0,
         },
         weddingDate: null,

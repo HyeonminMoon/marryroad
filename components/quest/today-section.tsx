@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { getQuestIcon } from '@/lib/utils/icon-map';
-import { Flame, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -99,20 +99,13 @@ export function TodaySection({
   const { total, completed } = getOverallProgress(quests, progress);
   const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  // 스트릭 (더미 값 - 추후 lastActiveDate 기반으로 계산)
-  const streakDays = 3;
-
   return (
     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       {/* 헤더 */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="mb-5">
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
           다음 할 일
         </h2>
-        <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded-full">
-          <Flame className="w-4 h-4" />
-          <span className="text-sm font-bold">{streakDays}일 연속</span>
-        </div>
       </div>
 
       {/* 추천 태스크 카드 */}
