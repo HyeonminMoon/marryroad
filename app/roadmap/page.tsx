@@ -11,6 +11,7 @@ import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
 import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
+import { ProgressRing } from '@/components/quest/progress-ring';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
@@ -23,7 +24,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { RotateCcw, Trophy, AlertTriangle, Lock, Pencil, Check, Map, Route } from 'lucide-react';
+import { RotateCcw, AlertTriangle, Lock, Map, Route } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 import dynamic from 'next/dynamic';
@@ -41,7 +42,6 @@ export default function RoadmapPage() {
     resetProgress,
     completeTask,
     updateTaskMemo,
-    setBudgetTotal,
     setWeddingDate,
     grantAchievementXp,
     setCoupleNames,
@@ -52,8 +52,6 @@ export default function RoadmapPage() {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [lockedMessage, setLockedMessage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'path' | 'map'>('map');
-  const [editingBudget, setEditingBudget] = useState(false);
-  const [budgetInput, setBudgetInput] = useState('');
   const [celebrationToast, setCelebrationToast] = useState<{
     visible: boolean;
     questId: string;
@@ -177,114 +175,25 @@ export default function RoadmapPage() {
     }
   }, [progress.level]);
 
-  // Budget edit handlers
-  const startEditBudget = () => {
-    setBudgetInput((progress.budget.total / 10000).toString());
-    setEditingBudget(true);
-  };
-
-  const saveBudget = () => {
-    const value = parseFloat(budgetInput);
-    if (!isNaN(value) && value > 0) {
-      setBudgetTotal(value * 10000);
-    }
-    setEditingBudget(false);
-  };
-
-  const handleBudgetKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') saveBudget();
-    if (e.key === 'Escape') setEditingBudget(false);
-  };
-
   // Computed values
   const totalQuests = quests.length;
   const completedQuests = progress.completedQuestIds.length;
-  const overallProgress =
-    totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
   const lvlProgress = calculateLevelProgress(progress.xp);
-
-  const formatBudget = (amount: number) => {
-    if (amount >= 10000) {
-      return `${(amount / 10000).toLocaleString()}만`;
-    }
-    return amount.toLocaleString();
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Header />
 
-      {/* 상단: 진행률 바 + 레벨/XP */}
+      {/* 상단: Progress Ring + Stats */}
       <div className="sticky top-16 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-700">
         <div className={`mx-auto px-4 py-3 ${viewMode === 'path' ? 'max-w-lg' : 'max-w-6xl'}`}>
-          {/* 레벨 뱃지 + XP + 예산 */}
-          <div className="flex items-center justify-between mb-2">
-            {/* 레벨 뱃지 */}
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-md">
-                <Trophy className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">레벨 {progress.level}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  {lvlProgress.currentLevelXp} / {lvlProgress.nextLevelXp} XP
-                </p>
-              </div>
-            </div>
-
-            {/* 예산 요약 */}
-            <div className="text-right">
-              {editingBudget ? (
-                <div className="flex items-center gap-1">
-                  <input
-                    type="number"
-                    value={budgetInput}
-                    onChange={(e) => setBudgetInput(e.target.value)}
-                    onKeyDown={handleBudgetKeyDown}
-                    onBlur={saveBudget}
-                    autoFocus
-                    className="w-20 text-right text-sm border border-gray-300 dark:border-gray-600 rounded px-2 py-0.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                    placeholder="만원"
-                  />
-                  <span className="text-xs text-gray-500">만원</span>
-                  <button
-                    onClick={saveBudget}
-                    className="p-0.5 text-green-600 hover:text-green-700"
-                  >
-                    <Check className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={startEditBudget}
-                  className="group flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-                >
-                  <span>
-                    {formatBudget(progress.budget.spent)}원 / {formatBudget(progress.budget.total)}원
-                  </span>
-                  <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* 전체 진행률 바 */}
-          <div className="relative">
-            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500"
-                style={{ width: `${overallProgress}%` }}
-              />
-            </div>
-            <div className="flex justify-between mt-1">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {completedQuests}/{totalQuests} 퀘스트
-              </span>
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                {overallProgress}%
-              </span>
-            </div>
-          </div>
+          <ProgressRing
+            progress={progress}
+            totalQuests={totalQuests}
+            completedQuests={completedQuests}
+            currentLevelXp={lvlProgress.currentLevelXp}
+            nextLevelXp={lvlProgress.nextLevelXp}
+          />
         </div>
       </div>
 
