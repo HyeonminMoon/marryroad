@@ -4,62 +4,100 @@ import { useState, useMemo } from 'react';
 import { Header } from '@/components/header';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, CheckCircle, Clock, AlertCircle, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getQuestIcon } from '@/lib/utils/icon-map';
 import { Task } from '@/lib/types/quest';
+import { parseRecommendedTiming, TaskUrgency, getTaskUrgency } from '@/lib/utils/dday';
 
-/** 캘린더 표시용 확장 Task 타입 */
+/** Calendar display task type */
 interface CalendarTask extends Task {
   questTitle: string;
   questColor: string;
   questIcon: string;
+  questId: string;
   completedDate?: string;
+  plannedDate?: string;
+  isPlanned: boolean;
+  urgency?: TaskUrgency;
 }
 
 export default function CalendarPage() {
   const { quests, progress } = useQuestStore();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const weddingDate = progress.weddingDate;
 
-  // 현재 월의 첫날과 마지막 날
+  // First/last day of current month
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   const startingDayOfWeek = firstDayOfMonth.getDay();
 
-  // 모든 작업을 날짜별로 그룹화
-  const tasksByDate = useMemo(() => {
+  // Group all tasks by date (completed + planned)
+  const { tasksByDate, stats } = useMemo(() => {
     const grouped: Record<string, CalendarTask[]> = {};
+    let completedCount = 0;
+    let plannedCount = 0;
+    let overdueCount = 0;
 
     quests.forEach(quest => {
       const questProgress = progress.taskProgress[quest.id];
-      if (!questProgress) return;
+      const completedIds = questProgress?.completedTaskIds || [];
 
       quest.tasks.forEach(task => {
-        const isCompleted = questProgress.completedTaskIds?.includes(task.id);
-        const extData = questProgress.taskExtendedData?.[task.id];
+        const isCompleted = completedIds.includes(task.id);
+        const extData = questProgress?.taskExtendedData?.[task.id];
 
-        // 완료된 작업 중 날짜가 있는 것만 캘린더에 표시
-        // completedDate는 store의 taskExtendedData에서 읽음
+        // Completed tasks with date
         if (isCompleted && extData?.completedDate) {
           const dateKey = extData.completedDate;
-          if (!grouped[dateKey]) {
-            grouped[dateKey] = [];
-          }
+          if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push({
             ...task,
+            questId: quest.id,
             completedDate: extData.completedDate,
             questTitle: quest.title,
             questColor: quest.color,
             questIcon: quest.icon,
+            isPlanned: false,
           });
+          completedCount++;
+        }
+
+        // Planned tasks (uncompleted, with wedding date)
+        if (!isCompleted && weddingDate) {
+          const daysBefore = parseRecommendedTiming(task.recommendedTiming);
+          if (daysBefore === null) return;
+
+          const wedding = new Date(weddingDate);
+          const targetDate = new Date(wedding);
+          targetDate.setDate(targetDate.getDate() - daysBefore);
+          const dateKey = targetDate.toISOString().split('T')[0];
+
+          const urgency = getTaskUrgency(task.recommendedTiming, weddingDate);
+
+          if (!grouped[dateKey]) grouped[dateKey] = [];
+          grouped[dateKey].push({
+            ...task,
+            questId: quest.id,
+            plannedDate: dateKey,
+            questTitle: quest.title,
+            questColor: quest.color,
+            questIcon: quest.icon,
+            isPlanned: true,
+            urgency,
+          });
+          plannedCount++;
+          if (urgency === 'overdue') overdueCount++;
         }
       });
     });
 
-    return grouped;
-  }, [quests, progress]);
+    return {
+      tasksByDate: grouped,
+      stats: { completed: completedCount, planned: plannedCount, overdue: overdueCount },
+    };
+  }, [quests, progress, weddingDate]);
 
-  // 월 변경
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
@@ -72,24 +110,26 @@ export default function CalendarPage() {
     setCurrentDate(new Date());
   };
 
-  // 날짜 렌더링
   const renderDays = () => {
     const days = [];
     const daysInMonth = lastDayOfMonth.getDate();
 
-    // 빈 칸 추가 (이전 달)
+    // Empty cells for previous month
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(
-        <div key={`empty-${i}`} className="h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800" />
+        <div key={`empty-${i}`} className="h-20 md:h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800" />
       );
     }
 
-    // 실제 날짜
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const dateKey = date.toISOString().split('T')[0];
       const tasksForDay = tasksByDate[dateKey] || [];
       const isToday = new Date().toDateString() === date.toDateString();
+
+      const completedForDay = tasksForDay.filter(t => !t.isPlanned);
+      const plannedForDay = tasksForDay.filter(t => t.isPlanned);
+      const maxVisible = 2; // Mobile-friendly
 
       days.push(
         <motion.div
@@ -97,38 +137,57 @@ export default function CalendarPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: day * 0.01 }}
-          className={`h-32 border border-gray-200 dark:border-gray-700 p-2 overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+          className={`h-20 md:h-32 border border-gray-200 dark:border-gray-700 p-1 md:p-2 overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
             isToday ? 'bg-blue-50 dark:bg-blue-950 border-blue-400 dark:border-blue-600' : 'bg-white dark:bg-gray-900'
           }`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className={`text-sm font-semibold ${isToday ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+          <div className="flex items-center justify-between mb-0.5 md:mb-1">
+            <span className={`text-xs md:text-sm font-semibold ${isToday ? 'text-blue-600 dark:text-blue-400' : ''}`}>
               {day}
             </span>
-            {tasksForDay.length > 0 && (
-              <span className="text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
-                {tasksForDay.length}
-              </span>
-            )}
+            <div className="flex gap-0.5">
+              {completedForDay.length > 0 && (
+                <span className="text-[9px] md:text-xs bg-green-500 text-white px-1 md:px-1.5 py-0.5 rounded-full leading-none">
+                  {completedForDay.length}
+                </span>
+              )}
+              {plannedForDay.length > 0 && (
+                <span className="text-[9px] md:text-xs bg-purple-500 text-white px-1 md:px-1.5 py-0.5 rounded-full leading-none">
+                  {plannedForDay.length}
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="space-y-1">
-            {tasksForDay.slice(0, 3).map((task, idx) => {
+          <div className="space-y-0.5">
+            {tasksForDay.slice(0, maxVisible).map((task, idx) => {
               const Icon = getQuestIcon(task.questIcon);
+              const isOverdue = task.isPlanned && task.urgency === 'overdue';
+
               return (
                 <div
-                  key={idx}
-                  className="text-xs p-1 rounded truncate flex items-center gap-1"
-                  style={{ backgroundColor: task.questColor + '20', color: task.questColor }}
+                  key={`${task.id}-${idx}`}
+                  className={`text-[10px] md:text-xs p-0.5 md:p-1 rounded truncate flex items-center gap-0.5 md:gap-1 ${
+                    task.isPlanned
+                      ? isOverdue
+                        ? 'border border-dashed border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/30'
+                        : 'border border-dashed border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30'
+                      : ''
+                  }`}
+                  style={
+                    task.isPlanned
+                      ? { color: isOverdue ? '#dc2626' : task.questColor }
+                      : { backgroundColor: task.questColor + '20', color: task.questColor }
+                  }
                 >
-                  <Icon className="w-3 h-3 flex-shrink-0" />
+                  <Icon className="w-2.5 h-2.5 md:w-3 md:h-3 flex-shrink-0" />
                   <span className="truncate">{task.title}</span>
                 </div>
               );
             })}
-            {tasksForDay.length > 3 && (
-              <div className="text-xs text-gray-500 px-1">
-                +{tasksForDay.length - 3} more
+            {tasksForDay.length > maxVisible && (
+              <div className="text-[9px] md:text-xs text-gray-500 px-0.5 md:px-1">
+                +{tasksForDay.length - maxVisible}
               </div>
             )}
           </div>
@@ -140,59 +199,104 @@ export default function CalendarPage() {
   };
 
   const monthName = currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
-  const totalCompletedTasks = Object.values(tasksByDate).flat().length;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
-        {/* 헤더 */}
-        <div className="mb-8">
+      <div className="container mx-auto px-2 md:px-4 py-4 md:py-8">
+        {/* Header */}
+        <div className="mb-4 md:mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-                <CalendarIcon className="w-8 h-8 text-purple-600" />
-                캘린더 뷰
+              <h1 className="text-xl md:text-3xl font-bold mb-1 md:mb-2 flex items-center gap-2 md:gap-3">
+                <CalendarIcon className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
+                캘린더
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                완료한 작업을 날짜별로 확인하세요
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                {weddingDate ? '완료 & 예정 일정을 확인하세요' : '완료한 작업을 날짜별로 확인하세요'}
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">완료한 작업</div>
-              <div className="text-2xl font-bold text-purple-600">{totalCompletedTasks}</div>
+            {/* Stats */}
+            <div className="flex gap-2 md:gap-3">
+              <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-gray-200 dark:border-gray-700 text-center">
+                <div className="text-[10px] md:text-xs text-gray-500 mb-0.5">완료</div>
+                <div className="text-lg md:text-2xl font-bold text-green-600">{stats.completed}</div>
+              </div>
+              {weddingDate && (
+                <>
+                  <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-gray-200 dark:border-gray-700 text-center">
+                    <div className="text-[10px] md:text-xs text-gray-500 mb-0.5">예정</div>
+                    <div className="text-lg md:text-2xl font-bold text-purple-600">{stats.planned}</div>
+                  </div>
+                  {stats.overdue > 0 && (
+                    <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-red-200 dark:border-red-700 text-center">
+                      <div className="text-[10px] md:text-xs text-red-500 mb-0.5">지연</div>
+                      <div className="text-lg md:text-2xl font-bold text-red-600">{stats.overdue}</div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
-          {/* 월 네비게이션 */}
-          <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+          {/* Month navigation */}
+          <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-3 md:p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
 
-            <div className="flex items-center gap-4">
-              <h2 className="text-xl font-bold">{monthName}</h2>
+            <div className="flex items-center gap-2 md:gap-4">
+              <h2 className="text-base md:text-xl font-bold">{monthName}</h2>
               <Button variant="outline" size="sm" onClick={goToToday}>
                 오늘
               </Button>
+              {weddingDate && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentDate(new Date(weddingDate))}
+                  className="text-pink-600 border-pink-300 hover:bg-pink-50"
+                >
+                  <Heart className="w-3 h-3 mr-1" />
+                  D-Day
+                </Button>
+              )}
             </div>
 
             <Button variant="outline" size="sm" onClick={goToNextMonth}>
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
+
+          {/* Legend */}
+          {weddingDate && (
+            <div className="flex items-center gap-4 mt-3 px-1 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-1">
+                <CheckCircle className="w-3 h-3 text-green-500" />
+                <span>완료</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-purple-500" />
+                <span>예정</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <AlertCircle className="w-3 h-3 text-red-500" />
+                <span>지연</span>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* 캘린더 그리드 */}
+        {/* Calendar grid */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
-          {/* 요일 헤더 */}
+          {/* Day of week header */}
           <div className="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
             {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
               <div
                 key={day}
-                className={`py-3 text-center font-semibold text-sm ${
+                className={`py-2 md:py-3 text-center font-semibold text-xs md:text-sm ${
                   idx === 0 ? 'text-red-600' : idx === 6 ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
                 }`}
               >
@@ -201,19 +305,21 @@ export default function CalendarPage() {
             ))}
           </div>
 
-          {/* 날짜 그리드 */}
+          {/* Date grid */}
           <div className="grid grid-cols-7">
             {renderDays()}
           </div>
         </div>
 
-        {/* 안내 메시지 */}
-        {totalCompletedTasks === 0 && (
+        {/* Empty state */}
+        {stats.completed === 0 && stats.planned === 0 && (
           <div className="mt-8 text-center p-8 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
             <CalendarIcon className="w-12 h-12 mx-auto mb-4 text-blue-400" />
             <p className="text-gray-600 dark:text-gray-400">
-              아직 완료한 작업이 없습니다.<br />
-              로드맵에서 작업을 완료하고 날짜를 기록해보세요!
+              {weddingDate
+                ? '로드맵에서 작업을 시작해보세요!'
+                : <>결혼 날짜를 설정하면 예정 일정이 표시됩니다.<br />로드맵에서 작업을 완료하고 날짜를 기록해보세요!</>
+              }
             </p>
           </div>
         )}
