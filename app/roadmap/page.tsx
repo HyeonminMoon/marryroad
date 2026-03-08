@@ -24,8 +24,9 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { RotateCcw, AlertTriangle, Lock, Map, Route } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { RotateCcw, AlertTriangle, Lock, Map, Route, Zap, Gamepad2, BarChart3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 import dynamic from 'next/dynamic';
@@ -37,10 +38,10 @@ const FullMapView = dynamic(
 
 type TabId = 'today' | 'quests' | 'stats';
 
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'today', label: '오늘' },
-  { id: 'quests', label: '퀘스트' },
-  { id: 'stats', label: '통계' },
+const TABS: { id: TabId; label: string; icon: LucideIcon }[] = [
+  { id: 'today', label: '오늘', icon: Zap },
+  { id: 'quests', label: '퀘스트', icon: Gamepad2 },
+  { id: 'stats', label: '통계', icon: BarChart3 },
 ];
 
 function useIsMobile() {
@@ -69,6 +70,7 @@ export default function RoadmapPage() {
 
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<TabId>('today');
+  const prevTabIndexRef = useRef(0);
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
@@ -217,16 +219,22 @@ export default function RoadmapPage() {
         {/* Tab Bar */}
         <div className="max-w-lg mx-auto px-4">
           <div className="flex relative">
-            {TABS.map((tab) => (
+            {TABS.map((tab, idx) => {
+              const Icon = tab.icon;
+              return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors relative ${
+                onClick={() => {
+                  prevTabIndexRef.current = TABS.findIndex(t => t.id === activeTab);
+                  setActiveTab(tab.id);
+                }}
+                className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors relative flex items-center justify-center gap-1.5 ${
                   activeTab === tab.id
                     ? 'text-purple-600 dark:text-purple-400'
                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
               >
+                <Icon className="w-4 h-4" />
                 {tab.label}
                 {activeTab === tab.id && (
                   <motion.div
@@ -236,16 +244,25 @@ export default function RoadmapPage() {
                   />
                 )}
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Tab Content */}
       <div className="max-w-lg mx-auto px-4 py-6">
+        <AnimatePresence mode="wait">
         {/* TODAY TAB */}
         {activeTab === 'today' && (
-          <div className="space-y-4">
+          <motion.div
+            key="today"
+            initial={{ opacity: 0, x: (TABS.findIndex(t => t.id === 'today') - prevTabIndexRef.current) * 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-4"
+          >
             {/* Couple Message / Setup */}
             {progress.coupleNames && !editingCoupleNames ? (
               <DailyMessage
@@ -273,12 +290,19 @@ export default function RoadmapPage() {
               onTaskQuickComplete={onTaskQuickComplete}
               onQuestClick={onQuestClick}
             />
-          </div>
+          </motion.div>
         )}
 
         {/* QUESTS TAB */}
         {activeTab === 'quests' && (
-          <div className="space-y-4">
+          <motion.div
+            key="quests"
+            initial={{ opacity: 0, x: (TABS.findIndex(t => t.id === 'quests') - prevTabIndexRef.current) * 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-4"
+          >
             <DdayDashboard
               quests={quests}
               progress={progress}
@@ -354,20 +378,28 @@ export default function RoadmapPage() {
                 </Button>
               </div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* STATS TAB */}
         {activeTab === 'stats' && (
-          <div className="space-y-4">
+          <motion.div
+            key="stats"
+            initial={{ opacity: 0, x: (TABS.findIndex(t => t.id === 'stats') - prevTabIndexRef.current) * 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="space-y-4"
+          >
             <ActivityHeatmap
               activeDates={progress.activeDates || []}
               activityCounts={progress.activityCounts || {}}
             />
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
             <BudgetChart quests={quests} progress={progress} />
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
 
       {/* Locked quest toast */}

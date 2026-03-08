@@ -3,7 +3,8 @@
 import { useMemo, useState } from 'react';
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { getSpendingByQuest } from '@/lib/utils/budget';
-import { ChevronDown, ChevronUp, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronUp, Wallet, Pencil, Check } from 'lucide-react';
+import { useQuestStore } from '@/lib/stores/quest-store';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BudgetChartProps {
@@ -108,6 +109,9 @@ function DonutChart({
 
 export function BudgetChart({ quests, progress }: BudgetChartProps) {
   const [open, setOpen] = useState(false);
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
+  const setBudgetTotal = useQuestStore((s) => s.setBudgetTotal);
 
   const spending = useMemo(
     () => getSpendingByQuest(quests, progress),
@@ -203,6 +207,52 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
                     {remaining >= 0
                       ? `남은 예산: ${formatAmount(remaining)}원`
                       : `예산 초과: ${formatAmount(Math.abs(remaining))}원`}
+                  </div>
+
+                  {/* Budget edit */}
+                  <div className="w-full flex justify-center">
+                    {editingBudget ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={budgetInput}
+                          onChange={(e) => setBudgetInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const v = parseFloat(budgetInput);
+                              if (!isNaN(v) && v > 0) setBudgetTotal(v * 10000);
+                              setEditingBudget(false);
+                            }
+                            if (e.key === 'Escape') setEditingBudget(false);
+                          }}
+                          autoFocus
+                          className="w-24 text-right text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          placeholder="만원"
+                        />
+                        <span className="text-xs text-gray-500">만원</span>
+                        <button
+                          onClick={() => {
+                            const v = parseFloat(budgetInput);
+                            if (!isNaN(v) && v > 0) setBudgetTotal(v * 10000);
+                            setEditingBudget(false);
+                          }}
+                          className="p-1 text-green-600 hover:text-green-700"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setBudgetInput((totalBudget / 10000).toString());
+                          setEditingBudget(true);
+                        }}
+                        className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      >
+                        <Pencil className="w-3 h-3" />
+                        예산 수정
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
