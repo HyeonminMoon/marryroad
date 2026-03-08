@@ -74,6 +74,7 @@ export interface QuestProgress {
   };
   weddingDate: string | null; // ISO date string, e.g. "2026-11-15"
   activeDates: string[]; // Dates when user completed at least 1 task, e.g. ["2026-03-05"]
+  activityCounts: Record<string, number>; // Date -> task count for heatmap intensity
   coupleNames: { user: string; partner: string } | null;
 }
 

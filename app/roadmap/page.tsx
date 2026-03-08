@@ -10,6 +10,7 @@ import { AchievementGrid } from '@/components/quest/achievement-grid';
 import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
+import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
@@ -328,6 +329,10 @@ export default function RoadmapPage() {
 
         {/* Achievement Grid + Budget Chart */}
         <div className={`space-y-4 mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
+          <ActivityHeatmap
+            activeDates={progress.activeDates || []}
+            activityCounts={progress.activityCounts || {}}
+          />
           <AchievementGrid unlockedIds={unlockedAchievementIds} />
           <BudgetChart quests={quests} progress={progress} />
         </div>

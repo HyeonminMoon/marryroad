@@ -161,6 +161,7 @@ export const useQuestStore = create<QuestStore>()(
         },
         weddingDate: null,
         activeDates: [],
+        activityCounts: {},
         coupleNames: null,
       },
 
@@ -323,6 +324,12 @@ export const useQuestStore = create<QuestStore>()(
             ? trimmedDates
             : [...trimmedDates, today];
 
+          // Track activity count per day for heatmap intensity
+          const prevCounts = state.progress.activityCounts || {};
+          const newActivityCounts = !isAlreadyCompleted
+            ? { ...prevCounts, [today]: (prevCounts[today] || 0) + 1 }
+            : prevCounts;
+
           const newProgress: QuestProgress = {
             completedQuestIds: newCompletedQuestIds,
             taskProgress: newTaskProgress,
@@ -334,6 +341,7 @@ export const useQuestStore = create<QuestStore>()(
             },
             weddingDate: state.progress.weddingDate,
             activeDates: newActiveDates,
+            activityCounts: newActivityCounts,
             coupleNames: state.progress.coupleNames,
           };
 
@@ -405,6 +413,7 @@ export const useQuestStore = create<QuestStore>()(
             },
             weddingDate: currentWeddingDate,
             activeDates: [],
+            activityCounts: {},
             coupleNames: get().progress.coupleNames, // Preserve couple names
           },
         });

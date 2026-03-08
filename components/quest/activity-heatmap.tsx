@@ -1,0 +1,223 @@
+'use client';
+
+import { useState, useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { calculateStreak } from '@/lib/utils/streak';
+
+interface ActivityHeatmapProps {
+  activeDates: string[];
+  activityCounts: Record<string, number>;
+}
+
+function getIntensityClass(count: number): string {
+  if (count === 0) return 'bg-gray-100 dark:bg-gray-800';
+  if (count === 1) return 'bg-green-200 dark:bg-green-900';
+  if (count <= 3) return 'bg-green-400 dark:bg-green-700';
+  return 'bg-green-600 dark:bg-green-500';
+}
+
+function getLongestStreak(dates: string[]): number {
+  if (!dates || dates.length === 0) return 0;
+  const sorted = [...dates].sort();
+  let longest = 1;
+  let current = 1;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = new Date(sorted[i - 1]);
+    const curr = new Date(sorted[i]);
+    const diffMs = curr.getTime() - prev.getTime();
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) {
+      current++;
+      if (current > longest) longest = current;
+    } else if (diffDays > 1) {
+      current = 1;
+    }
+  }
+
+  return longest;
+}
+
+const DAY_LABELS = ['', '월', '', '수', '', '금', ''];
+const WEEKS = 13; // ~90 days
+
+export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmapProps) {
+  const [open, setOpen] = useState(true);
+  const [tooltip, setTooltip] = useState<{ date: string; count: number; x: number; y: number } | null>(null);
+
+  const { grid, monthLabels } = useMemo(() => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    // Find the start: go back to the Monday of (WEEKS) weeks ago
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - (WEEKS * 7 - 1) - startDate.getDay() + 1);
+    // Adjust if getDay() is 0 (Sunday) — treat Sunday as day 7
+    if (today.getDay() === 0) {
+      startDate.setDate(startDate.getDate() - 7);
+    }
+
+    const grid: { date: string; count: number; isToday: boolean; isFuture: boolean }[][] = [];
+    const monthLabels: { label: string; col: number }[] = [];
+
+    let lastMonth = -1;
+    const cursor = new Date(startDate);
+
+    for (let week = 0; week < WEEKS; week++) {
+      const col: typeof grid[0] = [];
+
+      for (let day = 0; day < 7; day++) {
+        const dateStr = cursor.toISOString().split('T')[0];
+        const count = activityCounts[dateStr] || 0;
+        const isToday = dateStr === todayStr;
+        const isFuture = cursor > today;
+
+        col.push({ date: dateStr, count, isToday, isFuture });
+
+        // Track month labels (show at the first week of each month)
+        const month = cursor.getMonth();
+        if (month !== lastMonth && day === 0) {
+          const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+          monthLabels.push({ label: monthNames[month], col: week });
+          lastMonth = month;
+        }
+
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      grid.push(col);
+    }
+
+    return { grid, monthLabels };
+  }, [activityCounts]);
+
+  const currentStreak = calculateStreak(activeDates || []);
+  const longestStreak = getLongestStreak(activeDates || []);
+  const totalActiveDays = (activeDates || []).length;
+
+  return (
+    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+      >
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <span className="text-lg">🌱</span>
+          활동 기록
+        </h3>
+        <ChevronDown
+          className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4">
+          {/* Stats */}
+          <div className="flex gap-4 mb-3 text-xs text-gray-500 dark:text-gray-400">
+            <span>
+              총 <strong className="text-gray-900 dark:text-gray-100">{totalActiveDays}</strong>일 활동
+            </span>
+            <span>
+              현재 <strong className="text-orange-600 dark:text-orange-400">{currentStreak}</strong>일 연속
+            </span>
+            <span>
+              최장 <strong className="text-green-600 dark:text-green-400">{longestStreak}</strong>일 연속
+            </span>
+          </div>
+
+          {/* Heatmap Grid */}
+          <div className="relative overflow-x-auto">
+            {/* Month labels */}
+            <div className="flex ml-8 mb-1" style={{ gap: '3px' }}>
+              {Array.from({ length: WEEKS }).map((_, weekIdx) => {
+                const monthLabel = monthLabels.find(m => m.col === weekIdx);
+                return (
+                  <div
+                    key={weekIdx}
+                    className="text-[10px] text-gray-400 dark:text-gray-500"
+                    style={{ width: '14px', textAlign: 'center' }}
+                  >
+                    {monthLabel?.label || ''}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex gap-0">
+              {/* Day labels */}
+              <div className="flex flex-col mr-1" style={{ gap: '3px' }}>
+                {DAY_LABELS.map((label, i) => (
+                  <div
+                    key={i}
+                    className="text-[10px] text-gray-400 dark:text-gray-500 flex items-center justify-end"
+                    style={{ width: '24px', height: '14px' }}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Grid */}
+              <div className="flex" style={{ gap: '3px' }}>
+                {grid.map((week, weekIdx) => (
+                  <div key={weekIdx} className="flex flex-col" style={{ gap: '3px' }}>
+                    {week.map((day, dayIdx) => (
+                      <div
+                        key={day.date}
+                        className={`rounded-sm transition-colors ${
+                          day.isFuture
+                            ? 'bg-transparent'
+                            : day.isToday
+                            ? `${getIntensityClass(day.count)} ring-2 ring-purple-400 dark:ring-purple-500`
+                            : getIntensityClass(day.count)
+                        }`}
+                        style={{ width: '14px', height: '14px' }}
+                        onMouseEnter={(e) => {
+                          if (!day.isFuture) {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setTooltip({
+                              date: day.date,
+                              count: day.count,
+                              x: rect.left + rect.width / 2,
+                              y: rect.top - 8,
+                            });
+                          }
+                        }}
+                        onMouseLeave={() => setTooltip(null)}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center justify-end gap-1 mt-2">
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 mr-1">적음</span>
+              <div className="w-3 h-3 rounded-sm bg-gray-100 dark:bg-gray-800" />
+              <div className="w-3 h-3 rounded-sm bg-green-200 dark:bg-green-900" />
+              <div className="w-3 h-3 rounded-sm bg-green-400 dark:bg-green-700" />
+              <div className="w-3 h-3 rounded-sm bg-green-600 dark:bg-green-500" />
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">많음</span>
+            </div>
+          </div>
+
+          {/* Tooltip (fixed position) */}
+          {tooltip && (
+            <div
+              className="fixed z-50 pointer-events-none bg-gray-900 text-white text-xs rounded-md px-2 py-1 shadow-lg"
+              style={{
+                left: tooltip.x,
+                top: tooltip.y,
+                transform: 'translate(-50%, -100%)',
+              }}
+            >
+              {tooltip.date} · {tooltip.count > 0 ? `${tooltip.count}개 완료` : '활동 없음'}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
