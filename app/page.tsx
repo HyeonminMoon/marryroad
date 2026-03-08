@@ -78,7 +78,7 @@ export default function Home() {
         {/* 단순한 CTA */}
         <Button
           size="lg"
-          onClick={() => router.push('/roadmap')}
+          onClick={() => router.push('/welcome')}
           className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-lg px-10 py-7 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
         >
           <Sparkles className="w-5 h-5 mr-2" />
