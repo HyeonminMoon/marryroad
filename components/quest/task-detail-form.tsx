@@ -13,8 +13,8 @@ import {
   Calendar,
   Building2,
   Star,
-  Camera,
   CheckCircle,
+  Pencil,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -22,6 +22,13 @@ interface TaskDetailFormProps {
   task: Task;
   isCompleted: boolean;
   showCost?: boolean;
+  existingData?: {
+    cost?: number;
+    memo?: string;
+    date?: string;
+    vendorInfo?: TaskExtendedData['vendorInfo'];
+    rating?: number;
+  };
   onComplete: (data: {
     cost?: number;
     memo?: string;
@@ -32,17 +39,20 @@ interface TaskDetailFormProps {
   }) => void;
 }
 
-export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete }: TaskDetailFormProps) {
-  const [showDetails, setShowDetails] = useState(false);
+export function TaskDetailForm({ task, isCompleted, showCost = true, existingData, onComplete }: TaskDetailFormProps) {
+  const hasExisting = !!(existingData?.memo || existingData?.vendorInfo || existingData?.rating);
+  const [showDetails, setShowDetails] = useState(hasExisting);
+  const [isEditing, setIsEditing] = useState(false);
+  const disabled = isCompleted && !isEditing;
   const [formData, setFormData] = useState({
-    cost: '',
-    memo: '',
-    date: new Date().toISOString().split('T')[0],
-    vendorName: '',
-    vendorContact: '',
-    vendorWebsite: '',
-    vendorAddress: '',
-    rating: 0,
+    cost: existingData?.cost?.toString() || '',
+    memo: existingData?.memo || '',
+    date: existingData?.date || new Date().toISOString().split('T')[0],
+    vendorName: existingData?.vendorInfo?.name || '',
+    vendorContact: existingData?.vendorInfo?.contact || '',
+    vendorWebsite: existingData?.vendorInfo?.website || '',
+    vendorAddress: existingData?.vendorInfo?.address || '',
+    rating: existingData?.rating || 0,
   });
 
   const handleSubmit = () => {
@@ -68,7 +78,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
           type="button"
           onClick={() => setFormData({ ...formData, rating: star })}
           className="transition-transform hover:scale-110"
-          disabled={isCompleted}
+          disabled={disabled}
         >
           <Star
             className={`w-6 h-6 ${
@@ -103,7 +113,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
             value={formData.cost}
             onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
             className="mt-2"
-            disabled={isCompleted}
+            disabled={disabled}
           />
         </div>
       )}
@@ -140,7 +150,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
               value={formData.memo}
               onChange={(e) => setFormData({ ...formData, memo: e.target.value })}
               className="mt-2 min-h-[100px]"
-              disabled={isCompleted}
+              disabled={disabled}
             />
           </div>
 
@@ -156,7 +166,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="mt-2"
-              disabled={isCompleted}
+              disabled={disabled}
             />
           </div>
 
@@ -177,7 +187,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
                 value={formData.vendorName}
                 onChange={(e) => setFormData({ ...formData, vendorName: e.target.value })}
                 className="mt-1"
-                disabled={isCompleted}
+                disabled={disabled}
               />
             </div>
 
@@ -192,7 +202,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
                   value={formData.vendorContact}
                   onChange={(e) => setFormData({ ...formData, vendorContact: e.target.value })}
                   className="mt-1"
-                  disabled={isCompleted}
+                  disabled={disabled}
                 />
               </div>
               <div>
@@ -205,7 +215,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
                   value={formData.vendorWebsite}
                   onChange={(e) => setFormData({ ...formData, vendorWebsite: e.target.value })}
                   className="mt-1"
-                  disabled={isCompleted}
+                  disabled={disabled}
                 />
               </div>
             </div>
@@ -220,7 +230,7 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
                 value={formData.vendorAddress}
                 onChange={(e) => setFormData({ ...formData, vendorAddress: e.target.value })}
                 className="mt-1"
-                disabled={isCompleted}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -234,21 +244,11 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
             <StarRating />
           </div>
 
-          {/* 사진 (추후 구현) */}
-          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border-2 border-dashed border-blue-300 dark:border-blue-700">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-1">
-              <Camera className="w-4 h-4" />
-              <span className="text-sm font-semibold">사진 첨부</span>
-            </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              곧 사진 업로드 기능이 추가됩니다!
-            </p>
-          </div>
         </motion.div>
       )}
 
-      {/* 완료 버튼 */}
-      {!isCompleted && (
+      {/* 완료 버튼 or 수정 버튼 */}
+      {!isCompleted ? (
         <Button
           onClick={handleSubmit}
           className="w-full"
@@ -256,6 +256,25 @@ export function TaskDetailForm({ task, isCompleted, showCost = true, onComplete 
         >
           <CheckCircle className="w-5 h-5 mr-2" />
           작업 완료하기
+        </Button>
+      ) : !isEditing ? (
+        <Button
+          variant="outline"
+          onClick={() => setIsEditing(true)}
+          className="w-full"
+          size="sm"
+        >
+          <Pencil className="w-4 h-4 mr-2" />
+          수정하기
+        </Button>
+      ) : (
+        <Button
+          onClick={() => { handleSubmit(); setIsEditing(false); }}
+          className="w-full"
+          size="sm"
+        >
+          <CheckCircle className="w-4 h-4 mr-2" />
+          저장하기
         </Button>
       )}
     </div>

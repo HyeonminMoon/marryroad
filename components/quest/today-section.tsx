@@ -3,8 +3,9 @@
 import React, { useState, useCallback } from 'react';
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { getQuestIcon } from '@/lib/utils/icon-map';
-import { Flame, Check } from 'lucide-react';
+import { Flame, Check, AlertCircle, Clock } from 'lucide-react';
 import { calculateStreak } from '@/lib/utils/streak';
+import { getUrgentTasks, TaskUrgency } from '@/lib/utils/dday';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -15,13 +16,41 @@ interface TodaySectionProps {
   onQuestClick: (quest: Quest) => void;
 }
 
-/** 추천 태스크: available/in-progress 퀘스트에서 아직 안 한 태스크 중 가장 앞에 있는 것 */
+const URGENCY_CONFIG: Record<TaskUrgency, { label: string; className: string } | null> = {
+  overdue: { label: '지금 해야 해요!', className: 'bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400' },
+  'due-soon': { label: '곧 마감', className: 'bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400' },
+  upcoming: { label: '다가오는 일정', className: 'bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400' },
+  later: null,
+};
+
+interface RecommendedTask {
+  quest: Quest;
+  taskId: string;
+  taskTitle: string;
+  urgency?: TaskUrgency;
+}
+
+/** 추천 태스크: weddingDate가 있으면 긴급도순, 없으면 순차 */
 function getRecommendedTasks(
   quests: Quest[],
   progress: QuestProgress,
   max: number = 3
-) {
-  const results: { quest: Quest; taskId: string; taskTitle: string }[] = [];
+): RecommendedTask[] {
+  // If wedding date exists, use urgency-based sorting
+  if (progress.weddingDate) {
+    const urgent = getUrgentTasks(quests, progress, progress.weddingDate);
+    const questMap = new Map(quests.map((q) => [q.id, q]));
+
+    return urgent.slice(0, max).map((t) => ({
+      quest: questMap.get(t.questId)!,
+      taskId: t.taskId,
+      taskTitle: t.title,
+      urgency: t.urgency,
+    }));
+  }
+
+  // Fallback: sequential first-available
+  const results: RecommendedTask[] = [];
 
   for (const quest of quests) {
     if (quest.status !== 'available' && quest.status !== 'in-progress') continue;
@@ -36,7 +65,7 @@ function getRecommendedTasks(
           taskId: task.id,
           taskTitle: task.title,
         });
-        break; // 퀘스트 당 첫 번째 미완료 태스크만
+        break;
       }
     }
 
@@ -129,9 +158,10 @@ export function TodaySection({
               모든 태스크를 완료했어요!
             </motion.p>
           ) : (
-            recommended.map(({ quest, taskId, taskTitle }) => {
+            recommended.map(({ quest, taskId, taskTitle, urgency }) => {
               const Icon = getQuestIcon(quest.icon);
               const isJustDone = justCompleted.has(taskId);
+              const urgencyInfo = urgency ? URGENCY_CONFIG[urgency] : null;
 
               return (
                 <motion.div
@@ -152,14 +182,25 @@ export function TodaySection({
                     <Icon className="w-5 h-5" style={{ color: quest.color }} />
                   </div>
 
-                  {/* 태스크 제목 */}
+                  {/* 태스크 제목 + 긴급도 뱃지 */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
-                      {taskTitle}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {quest.title}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                        {taskTitle}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {quest.title}
+                      </p>
+                      {urgencyInfo && (
+                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full whitespace-nowrap ${urgencyInfo.className}`}>
+                          {urgency === 'overdue' && <AlertCircle className="w-2.5 h-2.5 inline mr-0.5" />}
+                          {urgency === 'due-soon' && <Clock className="w-2.5 h-2.5 inline mr-0.5" />}
+                          {urgencyInfo.label}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* 퀵 컴플리트 버튼 */}
