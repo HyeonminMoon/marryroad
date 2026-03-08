@@ -25,6 +25,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { RotateCcw, AlertTriangle, Lock, Map, Route } from 'lucide-react';
+import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 import dynamic from 'next/dynamic';
@@ -33,6 +34,25 @@ const FullMapView = dynamic(
   () => import('@/components/quest/full-map-view').then(mod => ({ default: mod.FullMapView })),
   { ssr: false, loading: () => <div className="flex items-center justify-center h-96 text-gray-400">맵 로딩중...</div> }
 );
+
+type TabId = 'today' | 'quests' | 'stats';
+
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'today', label: '오늘' },
+  { id: 'quests', label: '퀘스트' },
+  { id: 'stats', label: '통계' },
+];
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+}
 
 export default function RoadmapPage() {
   const {
@@ -47,6 +67,8 @@ export default function RoadmapPage() {
     setCoupleNames,
   } = useQuestStore();
 
+  const isMobile = useIsMobile();
+  const [activeTab, setActiveTab] = useState<TabId>('today');
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
@@ -87,12 +109,9 @@ export default function RoadmapPage() {
     if (newAchievements.length > 0) {
       localStorage.setItem(seenKey, JSON.stringify(unlockedAchievementIds));
 
-      // Grant achievement XP to store
       const totalNewXp = newAchievements.reduce((sum, a) => sum + a.xp, 0);
       if (totalNewXp > 0) grantAchievementXp(totalNewXp);
 
-      // First-visit flood prevention: if 3+ new achievements at once,
-      // only show the highest-tier one to avoid toast spam
       if (newAchievements.length >= 3 && seen.length === 0) {
         const best = newAchievements.sort((a, b) => b.xp - a.xp)[0];
         if (best && !achievementToast) setAchievementToast(best);
@@ -136,7 +155,6 @@ export default function RoadmapPage() {
     (questId: string, taskId: string) => {
       completeTask(questId, taskId);
 
-      // Find task title for toast
       const quest = quests.find(q => q.id === questId);
       const task = quest?.tasks.find(t => t.id === taskId);
       if (task) {
@@ -184,9 +202,9 @@ export default function RoadmapPage() {
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Header />
 
-      {/* 상단: Progress Ring + Stats */}
+      {/* Sticky: Progress Ring + Tab Bar */}
       <div className="sticky top-16 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-700">
-        <div className={`mx-auto px-4 py-3 ${viewMode === 'path' ? 'max-w-lg' : 'max-w-6xl'}`}>
+        <div className="max-w-lg mx-auto px-4 py-3">
           <ProgressRing
             progress={progress}
             totalQuests={totalQuests}
@@ -195,138 +213,164 @@ export default function RoadmapPage() {
             nextLevelXp={lvlProgress.nextLevelXp}
           />
         </div>
+
+        {/* Tab Bar */}
+        <div className="max-w-lg mx-auto px-4">
+          <div className="flex relative">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors relative ${
+                  activeTab === tab.id
+                    ? 'text-purple-600 dark:text-purple-400'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="tab-underline"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* 메인: Today 섹션 + Quest Path / Full Map */}
-      <div className={`mx-auto px-4 py-6 ${viewMode === 'path' ? 'max-w-lg' : 'max-w-6xl'}`}>
-        {/* 뷰 전환 + 초기화 */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 gap-1">
-            <button
-              onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                viewMode === 'map'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-              }`}
-            >
-              <Map className="w-3.5 h-3.5" />
-              전체 맵
-            </button>
-            <button
-              onClick={() => setViewMode('path')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                viewMode === 'path'
-                  ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-              }`}
-            >
-              <Route className="w-3.5 h-3.5" />
-              경로
-            </button>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleReset}
-            className="text-xs"
-          >
-            <RotateCcw className="w-3 h-3 mr-1" />
-            초기화
-          </Button>
-        </div>
-
-        {/* Achievement Grid + Budget Chart */}
-        <div className={`space-y-4 mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
-          <ActivityHeatmap
-            activeDates={progress.activeDates || []}
-            activityCounts={progress.activityCounts || {}}
-          />
-          <AchievementGrid unlockedIds={unlockedAchievementIds} />
-          <BudgetChart quests={quests} progress={progress} />
-        </div>
-
-        {/* Couple Message / Setup */}
-        <div className={`mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
-          {progress.coupleNames && !editingCoupleNames ? (
-            <DailyMessage
-              userName={progress.coupleNames.user}
-              partnerName={progress.coupleNames.partner}
-              onEditNames={() => setEditingCoupleNames(true)}
-            />
-          ) : (editingCoupleNames || !coupleSetupDismissed) ? (
-            <CoupleSetup
-              onSave={(user, partner) => {
-                setCoupleNames(user, partner);
-                setEditingCoupleNames(false);
-              }}
-              onSkip={() => {
-                setEditingCoupleNames(false);
-                setCoupleSetupDismissed(true);
-                localStorage.setItem('marryroad-couple-setup-dismissed', 'true');
-              }}
-            />
-          ) : null}
-        </div>
-
-        {viewMode === 'map' ? (
-          <>
-            {/* D-Day Dashboard */}
-            <div className="max-w-lg mx-auto mb-4">
-              <DdayDashboard
-                quests={quests}
-                progress={progress}
-                onSetWeddingDate={setWeddingDate}
-                onQuestClick={onQuestClick}
+      {/* Tab Content */}
+      <div className="max-w-lg mx-auto px-4 py-6">
+        {/* TODAY TAB */}
+        {activeTab === 'today' && (
+          <div className="space-y-4">
+            {/* Couple Message / Setup */}
+            {progress.coupleNames && !editingCoupleNames ? (
+              <DailyMessage
+                userName={progress.coupleNames.user}
+                partnerName={progress.coupleNames.partner}
+                onEditNames={() => setEditingCoupleNames(true)}
               />
-            </div>
-
-            {/* Today Section */}
-            <div className="max-w-lg mx-auto mb-6">
-              <TodaySection
-                quests={quests}
-                progress={progress}
-                onTaskQuickComplete={onTaskQuickComplete}
-                onQuestClick={onQuestClick}
+            ) : (editingCoupleNames || !coupleSetupDismissed) ? (
+              <CoupleSetup
+                onSave={(user, partner) => {
+                  setCoupleNames(user, partner);
+                  setEditingCoupleNames(false);
+                }}
+                onSkip={() => {
+                  setEditingCoupleNames(false);
+                  setCoupleSetupDismissed(true);
+                  localStorage.setItem('marryroad-couple-setup-dismissed', 'true');
+                }}
               />
-            </div>
+            ) : null}
 
-            {/* Full Map View (ReactFlow DAG) */}
-            <FullMapView onQuestClick={onQuestClick} />
-          </>
-        ) : (
-          <>
-            {/* D-Day Dashboard */}
-            <div className="mb-4">
-              <DdayDashboard
-                quests={quests}
-                progress={progress}
-                onSetWeddingDate={setWeddingDate}
-                onQuestClick={onQuestClick}
-              />
-            </div>
-
-            {/* Today Section */}
             <TodaySection
               quests={quests}
               progress={progress}
               onTaskQuickComplete={onTaskQuickComplete}
               onQuestClick={onQuestClick}
             />
+          </div>
+        )}
 
-            {/* Quest Path */}
-            <div className="relative" style={{ minHeight: '60vh' }}>
-              <QuestPath
-                quests={quests}
-                progress={progress}
-                onQuestClick={onQuestClick}
-              />
-            </div>
-          </>
+        {/* QUESTS TAB */}
+        {activeTab === 'quests' && (
+          <div className="space-y-4">
+            <DdayDashboard
+              quests={quests}
+              progress={progress}
+              onSetWeddingDate={setWeddingDate}
+              onQuestClick={onQuestClick}
+            />
+
+            {/* Desktop: show map/path toggle */}
+            {!isMobile && (
+              <div className="flex items-center justify-between">
+                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 gap-1">
+                  <button
+                    onClick={() => setViewMode('map')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      viewMode === 'map'
+                        ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
+                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    }`}
+                  >
+                    <Map className="w-3.5 h-3.5" />
+                    전체 맵
+                  </button>
+                  <button
+                    onClick={() => setViewMode('path')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      viewMode === 'path'
+                        ? 'bg-white dark:bg-gray-700 shadow-sm text-purple-600 dark:text-purple-400'
+                        : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    }`}
+                  >
+                    <Route className="w-3.5 h-3.5" />
+                    경로
+                  </button>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="text-xs"
+                >
+                  <RotateCcw className="w-3 h-3 mr-1" />
+                  초기화
+                </Button>
+              </div>
+            )}
+
+            {/* Quest View */}
+            {isMobile || viewMode === 'path' ? (
+              <div className="relative" style={{ minHeight: '60vh' }}>
+                <QuestPath
+                  quests={quests}
+                  progress={progress}
+                  onQuestClick={onQuestClick}
+                />
+              </div>
+            ) : (
+              <div className="max-w-6xl -mx-4 px-4">
+                <FullMapView onQuestClick={onQuestClick} />
+              </div>
+            )}
+
+            {/* Mobile reset button */}
+            {isMobile && (
+              <div className="flex justify-center pt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="text-xs"
+                >
+                  <RotateCcw className="w-3 h-3 mr-1" />
+                  초기화
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* STATS TAB */}
+        {activeTab === 'stats' && (
+          <div className="space-y-4">
+            <ActivityHeatmap
+              activeDates={progress.activeDates || []}
+              activityCounts={progress.activityCounts || {}}
+            />
+            <AchievementGrid unlockedIds={unlockedAchievementIds} />
+            <BudgetChart quests={quests} progress={progress} />
+          </div>
         )}
       </div>
 
-      {/* 잠긴 퀘스트 클릭 시 토스트 알림 */}
+      {/* Locked quest toast */}
       {lockedMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center gap-3 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl border border-gray-700 max-w-md">
@@ -336,7 +380,7 @@ export default function RoadmapPage() {
         </div>
       )}
 
-      {/* 초기화 확인 모달 */}
+      {/* Reset dialog */}
       <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
