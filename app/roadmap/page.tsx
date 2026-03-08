@@ -9,6 +9,7 @@ import { CelebrationToast } from '@/components/quest/celebration-toast';
 import { AchievementGrid } from '@/components/quest/achievement-grid';
 import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
+import { BudgetChart } from '@/components/quest/budget-chart';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
@@ -318,9 +319,10 @@ export default function RoadmapPage() {
           </Button>
         </div>
 
-        {/* Achievement Grid */}
-        <div className={`mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
+        {/* Achievement Grid + Budget Chart */}
+        <div className={`space-y-4 mb-4 ${viewMode === 'map' ? 'max-w-lg mx-auto' : ''}`}>
           <AchievementGrid unlockedIds={unlockedAchievementIds} />
+          <BudgetChart quests={quests} progress={progress} />
         </div>
 
         {viewMode === 'map' ? (

@@ -159,6 +159,8 @@ function DdayCountdown({
   );
 }
 
+const INITIAL_SHOW_LIMIT = 5;
+
 function UrgencyGroup({
   urgency,
   tasks,
@@ -173,9 +175,14 @@ function UrgencyGroup({
   defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const [expanded, setExpanded] = useState(false);
   const config = URGENCY_CONFIG[urgency];
 
   if (tasks.length === 0) return null;
+
+  const shouldLimit = urgency === 'later' || urgency === 'upcoming';
+  const visibleTasks = shouldLimit && !expanded ? tasks.slice(0, INITIAL_SHOW_LIMIT) : tasks;
+  const hiddenCount = tasks.length - visibleTasks.length;
 
   return (
     <div className={`rounded-xl border ${config.bg} overflow-hidden`}>
@@ -207,7 +214,7 @@ function UrgencyGroup({
             className="overflow-hidden"
           >
             <div className="px-4 pb-3 space-y-2">
-              {tasks.map((task) => {
+              {visibleTasks.map((task) => {
                 const quest = quests.find(q => q.id === task.questId);
                 const Icon = getQuestIcon(task.questIcon);
                 return (
@@ -245,6 +252,22 @@ function UrgencyGroup({
                   </div>
                 );
               })}
+              {hiddenCount > 0 && (
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="w-full text-center text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 py-2 transition-colors"
+                >
+                  {hiddenCount}개 더 보기
+                </button>
+              )}
+              {expanded && shouldLimit && tasks.length > INITIAL_SHOW_LIMIT && (
+                <button
+                  onClick={() => setExpanded(false)}
+                  className="w-full text-center text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 py-2 transition-colors"
+                >
+                  접기
+                </button>
+              )}
             </div>
           </motion.div>
         )}
