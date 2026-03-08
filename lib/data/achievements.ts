@@ -7,6 +7,7 @@
 
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { DEFAULT_BUDGET } from '@/lib/constants';
+import { calculateStreak } from '@/lib/utils/streak';
 
 export type AchievementTier = 'bronze' | 'silver' | 'gold';
 
@@ -130,6 +131,15 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     xp: 50,
     icon: '🚀',
     check: (p) => totalCompletedTasks(p) >= 30,
+  },
+  {
+    id: 'week-streak',
+    name: '일주일 연속',
+    description: '7일 연속으로 태스크를 완료하세요',
+    tier: 'silver',
+    xp: 50,
+    icon: '🔥',
+    check: (p) => calculateStreak(p.activeDates || []) >= 7,
   },
 
   // Gold (hard)

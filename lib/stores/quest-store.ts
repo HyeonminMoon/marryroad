@@ -159,6 +159,7 @@ export const useQuestStore = create<QuestStore>()(
           spent: 0,
         },
         weddingDate: null,
+        activeDates: [],
       },
 
       initialize: () => {
@@ -309,6 +310,13 @@ export const useQuestStore = create<QuestStore>()(
           }
 
           const newXp = state.progress.xp + xpDelta;
+
+          // Track active date for streak
+          const today = new Date().toISOString().split('T')[0];
+          const newActiveDates = state.progress.activeDates.includes(today)
+            ? state.progress.activeDates
+            : [...state.progress.activeDates, today];
+
           const newProgress: QuestProgress = {
             completedQuestIds: newCompletedQuestIds,
             taskProgress: newTaskProgress,
@@ -319,6 +327,7 @@ export const useQuestStore = create<QuestStore>()(
               spent: state.progress.budget.spent + spentDelta,
             },
             weddingDate: state.progress.weddingDate,
+            activeDates: newActiveDates,
           };
 
           // Recalculate quest statuses
@@ -384,10 +393,11 @@ export const useQuestStore = create<QuestStore>()(
             xp: 0,
             level: 1,
             budget: {
-              total: currentBudgetTotal, // Preserve user-set budget total
+              total: currentBudgetTotal,
               spent: 0,
             },
-            weddingDate: currentWeddingDate, // Preserve wedding date
+            weddingDate: currentWeddingDate,
+            activeDates: [], // Reset streak on full reset
           },
         });
 

@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useQuestStore } from '@/lib/stores/quest-store'
 import { getDdayCount } from '@/lib/utils/dday'
+import { calculateStreak } from '@/lib/utils/streak'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -43,6 +44,18 @@ function DdayBadge() {
   return (
     <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${colorClass}`}>
       {label}
+    </span>
+  )
+}
+
+function StreakBadge() {
+  const activeDates = useQuestStore((state) => state.progress.activeDates)
+  const streak = calculateStreak(activeDates || [])
+  if (streak <= 0) return null
+
+  return (
+    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400">
+      🔥 {streak}
     </span>
   )
 }
@@ -115,6 +128,7 @@ export function Header() {
             <h1 className="text-xl font-bold text-slate-900">MarryRoad</h1>
           </Link>
           <DdayBadge />
+          <StreakBadge />
         </div>
 
         {/* 네비게이션 메뉴 */}
