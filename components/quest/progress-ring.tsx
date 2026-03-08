@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy } from 'lucide-react';
 import { useCountUp } from '@/lib/hooks/use-count-up';
@@ -28,6 +28,7 @@ export function ProgressRing({
   currentLevelXp,
   nextLevelXp,
 }: ProgressRingProps) {
+  const gradientId = useId();
   const overallPercent = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
   const animatedPercent = useCountUp(overallPercent, 800);
   const animatedXp = useCountUp(currentLevelXp, 800);
@@ -82,7 +83,7 @@ export function ProgressRing({
             cy={RING_SIZE / 2}
             r={RADIUS}
             fill="none"
-            stroke="url(#progressGradient)"
+            stroke={`url(#${gradientId})`}
             strokeWidth={STROKE_WIDTH}
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
@@ -91,7 +92,7 @@ export function ProgressRing({
             transition={{ duration: 1, ease: 'easeOut' }}
           />
           <defs>
-            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#8B5CF6" />
               <stop offset="100%" stopColor="#EC4899" />
             </linearGradient>

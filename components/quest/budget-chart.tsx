@@ -161,9 +161,58 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
           >
             <div className="px-5 pb-5">
               {!hasSpending ? (
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
-                  아직 기록된 비용이 없어요. 태스크를 완료할 때 비용을 입력해보세요!
-                </p>
+                <div className="text-center py-6 space-y-3">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    아직 기록된 비용이 없어요. 먼저 총 예산을 설정해보세요!
+                  </p>
+                  <div className="flex justify-center">
+                    {editingBudget ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={budgetInput}
+                          onChange={(e) => setBudgetInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const v = parseFloat(budgetInput);
+                              if (!isNaN(v) && v > 0) setBudgetTotal(v * 10000);
+                              setEditingBudget(false);
+                            }
+                            if (e.key === 'Escape') setEditingBudget(false);
+                          }}
+                          autoFocus
+                          className="w-24 text-right text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          placeholder="만원"
+                        />
+                        <span className="text-xs text-gray-500">만원</span>
+                        <button
+                          onClick={() => {
+                            const v = parseFloat(budgetInput);
+                            if (!isNaN(v) && v > 0) setBudgetTotal(v * 10000);
+                            setEditingBudget(false);
+                          }}
+                          className="p-1 text-green-600 hover:text-green-700"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setBudgetInput((totalBudget / 10000).toString());
+                          setEditingBudget(true);
+                        }}
+                        className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        총 예산 설정하기
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    현재 예산: {formatAmount(totalBudget)}원
+                  </p>
+                </div>
               ) : (
                 <div className="flex flex-col items-center gap-4">
                   <DonutChart

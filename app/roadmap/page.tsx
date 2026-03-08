@@ -11,6 +11,7 @@ import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
 import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
+import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
@@ -100,6 +101,13 @@ export default function RoadmapPage() {
     () => getUnlockedAchievements(progress, quests),
     [progress, quests]
   );
+
+  // Stats tab badge: check for unseen achievements
+  const hasNewAchievements = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    const seen: string[] = JSON.parse(localStorage.getItem('marryroad-seen-achievements') || '[]');
+    return unlockedAchievementIds.some(id => !seen.includes(id));
+  }, [unlockedAchievementIds]);
 
   useEffect(() => {
     if (quests.length === 0) return;
@@ -227,6 +235,9 @@ export default function RoadmapPage() {
                 onClick={() => {
                   prevTabIndexRef.current = TABS.findIndex(t => t.id === activeTab);
                   setActiveTab(tab.id);
+                  if (tab.id === 'stats' && hasNewAchievements) {
+                    localStorage.setItem('marryroad-seen-achievements', JSON.stringify(unlockedAchievementIds));
+                  }
                 }}
                 className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors relative flex items-center justify-center gap-1.5 ${
                   activeTab === tab.id
@@ -236,6 +247,9 @@ export default function RoadmapPage() {
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
+                {tab.id === 'stats' && hasNewAchievements && activeTab !== 'stats' && (
+                  <span className="absolute top-1.5 right-1/4 w-2 h-2 bg-red-500 rounded-full" />
+                )}
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="tab-underline"
@@ -397,6 +411,7 @@ export default function RoadmapPage() {
             />
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
             <BudgetChart quests={quests} progress={progress} />
+            <DataManagement />
           </motion.div>
         )}
         </AnimatePresence>
