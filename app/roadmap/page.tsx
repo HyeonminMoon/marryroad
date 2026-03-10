@@ -82,6 +82,7 @@ export default function RoadmapPage() {
     grantAchievementXp,
     setCoupleNames,
     toggleHideQuest,
+    uncompleteTask,
   } = useQuestStore();
 
   const visibleQuests = useMemo(
@@ -108,6 +109,8 @@ export default function RoadmapPage() {
   const [completedQuestOverlay, setCompletedQuestOverlay] = useState<Quest | null>(null);
   const prevCompletedQuestIdsRef = useRef<string[]>([]);
   const [editingCoupleNames, setEditingCoupleNames] = useState(false);
+  const [undoToast, setUndoToast] = useState<{ questId: string; taskId: string; taskTitle: string } | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insightsExpanded, setInsightsExpanded] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('marryroad-insights-expanded') === 'true';
@@ -210,6 +213,11 @@ export default function RoadmapPage() {
       const quest = quests.find(q => q.id === questId);
       const task = quest?.tasks.find(t => t.id === taskId);
       if (task) {
+        // Show undo toast
+        if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+        setUndoToast({ questId, taskId, taskTitle: task.title });
+        undoTimerRef.current = setTimeout(() => setUndoToast(null), 5000);
+
         setTimeout(() => {
           setCelebrationToast({
             visible: true,
@@ -529,6 +537,25 @@ export default function RoadmapPage() {
         )}
         </AnimatePresence>
       </div>
+
+      {/* Undo toast */}
+      {undoToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center gap-3 bg-gray-900 text-white px-4 py-2.5 rounded-lg shadow-xl border border-gray-700">
+            <p className="text-sm truncate max-w-[200px]">{undoToast.taskTitle}</p>
+            <button
+              onClick={() => {
+                uncompleteTask(undoToast.questId, undoToast.taskId);
+                setUndoToast(null);
+                if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+              }}
+              className="text-sm font-bold text-purple-300 hover:text-purple-200 whitespace-nowrap"
+            >
+              되돌리기
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Locked quest toast */}
       {lockedMessage && (

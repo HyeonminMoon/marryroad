@@ -114,6 +114,19 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
     [quests, progress]
   );
 
+  // M7: Total estimated cost from typicalCost data
+  const estimatedTotal = useMemo(() => {
+    let min = 0;
+    let max = 0;
+    for (const quest of quests) {
+      for (const task of quest.tasks) {
+        if (task.typicalCostMin) min += task.typicalCostMin;
+        if (task.typicalCostMax) max += task.typicalCostMax;
+      }
+    }
+    return { min, max };
+  }, [quests]);
+
   const totalSpent = progress.budget.spent;
   const totalBudget = progress.budget.total;
   const remaining = totalBudget - totalSpent;
@@ -261,6 +274,18 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
               </motion.div>
             );
           })}
+        </div>
+      )}
+
+      {/* Estimated total cost */}
+      {estimatedTotal.max > 0 && (
+        <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-gray-500 dark:text-gray-400">예상 총 비용</span>
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              {formatAmount(estimatedTotal.min)}~{formatAmount(estimatedTotal.max)}원
+            </span>
+          </div>
         </div>
       )}
 

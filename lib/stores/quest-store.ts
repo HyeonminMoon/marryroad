@@ -79,6 +79,7 @@ interface QuestStore {
   getDecisionSelection: (taskId: string, checklistIdx: number) => string | undefined;
   claimWeeklyReward: (challengeId: string, weekStart: string) => void;
   toggleHideQuest: (questId: string) => void;
+  uncompleteTask: (questId: string, taskId: string) => void;
 
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -604,6 +605,40 @@ export const useQuestStore = create<QuestStore>()(
             : [...hidden, questId];
           return {
             progress: { ...state.progress, hiddenQuestIds: next },
+          };
+        });
+      },
+
+      uncompleteTask: (questId: string, taskId: string) => {
+        set(state => {
+          const tp = state.progress.taskProgress[questId];
+          if (!tp || !tp.completedTaskIds.includes(taskId)) return state;
+
+          const newCompletedIds = tp.completedTaskIds.filter(id => id !== taskId);
+          const taskCost = tp.taskCosts[taskId] || 0;
+          const newTaskCosts = { ...tp.taskCosts };
+          delete newTaskCosts[taskId];
+          const newExtData = { ...(tp.taskExtendedData || {}) };
+          delete newExtData[taskId];
+
+          return {
+            progress: {
+              ...state.progress,
+              taskProgress: {
+                ...state.progress.taskProgress,
+                [questId]: {
+                  ...tp,
+                  completedTaskIds: newCompletedIds,
+                  taskCosts: newTaskCosts,
+                  taskExtendedData: newExtData,
+                },
+              },
+              completedQuestIds: state.progress.completedQuestIds.filter(id => id !== questId),
+              budget: {
+                ...state.progress.budget,
+                spent: Math.max(0, state.progress.budget.spent - taskCost),
+              },
+            },
           };
         });
       },
