@@ -180,7 +180,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     tier: 'silver',
     xp: 50,
     icon: '🔥',
-    check: (p) => calculateStreak(p.activeDates || []) >= 7,
+    check: (p) => calculateStreak(p.activeDates || []).current >= 7,
   },
 
   // Gold (hard) — Challenges
@@ -218,7 +218,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     tier: 'gold',
     xp: 75,
     icon: '🔥',
-    check: (p) => calculateStreak(p.activeDates || []) >= 14,
+    check: (p) => calculateStreak(p.activeDates || []).current >= 14,
   },
   {
     id: 'month-streak',
@@ -227,7 +227,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     tier: 'gold',
     xp: 100,
     icon: '💥',
-    check: (p) => calculateStreak(p.activeDates || []) >= 30,
+    check: (p) => calculateStreak(p.activeDates || []).current >= 30,
   },
   {
     id: 'half-way',

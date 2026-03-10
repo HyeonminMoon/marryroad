@@ -129,7 +129,7 @@ export function TodaySection({
   const { total, completed } = getOverallProgress(quests, progress);
   const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  const streak = calculateStreak(progress.activeDates || []);
+  const { current: streak } = calculateStreak(progress.activeDates || []);
 
   return (
     <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 p-6">

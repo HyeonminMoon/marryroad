@@ -16,6 +16,7 @@ import { ProgressRing } from '@/components/quest/progress-ring';
 import { WeeklyProgress } from '@/components/quest/weekly-progress';
 import { WeeklyChallenge } from '@/components/quest/weekly-challenge';
 import { SmartRecommendation } from '@/components/quest/smart-recommendation';
+import { DailyStreak } from '@/components/quest/daily-streak';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -321,6 +322,8 @@ export default function RoadmapPage() {
                 }}
               />
             ) : null}
+
+            <DailyStreak activeDates={progress.activeDates || []} />
 
             <WeeklyProgress
               activityCounts={progress.activityCounts || {}}

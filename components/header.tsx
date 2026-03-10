@@ -61,7 +61,7 @@ function DdayBadge() {
 
 function StreakBadge() {
   const activeDates = useQuestStore((state) => state.progress.activeDates)
-  const streak = calculateStreak(activeDates || [])
+  const { current: streak } = calculateStreak(activeDates || [])
   if (streak <= 0) return null
 
   return (

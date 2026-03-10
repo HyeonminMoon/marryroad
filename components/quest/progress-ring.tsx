@@ -35,7 +35,7 @@ export function ProgressRing({
 
   const dashOffset = CIRCUMFERENCE - (overallPercent / 100) * CIRCUMFERENCE;
 
-  const streak = calculateStreak(progress.activeDates || []);
+  const { current: streak } = calculateStreak(progress.activeDates || []);
   const dday = progress.weddingDate ? getDdayCount(progress.weddingDate) : null;
 
   const formatBudget = (amount: number) => {

@@ -16,28 +16,6 @@ function getIntensityClass(count: number): string {
   return 'bg-purple-600 dark:bg-purple-500';
 }
 
-function getLongestStreak(dates: string[]): number {
-  if (!dates || dates.length === 0) return 0;
-  const sorted = [...dates].sort();
-  let longest = 1;
-  let current = 1;
-
-  for (let i = 1; i < sorted.length; i++) {
-    const prev = new Date(sorted[i - 1]);
-    const curr = new Date(sorted[i]);
-    const diffMs = curr.getTime() - prev.getTime();
-    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 1) {
-      current++;
-      if (current > longest) longest = current;
-    } else if (diffDays > 1) {
-      current = 1;
-    }
-  }
-
-  return longest;
-}
 
 const DAY_LABELS = ['', '월', '', '수', '', '금', ''];
 const WEEKS = 13; // ~90 days
@@ -92,8 +70,7 @@ export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmap
     return { grid, monthLabels };
   }, [activityCounts]);
 
-  const currentStreak = calculateStreak(activeDates || []);
-  const longestStreak = getLongestStreak(activeDates || []);
+  const { current: currentStreak, best: longestStreak } = calculateStreak(activeDates || []);
   const totalActiveDays = (activeDates || []).length;
 
   return (
