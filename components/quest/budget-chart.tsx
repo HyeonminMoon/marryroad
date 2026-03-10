@@ -3,8 +3,9 @@
 import { useMemo, useState } from 'react';
 import { Quest, QuestProgress } from '@/lib/types/quest';
 import { getSpendingByQuest } from '@/lib/utils/budget';
-import { Wallet, Pencil, Check, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Wallet, Pencil, Check, TrendingUp, TrendingDown, AlertTriangle, Settings } from 'lucide-react';
 import { useQuestStore } from '@/lib/stores/quest-store';
+import { DEFAULT_BUDGET } from '@/lib/constants';
 import { motion } from 'framer-motion';
 
 interface BudgetChartProps {
@@ -157,13 +158,31 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
         ) : (
           <button
             onClick={() => { setBudgetInput((totalBudget / 10000).toString()); setEditingBudget(true); }}
-            className="flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 bg-purple-50 dark:bg-purple-900/30 px-2.5 py-1 rounded-lg transition-colors"
           >
             <Pencil className="w-3 h-3" />
-            {formatAmount(totalBudget)}원
+            총 예산 {formatAmount(totalBudget)}원
           </button>
         )}
       </div>
+
+      {/* Budget default nudge */}
+      {totalBudget === DEFAULT_BUDGET && !editingBudget && (
+        <button
+          onClick={() => { setBudgetInput((totalBudget / 10000).toString()); setEditingBudget(true); }}
+          className="w-full mb-4 flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200/60 dark:border-amber-800/40 text-left hover:bg-amber-100/50 dark:hover:bg-amber-950/50 transition-colors"
+        >
+          <Settings className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-amber-700 dark:text-amber-300">
+              예산이 기본값(3,000만원)이에요
+            </p>
+            <p className="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">
+              탭하여 실제 예산을 설정하세요
+            </p>
+          </div>
+        </button>
+      )}
 
       {/* Big number + Donut */}
       <div className="flex items-center gap-5 mb-4">
