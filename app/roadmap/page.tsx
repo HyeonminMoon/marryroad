@@ -13,6 +13,7 @@ import { BudgetChart } from '@/components/quest/budget-chart';
 import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
 import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
+import { WeeklyProgress } from '@/components/quest/weekly-progress';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
@@ -297,6 +298,16 @@ export default function RoadmapPage() {
                 }}
               />
             ) : null}
+
+            <WeeklyProgress
+              activityCounts={progress.activityCounts || {}}
+              activeDates={progress.activeDates || []}
+              weddingDate={progress.weddingDate || undefined}
+              totalRemainingTasks={quests.reduce(
+                (sum, q) => sum + q.tasks.length - (progress.taskProgress[q.id]?.completedTaskIds?.length || 0),
+                0
+              )}
+            />
 
             <TodaySection
               quests={quests}
