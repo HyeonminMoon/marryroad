@@ -282,8 +282,65 @@ export default function DatabasePage() {
           );
         })()}
 
-        {/* 테이블 */}
-        <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-2">
+          {filteredAndSortedTasks.map((task, index) => {
+            const Icon = getQuestIcon(task.questIcon);
+            return (
+              <motion.div
+                key={`m-${task.questId}-${task.id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: index * 0.015 }}
+                className={`bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl border border-white/30 dark:border-gray-700/50 p-3 shadow-sm ${
+                  task.isCompleted ? 'opacity-60' : ''
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="pt-0.5">{getStatusIcon(task)}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`font-medium text-sm ${task.isCompleted ? 'line-through text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>
+                      {task.title}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <div className="flex items-center gap-1">
+                        <Icon className="w-3 h-3" style={{ color: task.questColor }} />
+                        <span className="text-[11px] text-gray-500">{task.questTitle}</span>
+                      </div>
+                      <span
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                          task.priority === '상'
+                            ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                            : task.priority === '중'
+                            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                            : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                        }`}
+                      >
+                        {task.priority}
+                      </span>
+                      {task.userCost ? (
+                        <span className="text-[11px] font-medium text-purple-600 dark:text-purple-400">
+                          {task.userCost.toLocaleString()}원
+                        </span>
+                      ) : null}
+                      {task.completedDate && (
+                        <span className="text-[11px] text-gray-400">{task.completedDate}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+          {filteredAndSortedTasks.length === 0 && (
+            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+              검색 결과가 없습니다.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
