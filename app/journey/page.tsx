@@ -1,15 +1,17 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { extractJourneyEvents, calculateJourneyStats } from '@/lib/utils/journey';
 import { Header } from '@/components/header';
 import { JourneySummary } from '@/components/journey/journey-summary';
 import { JourneyTimeline } from '@/components/journey/journey-timeline';
+import { JourneyFilter } from '@/components/journey/journey-filter';
 import { JourneyEmpty } from '@/components/journey/journey-empty';
 
 export default function JourneyPage() {
   const { initialize, quests, progress } = useQuestStore();
+  const [selectedQuestId, setSelectedQuestId] = useState<string | null>(null);
 
   useEffect(() => {
     initialize();
@@ -23,6 +25,14 @@ export default function JourneyPage() {
     () => calculateJourneyStats(events, progress),
     [events, progress]
   );
+
+  const filteredEvents = useMemo(
+    () => selectedQuestId
+      ? events.filter(e => e.questId === selectedQuestId)
+      : events,
+    [events, selectedQuestId]
+  );
+
   const hasEvents = events.length > 0;
 
   return (
@@ -41,7 +51,13 @@ export default function JourneyPage() {
               daysSinceStart={stats.daysSinceStart}
               level={stats.level}
             />
-            <JourneyTimeline events={events} />
+            <JourneyFilter
+              quests={quests}
+              events={events}
+              selectedQuestId={selectedQuestId}
+              onSelect={setSelectedQuestId}
+            />
+            <JourneyTimeline events={filteredEvents} />
           </>
         ) : (
           <JourneyEmpty />
