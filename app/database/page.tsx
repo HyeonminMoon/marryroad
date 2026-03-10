@@ -10,6 +10,7 @@ import { Database, Search, Filter, ArrowUpDown, CheckCircle, Circle, AlertCircle
 import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion } from 'framer-motion';
 import { Task } from '@/lib/types/quest';
+import { VendorCompare } from '@/components/database/vendor-compare';
 
 /** 플랫 리스트용 확장 Task 타입 - Quest 메타정보 포함 */
 interface FlatTask extends Task {
@@ -156,7 +157,7 @@ export default function DatabasePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50/30 via-white to-pink-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950/20">
       <Header />
 
       <div className="container mx-auto px-4 py-8">
@@ -176,22 +177,22 @@ export default function DatabasePage() {
 
           {/* 통계 */}
           <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg p-4 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50">
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">전체 작업</div>
               <div className="text-2xl font-bold">{stats.total}</div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg p-4 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50">
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">완료</div>
               <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg p-4 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50">
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">총 비용</div>
               <div className="text-2xl font-bold text-purple-600">{stats.totalCost.toLocaleString()}원</div>
             </div>
           </div>
 
           {/* 필터 및 검색 */}
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 space-y-4">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg p-4 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 space-y-4">
             <div className="flex gap-4 flex-wrap">
               {/* 검색 */}
               <div className="flex-1 min-w-[200px]">
@@ -238,8 +239,11 @@ export default function DatabasePage() {
           </div>
         </div>
 
+        {/* Vendor Compare */}
+        <VendorCompare quests={quests} progress={progress} />
+
         {/* 테이블 */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
