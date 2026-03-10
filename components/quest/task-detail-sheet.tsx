@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Task, Quest, TaskExtendedData } from '@/lib/types/quest';
 import {
   Sheet,
@@ -27,8 +27,13 @@ import {
   ChevronDown,
   Lightbulb,
   Info,
+  Check,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuestStore } from '@/lib/stores/quest-store';
+import { findDecisionImpact } from '@/lib/data/decision-impacts';
 
 interface TaskDetailSheetProps {
   task: Task | null;
@@ -186,49 +191,9 @@ export function TaskDetailSheet({
             </div>
           )}
 
-          {/* Decision Guide (formerly Checklist) */}
+          {/* Decision Guide with Cascade */}
           {task.checklist.length > 0 && (
-            <div className="bg-purple-50/50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-100/50 dark:border-purple-900/30">
-              <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300 mb-3 flex items-center gap-2">
-                <Lightbulb className="w-4 h-4" />
-                참고 가이드
-              </h4>
-              <div className="space-y-3">
-                {task.checklist.map((item, idx) => {
-                  // Parse tips into individual options (split by " / ")
-                  const options = item.tips
-                    ? item.tips.split(' / ').map(opt => opt.trim()).filter(Boolean)
-                    : [];
-
-                  return (
-                    <div key={idx} className="bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100/50 dark:border-gray-700/30">
-                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
-                        {item.text}
-                        {item.isOptional && (
-                          <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(선택)</span>
-                        )}
-                      </p>
-                      {options.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
-                          {options.map((opt, optIdx) => (
-                            <span
-                              key={optIdx}
-                              className="inline-flex items-center text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2.5 py-1.5 rounded-lg border border-purple-100/50 dark:border-purple-800/30"
-                            >
-                              {opt}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 flex items-center gap-1">
-                <Info className="w-3 h-3" />
-                의사결정 시 참고하세요
-              </p>
-            </div>
+            <DecisionGuide task={task} />
           )}
 
           {/* Cost Card */}
@@ -469,5 +434,180 @@ export function TaskDetailSheet({
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+/**
+ * DecisionGuide — Interactive decision reference with cascade insights
+ */
+function DecisionGuide({ task }: { task: Task }) {
+  const { progress, setDecisionSelection } = useQuestStore();
+  const selections = progress.decisionSelections;
+
+  const handleSelect = useCallback((idx: number, option: string) => {
+    const key = `${task.id}-${idx}`;
+    const current = selections[key];
+    // Toggle: deselect if same option tapped again
+    setDecisionSelection(task.id, idx, current === option ? null : option);
+  }, [task.id, selections, setDecisionSelection]);
+
+  return (
+    <div className="bg-purple-50/50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-100/50 dark:border-purple-900/30">
+      <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300 mb-3 flex items-center gap-2">
+        <Lightbulb className="w-4 h-4" />
+        의사결정 가이드
+      </h4>
+      <div className="space-y-3">
+        {task.checklist.map((item, idx) => {
+          const options = item.tips
+            ? item.tips.split(' / ').map(opt => opt.trim()).filter(Boolean)
+            : [];
+          const selectedKey = `${task.id}-${idx}`;
+          const selectedOption = selections[selectedKey];
+
+          // Find impact for currently selected option
+          const impact = selectedOption ? findDecisionImpact(selectedOption) : null;
+
+          return (
+            <div key={idx} className="bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100/50 dark:border-gray-700/30">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
+                {item.text}
+                {item.isOptional && (
+                  <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(선택)</span>
+                )}
+              </p>
+              {options.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {options.map((opt, optIdx) => {
+                    const isSelected = selectedOption === opt;
+                    // Check if this is a "참고:" prefix note (not a selectable option)
+                    const isNote = opt.startsWith('참고:') || opt.startsWith('참고자료:');
+
+                    if (isNote) {
+                      return (
+                        <span
+                          key={optIdx}
+                          className="inline-flex items-center text-[11px] text-gray-400 dark:text-gray-500 px-2 py-1"
+                        >
+                          <Info className="w-3 h-3 mr-1 flex-shrink-0" />
+                          {opt}
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <motion.button
+                        key={optIdx}
+                        type="button"
+                        onClick={() => handleSelect(idx, opt)}
+                        whileTap={{ scale: 0.95 }}
+                        className={`inline-flex items-center text-xs px-2.5 py-1.5 rounded-lg border transition-all duration-200 ${
+                          isSelected
+                            ? 'bg-purple-600 dark:bg-purple-500 text-white border-purple-600 dark:border-purple-500 shadow-sm shadow-purple-200 dark:shadow-purple-900/50'
+                            : 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-100/50 dark:border-purple-800/30 hover:border-purple-300 dark:hover:border-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/50'
+                        }`}
+                      >
+                        {isSelected && (
+                          <Check className="w-3 h-3 mr-1 flex-shrink-0" />
+                        )}
+                        <span className="text-left">{opt}</span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Impact Insight Card */}
+              <AnimatePresence>
+                {impact && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                    animate={{ height: 'auto', opacity: 1, marginTop: 8 }}
+                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/30 rounded-lg p-3 border border-purple-100/30 dark:border-purple-800/30">
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg flex-shrink-0">{impact.emoji}</span>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {impact.summary}
+                          </p>
+                          {impact.affects.length > 0 && (
+                            <div className="mt-2 flex items-center gap-1 flex-wrap">
+                              <Sparkles className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                              <span className="text-[10px] text-purple-500 dark:text-purple-400 font-medium">
+                                영향:
+                              </span>
+                              {impact.affects.map((a, i) => (
+                                <span
+                                  key={i}
+                                  className="text-[10px] text-purple-600 dark:text-purple-300 bg-purple-100/50 dark:bg-purple-900/30 px-1.5 py-0.5 rounded"
+                                >
+                                  {a}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Previous decisions context */}
+      <PriorDecisionsBanner taskId={task.id} />
+
+      <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 flex items-center gap-1">
+        <Info className="w-3 h-3" />
+        탭하여 선택하면 영향도를 확인할 수 있어요
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Shows relevant prior decisions that may affect the current task
+ */
+function PriorDecisionsBanner({ taskId }: { taskId: string }) {
+  const selections = useQuestStore(s => s.progress.decisionSelections);
+
+  // Find selections from other tasks (not the current one)
+  const priorSelections = Object.entries(selections).filter(
+    ([key]) => !key.startsWith(`${taskId}-`)
+  );
+
+  if (priorSelections.length === 0) return null;
+
+  // Show max 3 most relevant prior decisions
+  const relevantPrior = priorSelections.slice(0, 3);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="mt-3 bg-white/60 dark:bg-gray-800/40 rounded-lg p-2.5 border border-gray-100/50 dark:border-gray-700/30"
+    >
+      <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
+        <ArrowRight className="w-3 h-3" />
+        이전 선택 기반
+      </p>
+      <div className="flex flex-wrap gap-1">
+        {relevantPrior.map(([, value]) => (
+          <span
+            key={value}
+            className="text-[10px] bg-purple-100/60 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 px-2 py-0.5 rounded-full"
+          >
+            {value.length > 20 ? value.slice(0, 20) + '…' : value}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   );
 }

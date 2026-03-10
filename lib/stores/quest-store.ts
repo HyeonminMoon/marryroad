@@ -75,7 +75,9 @@ interface QuestStore {
   setWeddingDate: (date: string | null) => void;
   grantAchievementXp: (xp: number) => void;
   setCoupleNames: (user: string, partner: string) => void;
-  
+  setDecisionSelection: (taskId: string, checklistIdx: number, option: string | null) => void;
+  getDecisionSelection: (taskId: string, checklistIdx: number) => string | undefined;
+
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
   getQuestProgress: (questId: string) => number;
@@ -164,6 +166,7 @@ export const useQuestStore = create<QuestStore>()(
         activeDates: [],
         activityCounts: {},
         coupleNames: null,
+        decisionSelections: {},
       },
 
       initialize: () => {
@@ -344,6 +347,7 @@ export const useQuestStore = create<QuestStore>()(
             activeDates: newActiveDates,
             activityCounts: newActivityCounts,
             coupleNames: state.progress.coupleNames,
+            decisionSelections: state.progress.decisionSelections,
           };
 
           // Recalculate quest statuses
@@ -480,6 +484,7 @@ export const useQuestStore = create<QuestStore>()(
             activeDates: [],
             activityCounts: {},
             coupleNames: get().progress.coupleNames, // Preserve couple names
+            decisionSelections: {},
           },
         });
 
@@ -528,6 +533,29 @@ export const useQuestStore = create<QuestStore>()(
             coupleNames: { user, partner },
           },
         }));
+      },
+
+      setDecisionSelection: (taskId: string, checklistIdx: number, option: string | null) => {
+        set(state => {
+          const key = `${taskId}-${checklistIdx}`;
+          const newSelections = { ...state.progress.decisionSelections };
+          if (option === null) {
+            delete newSelections[key];
+          } else {
+            newSelections[key] = option;
+          }
+          return {
+            progress: {
+              ...state.progress,
+              decisionSelections: newSelections,
+            },
+          };
+        });
+      },
+
+      getDecisionSelection: (taskId: string, checklistIdx: number) => {
+        const key = `${taskId}-${checklistIdx}`;
+        return get().progress.decisionSelections[key];
       },
 
       getQuestStatus: (questId: string) => {

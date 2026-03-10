@@ -76,6 +76,7 @@ export interface QuestProgress {
   activeDates: string[]; // Dates when user completed at least 1 task, e.g. ["2026-03-05"]
   activityCounts: Record<string, number>; // Date -> task count for heatmap intensity
   coupleNames: { user: string; partner: string } | null;
+  decisionSelections: Record<string, string>; // "{taskId}-{checklistIdx}" -> selected option text
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';
