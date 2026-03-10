@@ -10,6 +10,7 @@ import { getQuestIcon } from '@/lib/utils/icon-map';
 import { Task } from '@/lib/types/quest';
 import { parseRecommendedTiming, getTaskUrgency } from '@/lib/utils/dday';
 import { CalendarDaySheet, CalendarDayTask } from '@/components/calendar/calendar-day-sheet';
+import { UpcomingDeadlines } from '@/components/calendar/upcoming-deadlines';
 import { TaskDetailSheet } from '@/components/quest/task-detail-sheet';
 import { TaskExtendedData } from '@/lib/types/quest';
 import confetti from 'canvas-confetti';
@@ -374,6 +375,9 @@ export default function CalendarPage() {
             )}
           </div>
         )}
+
+        {/* Upcoming deadlines */}
+        <UpcomingDeadlines tasksByDate={tasksByDate} />
 
         {/* Calendar grid */}
         <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
