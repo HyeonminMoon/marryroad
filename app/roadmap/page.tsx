@@ -22,6 +22,7 @@ import { PreparationPace } from '@/components/quest/preparation-pace';
 import { NeglectedQuests } from '@/components/quest/neglected-quests';
 import { WeeklyTrend } from '@/components/quest/weekly-trend';
 import { CompletionForecast } from '@/components/quest/completion-forecast';
+import { QuestComparison } from '@/components/quest/quest-comparison';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -467,6 +468,7 @@ export default function RoadmapPage() {
           >
             <WeeklyTrend activityCounts={progress.activityCounts || {}} />
             <CompletionForecast quests={quests} progress={progress} />
+            <QuestComparison quests={quests} progress={progress} />
             <ActivityHeatmap
               activeDates={progress.activeDates || []}
               activityCounts={progress.activityCounts || {}}
