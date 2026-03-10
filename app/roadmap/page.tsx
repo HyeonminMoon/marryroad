@@ -24,6 +24,7 @@ import { WeeklyTrend } from '@/components/quest/weekly-trend';
 import { CompletionForecast } from '@/components/quest/completion-forecast';
 import { QuestComparison } from '@/components/quest/quest-comparison';
 import { QuestVisibility } from '@/components/quest/quest-visibility';
+import { WeddingDateNudge } from '@/components/quest/wedding-date-nudge';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -339,6 +340,11 @@ export default function RoadmapPage() {
                 }}
               />
             ) : null}
+
+            {/* Wedding date nudge — only when not set */}
+            {!progress.weddingDate && (
+              <WeddingDateNudge onSetDate={setWeddingDate} />
+            )}
 
             <SmartRecommendation
               quests={visibleQuests}

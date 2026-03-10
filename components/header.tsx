@@ -41,7 +41,14 @@ function CoupleNamesBadge() {
 
 function DdayBadge() {
   const weddingDate = useQuestStore((state) => state.progress.weddingDate)
-  if (!weddingDate) return null
+
+  if (!weddingDate) {
+    return (
+      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+        D-Day ?
+      </span>
+    )
+  }
 
   const dday = getDdayCount(weddingDate)
   const label = dday > 0 ? `D-${dday}` : dday === 0 ? 'D-Day' : `D+${Math.abs(dday)}`
