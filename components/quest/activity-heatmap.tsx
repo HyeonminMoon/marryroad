@@ -10,10 +10,10 @@ interface ActivityHeatmapProps {
 }
 
 function getIntensityClass(count: number): string {
-  if (count === 0) return 'bg-gray-100 dark:bg-gray-800';
-  if (count === 1) return 'bg-green-200 dark:bg-green-900';
-  if (count <= 3) return 'bg-green-400 dark:bg-green-700';
-  return 'bg-green-600 dark:bg-green-500';
+  if (count === 0) return 'bg-gray-100 dark:bg-gray-800/50';
+  if (count === 1) return 'bg-purple-200 dark:bg-purple-900/60';
+  if (count <= 3) return 'bg-purple-400 dark:bg-purple-700/80';
+  return 'bg-purple-600 dark:bg-purple-500';
 }
 
 function getLongestStreak(dates: string[]): number {
@@ -97,7 +97,7 @@ export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmap
   const totalActiveDays = (activeDates || []).length;
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-gray-700/50 overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
@@ -195,10 +195,10 @@ export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmap
             {/* Legend */}
             <div className="flex items-center justify-end gap-1 mt-2">
               <span className="text-[10px] text-gray-400 dark:text-gray-500 mr-1">적음</span>
-              <div className="w-3 h-3 rounded-sm bg-gray-100 dark:bg-gray-800" />
-              <div className="w-3 h-3 rounded-sm bg-green-200 dark:bg-green-900" />
-              <div className="w-3 h-3 rounded-sm bg-green-400 dark:bg-green-700" />
-              <div className="w-3 h-3 rounded-sm bg-green-600 dark:bg-green-500" />
+              <div className="w-3 h-3 rounded-sm bg-gray-100 dark:bg-gray-800/50" />
+              <div className="w-3 h-3 rounded-sm bg-purple-200 dark:bg-purple-900/60" />
+              <div className="w-3 h-3 rounded-sm bg-purple-400 dark:bg-purple-700/80" />
+              <div className="w-3 h-3 rounded-sm bg-purple-600 dark:bg-purple-500" />
               <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">많음</span>
             </div>
           </div>
