@@ -78,6 +78,24 @@ function WeddingDatePicker({ onSetDate }: { onSetDate: (date: string) => void })
   );
 }
 
+const DDAY_MILESTONES = [
+  { days: 365, emoji: '🌟', message: '1년 뒤 가장 아름다운 날이 기다리고 있어요' },
+  { days: 200, emoji: '✨', message: '200일, 설레는 카운트다운이 시작됐어요' },
+  { days: 100, emoji: '💯', message: '100일! 벌써 여기까지 왔어요' },
+  { days: 50, emoji: '🎯', message: '50일 남았어요, 거의 다 왔어요!' },
+  { days: 30, emoji: '📅', message: '한 달! 마무리 준비를 시작하세요' },
+  { days: 14, emoji: '💕', message: '2주 후면 드디어 그 날이에요' },
+  { days: 7, emoji: '🌸', message: '일주일! 두근두근 카운트다운' },
+  { days: 3, emoji: '💒', message: '3일 남았어요, 곧 만나요' },
+  { days: 1, emoji: '🎊', message: '내일이에요! 오늘 밤 푹 쉬세요' },
+  { days: 0, emoji: '💍', message: '드디어 오늘! 축하해요' },
+];
+
+function getDdayMilestone(dday: number) {
+  // Show message if exactly on a milestone day (within ±1 for tolerance)
+  return DDAY_MILESTONES.find(m => Math.abs(dday - m.days) <= 1);
+}
+
 function DdayCountdown({
   weddingDate,
   onChangeDate,
@@ -155,6 +173,27 @@ function DdayCountdown({
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 text-right">
         준비 진행률 {progressPercent}%
       </p>
+
+      {/* D-Day Milestone Message */}
+      {(() => {
+        const milestone = getDdayMilestone(dday);
+        if (!milestone) return null;
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-3 bg-gradient-to-r from-pink-50/80 to-purple-50/80 dark:from-pink-950/30 dark:to-purple-950/30 rounded-xl p-3 border border-pink-100/50 dark:border-pink-900/30"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="text-2xl">{milestone.emoji}</span>
+              <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                {milestone.message}
+              </p>
+            </div>
+          </motion.div>
+        );
+      })()}
     </div>
   );
 }
