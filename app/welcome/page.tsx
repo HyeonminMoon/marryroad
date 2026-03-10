@@ -16,7 +16,7 @@ type QuestSetupState = 'none' | 'partial' | 'done';
 export default function WelcomePage() {
   const router = useRouter();
   const { setCoupleNames, setWeddingDate, bulkCompleteQuest, completeTask } = useQuestStore();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [userName, setUserName] = useState('');
   const [partnerName, setPartnerName] = useState('');
   const [dateInput, setDateInput] = useState('');
@@ -121,6 +121,57 @@ export default function WelcomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
       <AnimatePresence mode="wait">
+        {/* Step 0: App Introduction */}
+        {step === 0 && (
+          <motion.div
+            key="step0"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4 }}
+            className="w-full max-w-sm text-center"
+          >
+            <motion.div
+              className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 rounded-3xl flex items-center justify-center shadow-2xl"
+              animate={{ rotate: [0, 3, -3, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              <Heart className="w-12 h-12 text-white fill-white" />
+            </motion.div>
+
+            <h1 className="text-3xl font-black text-gray-900 dark:text-gray-100 mb-3">
+              MarryRoad
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+              결혼 준비의 모든 것을 한 곳에서.<br />
+              일정 관리, 예산 추적, 진행 상황을<br />
+              게임처럼 즐기면서 준비하세요.
+            </p>
+
+            <div className="space-y-2 mb-8 text-left max-w-[260px] mx-auto">
+              {[
+                { emoji: '🗺️', text: '퀘스트 기반 체크리스트' },
+                { emoji: '💰', text: '예산 추적 & 인사이트' },
+                { emoji: '📅', text: 'D-Day 카운트다운' },
+                { emoji: '📖', text: '준비 과정 여정 기록' },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                  <span className="text-base">{item.emoji}</span>
+                  {item.text}
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setStep(1)}
+              className="w-full py-3.5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white rounded-xl text-sm font-bold hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25"
+            >
+              시작하기
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+
         {/* Step 1: Names */}
         {step === 1 && (
           <motion.div

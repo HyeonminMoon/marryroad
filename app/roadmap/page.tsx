@@ -95,7 +95,7 @@ export default function RoadmapPage() {
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const [lockedMessage, setLockedMessage] = useState<string | null>(null);
+  const [lockedMessage, setLockedMessage] = useState<{ text: string; questId: string } | null>(null);
   const [viewMode, setViewMode] = useState<'path' | 'map'>('map');
   const [celebrationToast, setCelebrationToast] = useState<{
     visible: boolean;
@@ -188,12 +188,11 @@ export default function RoadmapPage() {
             const dep = allQuests.find((q: Quest) => q.id === depId);
             return dep ? `"${dep.title}"` : depId;
           });
-        const message =
+        const text =
           prereqNames.length > 0
-            ? `이 퀘스트를 시작하려면 ${prereqNames.join(', ')}을(를) 먼저 완료하세요.`
+            ? `${prereqNames.join(', ')}을(를) 먼저 완료하세요.`
             : '이 퀘스트는 아직 잠겨 있습니다.';
-        setLockedMessage(message);
-        setTimeout(() => setLockedMessage(null), 3500);
+        setLockedMessage({ text, questId: quest.id });
         return;
       }
 
@@ -536,7 +535,26 @@ export default function RoadmapPage() {
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center gap-3 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl border border-gray-700 max-w-md">
             <Lock className="w-5 h-5 text-amber-400 flex-shrink-0" />
-            <p className="text-sm">{lockedMessage}</p>
+            <p className="text-sm flex-1">{lockedMessage.text}</p>
+            <button
+              onClick={() => {
+                const quest = quests.find(q => q.id === lockedMessage.questId);
+                if (quest) {
+                  setSelectedQuest(quest);
+                  setModalOpen(true);
+                }
+                setLockedMessage(null);
+              }}
+              className="text-xs text-purple-300 hover:text-purple-200 font-medium whitespace-nowrap ml-2"
+            >
+              그래도 열기
+            </button>
+            <button
+              onClick={() => setLockedMessage(null)}
+              className="text-gray-500 hover:text-gray-300 ml-1"
+            >
+              &times;
+            </button>
           </div>
         </div>
       )}
