@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import { Task } from '@/lib/types/quest';
 import { VendorCompare } from '@/components/database/vendor-compare';
 import { CostBreakdown } from '@/components/database/cost-breakdown';
+import { PriorityProgress } from '@/components/database/priority-progress';
 
 /** 플랫 리스트용 확장 Task 타입 - Quest 메타정보 포함 */
 interface FlatTask extends Task {
@@ -245,6 +246,9 @@ export default function DatabasePage() {
             </div>
           </div>
         </div>
+
+        {/* Priority Progress */}
+        <PriorityProgress tasks={allTasks} />
 
         {/* Cost Breakdown */}
         <CostBreakdown
