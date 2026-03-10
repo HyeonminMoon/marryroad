@@ -204,6 +204,19 @@ export function Header() {
               데이터베이스
             </Button>
           </Link>
+          <Link href="/guests">
+            <Button
+              variant="ghost"
+              className={`gap-2 rounded-none border-b-[3px] transition-colors ${
+                isActive('/guests')
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold'
+                  : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
+            >
+              <User className="h-4 w-4" />
+              하객
+            </Button>
+          </Link>
         </nav>
 
         {/* 모바일 햄버거 메뉴 */}
@@ -272,6 +285,19 @@ export function Header() {
                   >
                     <Database className="h-4 w-4" />
                     데이터베이스
+                  </Button>
+                </Link>
+                <Link href="/guests" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
+                      isActive('/guests')
+                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
+                        : 'border-transparent'
+                    }`}
+                  >
+                    <User className="h-4 w-4" />
+                    하객
                   </Button>
                 </Link>
               </nav>
