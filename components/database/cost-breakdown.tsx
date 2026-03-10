@@ -18,9 +18,11 @@ interface QuestCost {
 interface CostBreakdownProps {
   quests: Quest[];
   progress: QuestProgress;
+  activeQuestId?: string | null;
+  onQuestClick?: (questId: string) => void;
 }
 
-export function CostBreakdown({ quests, progress }: CostBreakdownProps) {
+export function CostBreakdown({ quests, progress, activeQuestId, onQuestClick }: CostBreakdownProps) {
   const { items, grandTotal } = useMemo(() => {
     const costMap = new Map<string, number>();
 
@@ -72,7 +74,13 @@ export function CostBreakdown({ quests, progress }: CostBreakdownProps) {
         {items.map((item, idx) => {
           const Icon = getQuestIcon(item.icon);
           return (
-            <div key={item.questId}>
+            <button
+              key={item.questId}
+              onClick={() => onQuestClick?.(item.questId)}
+              className={`w-full text-left transition-all rounded-lg px-2 py-1.5 -mx-2 ${
+                onQuestClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50' : ''
+              } ${activeQuestId === item.questId ? 'bg-gray-50 dark:bg-gray-800/50 ring-1 ring-purple-300 dark:ring-purple-700' : ''}`}
+            >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2 min-w-0">
                   <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: item.color }} />
@@ -96,7 +104,7 @@ export function CostBreakdown({ quests, progress }: CostBreakdownProps) {
                   style={{ backgroundColor: item.color }}
                 />
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

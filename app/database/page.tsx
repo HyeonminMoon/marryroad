@@ -35,6 +35,7 @@ export default function DatabasePage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
+  const [filterQuest, setFilterQuest] = useState<string | null>(null);
 
   // 모든 작업을 플랫 리스트로 변환
   const allTasks = useMemo(() => {
@@ -90,6 +91,11 @@ export default function DatabasePage() {
       filtered = filtered.filter(task => task.priority === filterPriority);
     }
 
+    // 퀘스트 필터
+    if (filterQuest) {
+      filtered = filtered.filter(task => task.questId === filterQuest);
+    }
+
     // 정렬
     filtered.sort((a, b) => {
       let aValue: string | number, bValue: string | number;
@@ -126,7 +132,7 @@ export default function DatabasePage() {
     });
 
     return filtered;
-  }, [allTasks, searchQuery, sortField, sortOrder, filterStatus, filterPriority]);
+  }, [allTasks, searchQuery, sortField, sortOrder, filterStatus, filterPriority, filterQuest]);
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -241,10 +247,36 @@ export default function DatabasePage() {
         </div>
 
         {/* Cost Breakdown */}
-        <CostBreakdown quests={quests} progress={progress} />
+        <CostBreakdown
+          quests={quests}
+          progress={progress}
+          activeQuestId={filterQuest}
+          onQuestClick={(id) => setFilterQuest(filterQuest === id ? null : id)}
+        />
 
         {/* Vendor Compare */}
         <VendorCompare quests={quests} progress={progress} />
+
+        {/* Active quest filter chip */}
+        {filterQuest && (() => {
+          const q = quests.find(quest => quest.id === filterQuest);
+          if (!q) return null;
+          const QIcon = getQuestIcon(q.icon);
+          return (
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-xs text-gray-500">필터:</span>
+              <button
+                onClick={() => setFilterQuest(null)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-white transition-colors hover:opacity-80"
+                style={{ backgroundColor: q.color }}
+              >
+                <QIcon className="w-3 h-3" />
+                {q.title}
+                <span className="ml-1">×</span>
+              </button>
+            </div>
+          );
+        })()}
 
         {/* 테이블 */}
         <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
