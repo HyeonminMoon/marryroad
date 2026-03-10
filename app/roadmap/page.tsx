@@ -15,6 +15,7 @@ import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
 import { WeeklyProgress } from '@/components/quest/weekly-progress';
 import { ShareCardButton } from '@/components/quest/share-card-button';
+import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
@@ -87,6 +88,8 @@ export default function RoadmapPage() {
   }>({ visible: false, questId: '', taskId: '', taskTitle: '' });
   const [achievementToast, setAchievementToast] = useState<AchievementDef | null>(null);
   const achievementQueueRef = useRef<AchievementDef[]>([]);
+  const [completedQuestOverlay, setCompletedQuestOverlay] = useState<Quest | null>(null);
+  const prevCompletedQuestIdsRef = useRef<string[]>([]);
   const [editingCoupleNames, setEditingCoupleNames] = useState(false);
   const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -97,6 +100,23 @@ export default function RoadmapPage() {
   useEffect(() => {
     initialize();
   }, [initialize]);
+
+  // Quest completion detection
+  useEffect(() => {
+    const prev = prevCompletedQuestIdsRef.current;
+    const current = progress.completedQuestIds;
+
+    if (prev.length > 0 && current.length > prev.length) {
+      const newIds = current.filter(id => !prev.includes(id));
+      if (newIds.length > 0) {
+        const quest = quests.find(q => q.id === newIds[0]);
+        if (quest) {
+          setCompletedQuestOverlay(quest);
+        }
+      }
+    }
+    prevCompletedQuestIdsRef.current = current;
+  }, [progress.completedQuestIds, quests]);
 
   // Achievement detection
   const unlockedAchievementIds = useMemo(
@@ -485,6 +505,12 @@ export default function RoadmapPage() {
           const next = achievementQueueRef.current.shift();
           setAchievementToast(next ?? null);
         }}
+      />
+
+      {/* Quest Completion Overlay */}
+      <QuestCompletionOverlay
+        quest={completedQuestOverlay}
+        onDismiss={() => setCompletedQuestOverlay(null)}
       />
 
       {/* Celebration Memo Toast */}
