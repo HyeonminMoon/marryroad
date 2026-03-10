@@ -8,23 +8,20 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, CheckCircle, Clock
 import { motion } from 'framer-motion';
 import { getQuestIcon } from '@/lib/utils/icon-map';
 import { Task } from '@/lib/types/quest';
-import { parseRecommendedTiming, TaskUrgency, getTaskUrgency } from '@/lib/utils/dday';
+import { parseRecommendedTiming, getTaskUrgency } from '@/lib/utils/dday';
+import { CalendarDaySheet, CalendarDayTask } from '@/components/calendar/calendar-day-sheet';
+import { TaskDetailSheet } from '@/components/quest/task-detail-sheet';
+import { TaskExtendedData } from '@/lib/types/quest';
+import confetti from 'canvas-confetti';
 
-/** Calendar display task type */
-interface CalendarTask extends Task {
-  questTitle: string;
-  questColor: string;
-  questIcon: string;
-  questId: string;
-  completedDate?: string;
-  plannedDate?: string;
-  isPlanned: boolean;
-  urgency?: TaskUrgency;
-}
+// Re-export type from the sheet component
+type CalendarTask = CalendarDayTask;
 
 export default function CalendarPage() {
-  const { quests, progress } = useQuestStore();
+  const { quests, progress, completeTask } = useQuestStore();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<CalendarDayTask | null>(null);
   const weddingDate = progress.weddingDate;
 
   // First/last day of current month
@@ -110,6 +107,42 @@ export default function CalendarPage() {
     setCurrentDate(new Date());
   };
 
+  const handleDayClick = (dateKey: string) => {
+    const tasksForDay = tasksByDate[dateKey];
+    if (tasksForDay && tasksForDay.length > 0) {
+      setSelectedDate(dateKey);
+    }
+  };
+
+  const handleTaskClickFromSheet = (task: CalendarDayTask) => {
+    setSelectedTask(task);
+  };
+
+  const handleTaskComplete = (taskId: string, data: {
+    cost?: number;
+    memo?: string;
+    date?: string;
+    vendorInfo?: TaskExtendedData['vendorInfo'];
+    rating?: number;
+  }) => {
+    if (!selectedTask) return;
+    completeTask(selectedTask.questId, taskId, data.cost, {
+      memo: data.memo,
+      completedDate: data.date || new Date().toISOString().split('T')[0],
+      vendorInfo: data.vendorInfo,
+      rating: data.rating,
+    });
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+  };
+
+  const handleQuickComplete = (taskId: string) => {
+    if (!selectedTask) return;
+    completeTask(selectedTask.questId, taskId, undefined, {
+      completedDate: new Date().toISOString().split('T')[0],
+    });
+    confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+  };
+
   const renderDays = () => {
     const days = [];
     const daysInMonth = lastDayOfMonth.getDate();
@@ -137,7 +170,10 @@ export default function CalendarPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: day * 0.01 }}
+          onClick={() => handleDayClick(dateKey)}
           className={`h-20 md:h-32 border border-gray-200/50 dark:border-gray-700/50 p-1 md:p-2 overflow-hidden hover:bg-purple-50/30 dark:hover:bg-gray-800/50 transition-colors ${
+            tasksForDay.length > 0 ? 'cursor-pointer' : ''
+          } ${
             isToday ? 'bg-purple-50/60 dark:bg-purple-950/30 border-purple-300 dark:border-purple-700' : 'bg-white/50 dark:bg-gray-900/30'
           }`}
         >
@@ -324,6 +360,44 @@ export default function CalendarPage() {
           </div>
         )}
       </div>
+
+      {/* Day Detail Sheet */}
+      <CalendarDaySheet
+        date={selectedDate}
+        tasks={selectedDate ? (tasksByDate[selectedDate] || []) : []}
+        open={!!selectedDate}
+        onClose={() => setSelectedDate(null)}
+        onTaskClick={handleTaskClickFromSheet}
+      />
+
+      {/* Task Detail Sheet */}
+      {selectedTask && (() => {
+        const quest = quests.find(q => q.id === selectedTask.questId);
+        if (!quest) return null;
+        const questProgress = progress.taskProgress[quest.id];
+        const isCompleted = questProgress?.completedTaskIds?.includes(selectedTask.id) || false;
+        const taskCost = questProgress?.taskCosts[selectedTask.id];
+        const taskExtData = questProgress?.taskExtendedData?.[selectedTask.id];
+
+        return (
+          <TaskDetailSheet
+            task={selectedTask}
+            quest={quest}
+            isCompleted={isCompleted}
+            existingData={{
+              cost: taskCost,
+              memo: taskExtData?.memo,
+              date: taskExtData?.completedDate,
+              vendorInfo: taskExtData?.vendorInfo,
+              rating: taskExtData?.rating,
+            }}
+            open={!!selectedTask}
+            onClose={() => setSelectedTask(null)}
+            onComplete={handleTaskComplete}
+            onQuickComplete={handleQuickComplete}
+          />
+        );
+      })()}
     </div>
   );
 }
