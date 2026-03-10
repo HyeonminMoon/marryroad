@@ -49,15 +49,9 @@ function buildChallenges(progress: QuestProgress, weekDates: string[]): Challeng
     return sum + (progress.activityCounts[date] || 0);
   }, 0);
 
-  // Count memos this week
-  let memoCount = 0;
+  // Count cost entries this week
   let costCount = 0;
   for (const qp of Object.values(progress.taskProgress)) {
-    for (const ext of Object.values(qp.taskExtendedData || {})) {
-      if (ext.completedDate && weekDates.includes(ext.completedDate)) {
-        if (ext.memo) memoCount++;
-      }
-    }
     for (const [taskId, cost] of Object.entries(qp.taskCosts || {})) {
       const ext = qp.taskExtendedData?.[taskId];
       if (ext?.completedDate && weekDates.includes(ext.completedDate) && cost > 0) {
@@ -79,11 +73,11 @@ function buildChallenges(progress: QuestProgress, weekDates: string[]): Challeng
       xp: 25,
     },
     {
-      id: 'memo-1',
+      id: 'tasks-5',
       icon: <FileText className="w-4 h-4 text-blue-500" />,
-      title: '메모 남기기',
-      current: Math.min(memoCount, 1),
-      target: 1,
+      title: '5개 이상 완료',
+      current: Math.min(weekTaskCount, 5),
+      target: 5,
       xp: 25,
     },
     {
