@@ -48,6 +48,9 @@ export function AchievementToast({ achievement, onDismiss }: AchievementToastPro
               >
                 {achievement.name}
               </p>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                {achievement.description}
+              </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 +{achievement.xp} XP
               </p>
