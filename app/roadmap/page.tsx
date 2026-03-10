@@ -37,7 +37,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { RotateCcw, AlertTriangle, Lock, Map, Route, Zap, Gamepad2, BarChart3 } from 'lucide-react';
+import { RotateCcw, AlertTriangle, Lock, Map, Route, Zap, Gamepad2, BarChart3, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -100,6 +100,10 @@ export default function RoadmapPage() {
   const [completedQuestOverlay, setCompletedQuestOverlay] = useState<Quest | null>(null);
   const prevCompletedQuestIdsRef = useRef<string[]>([]);
   const [editingCoupleNames, setEditingCoupleNames] = useState(false);
+  const [insightsExpanded, setInsightsExpanded] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('marryroad-insights-expanded') === 'true';
+  });
   const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(() => {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem('marryroad-couple-setup-dismissed') === 'true';
@@ -329,29 +333,7 @@ export default function RoadmapPage() {
               />
             ) : null}
 
-            <DailyStreak activeDates={progress.activeDates || []} />
-
-            <ProgressMilestone quests={quests} progress={progress} />
-
-            <WeeklyProgress
-              activityCounts={progress.activityCounts || {}}
-              activeDates={progress.activeDates || []}
-              weddingDate={progress.weddingDate || undefined}
-              totalRemainingTasks={quests.reduce(
-                (sum, q) => sum + q.tasks.length - (progress.taskProgress[q.id]?.completedTaskIds?.length || 0),
-                0
-              )}
-            />
-
-            <WeeklyChallenge />
-
             <SmartRecommendation
-              quests={quests}
-              progress={progress}
-              onQuestClick={onQuestClick}
-            />
-
-            <NeglectedQuests
               quests={quests}
               progress={progress}
               onQuestClick={onQuestClick}
@@ -363,6 +345,55 @@ export default function RoadmapPage() {
               onTaskQuickComplete={onTaskQuickComplete}
               onQuestClick={onQuestClick}
             />
+
+            <NeglectedQuests
+              quests={quests}
+              progress={progress}
+              onQuestClick={onQuestClick}
+            />
+
+            {/* Collapsible Insights Section */}
+            <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl border border-white/30 dark:border-gray-700/50 shadow-sm overflow-hidden">
+              <button
+                onClick={() => {
+                  const next = !insightsExpanded;
+                  setInsightsExpanded(next);
+                  localStorage.setItem('marryroad-insights-expanded', String(next));
+                }}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
+              >
+                <span>활동 인사이트</span>
+                <motion.div animate={{ rotate: insightsExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                </motion.div>
+              </button>
+              <AnimatePresence>
+                {insightsExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-4 space-y-4">
+                      <DailyStreak activeDates={progress.activeDates || []} />
+                      <ProgressMilestone quests={quests} progress={progress} />
+                      <WeeklyProgress
+                        activityCounts={progress.activityCounts || {}}
+                        activeDates={progress.activeDates || []}
+                        weddingDate={progress.weddingDate || undefined}
+                        totalRemainingTasks={quests.reduce(
+                          (sum, q) => sum + q.tasks.length - (progress.taskProgress[q.id]?.completedTaskIds?.length || 0),
+                          0
+                        )}
+                      />
+                      <WeeklyChallenge />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
         )}
 
