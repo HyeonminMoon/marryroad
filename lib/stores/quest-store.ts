@@ -69,6 +69,7 @@ interface QuestStore {
   completeTask: (questId: string, taskId: string, cost?: number, extendedData?: TaskExtendedData) => void;
   updateTaskMemo: (questId: string, taskId: string, memo: string) => void;
   completeQuest: (questId: string) => void;
+  bulkCompleteQuest: (questId: string) => void;
   resetProgress: () => void;
   setBudgetTotal: (total: number) => void;
   setWeddingDate: (date: string | null) => void;
@@ -391,10 +392,74 @@ export const useQuestStore = create<QuestStore>()(
       completeQuest: (questId: string) => {
         const quest = QUESTS.find(q => q.id === questId);
         if (!quest) return;
-        
+
         // Complete all tasks in quest
         quest.tasks.forEach(task => {
           get().completeTask(questId, task.id);
+        });
+      },
+
+      bulkCompleteQuest: (questId: string) => {
+        set(state => {
+          const quest = QUESTS.find(q => q.id === questId);
+          if (!quest) return state;
+
+          const today = new Date().toISOString().split('T')[0];
+          const prevQP = state.progress.taskProgress[questId];
+          const existingCompleted = prevQP?.completedTaskIds || [];
+
+          // Find tasks not yet completed
+          const newTaskIds = quest.tasks
+            .map(t => t.id)
+            .filter(id => !existingCompleted.includes(id));
+
+          if (newTaskIds.length === 0) return state;
+
+          const allTaskIds = [...existingCompleted, ...newTaskIds];
+          const xpDelta = (newTaskIds.length * TASK_XP) +
+            (!state.progress.completedQuestIds.includes(questId) ? quest.xp : 0);
+
+          // Build extended data with completedDate for new tasks
+          const existingExt = prevQP?.taskExtendedData ?? {};
+          const newExtData = { ...existingExt };
+          for (const taskId of newTaskIds) {
+            newExtData[taskId] = {
+              ...(newExtData[taskId] ?? {}),
+              completedDate: today,
+            };
+          }
+
+          const newXp = state.progress.xp + xpDelta;
+
+          // Activity tracking
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 90);
+          const cutoffStr = cutoff.toISOString().split('T')[0];
+          const trimmedDates = state.progress.activeDates.filter(d => d >= cutoffStr);
+          const newActiveDates = trimmedDates.includes(today) ? trimmedDates : [...trimmedDates, today];
+          const prevCounts = state.progress.activityCounts || {};
+          const newActivityCounts = { ...prevCounts, [today]: (prevCounts[today] || 0) + newTaskIds.length };
+
+          return {
+            progress: {
+              ...state.progress,
+              completedQuestIds: state.progress.completedQuestIds.includes(questId)
+                ? state.progress.completedQuestIds
+                : [...state.progress.completedQuestIds, questId],
+              taskProgress: {
+                ...state.progress.taskProgress,
+                [questId]: {
+                  completedTaskIds: allTaskIds,
+                  taskCosts: prevQP?.taskCosts ?? {},
+                  taskExtendedData: newExtData,
+                },
+              },
+              xp: newXp,
+              level: calculateLevel(newXp),
+              activeDates: newActiveDates,
+              activityCounts: newActivityCounts,
+            },
+          };
         });
       },
 
