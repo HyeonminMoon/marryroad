@@ -82,6 +82,7 @@ export interface QuestProgress {
     claimedRewards: string[]; // challenge IDs that have been claimed
     completedWeeks: string[]; // weekStart dates where all 4 challenges were cleared
   };
+  hiddenQuestIds: string[]; // Quests the user chose to hide/skip
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';

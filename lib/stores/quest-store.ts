@@ -78,6 +78,7 @@ interface QuestStore {
   setDecisionSelection: (taskId: string, checklistIdx: number, option: string | null) => void;
   getDecisionSelection: (taskId: string, checklistIdx: number) => string | undefined;
   claimWeeklyReward: (challengeId: string, weekStart: string) => void;
+  toggleHideQuest: (questId: string) => void;
 
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -169,6 +170,7 @@ export const useQuestStore = create<QuestStore>()(
         coupleNames: null,
         decisionSelections: {},
         weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
+        hiddenQuestIds: [],
       },
 
       initialize: () => {
@@ -351,6 +353,7 @@ export const useQuestStore = create<QuestStore>()(
             coupleNames: state.progress.coupleNames,
             decisionSelections: state.progress.decisionSelections,
             weeklyChallenge: state.progress.weeklyChallenge,
+            hiddenQuestIds: state.progress.hiddenQuestIds || [],
           };
 
           // Recalculate quest statuses
@@ -489,6 +492,7 @@ export const useQuestStore = create<QuestStore>()(
             coupleNames: get().progress.coupleNames, // Preserve couple names
             decisionSelections: {},
             weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
+            hiddenQuestIds: [],
           },
         });
 
@@ -588,6 +592,18 @@ export const useQuestStore = create<QuestStore>()(
               level: calculateLevel(newXp),
               weeklyChallenge: { weekStart, claimedRewards: claimed, completedWeeks },
             },
+          };
+        });
+      },
+
+      toggleHideQuest: (questId: string) => {
+        set(state => {
+          const hidden = state.progress.hiddenQuestIds || [];
+          const next = hidden.includes(questId)
+            ? hidden.filter(id => id !== questId)
+            : [...hidden, questId];
+          return {
+            progress: { ...state.progress, hiddenQuestIds: next },
           };
         });
       },

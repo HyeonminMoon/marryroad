@@ -23,6 +23,7 @@ import { NeglectedQuests } from '@/components/quest/neglected-quests';
 import { WeeklyTrend } from '@/components/quest/weekly-trend';
 import { CompletionForecast } from '@/components/quest/completion-forecast';
 import { QuestComparison } from '@/components/quest/quest-comparison';
+import { QuestVisibility } from '@/components/quest/quest-visibility';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -79,7 +80,13 @@ export default function RoadmapPage() {
     setWeddingDate,
     grantAchievementXp,
     setCoupleNames,
+    toggleHideQuest,
   } = useQuestStore();
+
+  const visibleQuests = useMemo(
+    () => quests.filter(q => !(progress.hiddenQuestIds || []).includes(q.id)),
+    [quests, progress.hiddenQuestIds]
+  );
 
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<TabId>('today');
@@ -239,7 +246,7 @@ export default function RoadmapPage() {
   }, [progress.level]);
 
   // Computed values
-  const totalQuests = quests.length;
+  const totalQuests = visibleQuests.length;
   const completedQuests = progress.completedQuestIds.length;
   const lvlProgress = calculateLevelProgress(progress.xp);
 
@@ -334,20 +341,20 @@ export default function RoadmapPage() {
             ) : null}
 
             <SmartRecommendation
-              quests={quests}
+              quests={visibleQuests}
               progress={progress}
               onQuestClick={onQuestClick}
             />
 
             <TodaySection
-              quests={quests}
+              quests={visibleQuests}
               progress={progress}
               onTaskQuickComplete={onTaskQuickComplete}
               onQuestClick={onQuestClick}
             />
 
             <NeglectedQuests
-              quests={quests}
+              quests={visibleQuests}
               progress={progress}
               onQuestClick={onQuestClick}
             />
@@ -378,7 +385,7 @@ export default function RoadmapPage() {
                   >
                     <div className="px-4 pb-4 space-y-4">
                       <DailyStreak activeDates={progress.activeDates || []} />
-                      <ProgressMilestone quests={quests} progress={progress} />
+                      <ProgressMilestone quests={visibleQuests} progress={progress} />
                       <WeeklyProgress
                         activityCounts={progress.activityCounts || {}}
                         activeDates={progress.activeDates || []}
@@ -408,13 +415,13 @@ export default function RoadmapPage() {
             className="space-y-4"
           >
             <DdayDashboard
-              quests={quests}
+              quests={visibleQuests}
               progress={progress}
               onSetWeddingDate={setWeddingDate}
               onQuestClick={onQuestClick}
             />
 
-            <PreparationPace quests={quests} progress={progress} />
+            <PreparationPace quests={visibleQuests} progress={progress} />
 
             {/* Desktop: show map/path toggle */}
             {!isMobile && (
@@ -459,7 +466,7 @@ export default function RoadmapPage() {
             {isMobile || viewMode === 'path' ? (
               <div className="relative" style={{ minHeight: '60vh' }}>
                 <QuestPath
-                  quests={quests}
+                  quests={visibleQuests}
                   progress={progress}
                   onQuestClick={onQuestClick}
                 />
@@ -498,15 +505,20 @@ export default function RoadmapPage() {
             className="space-y-4"
           >
             <WeeklyTrend activityCounts={progress.activityCounts || {}} />
-            <CompletionForecast quests={quests} progress={progress} />
-            <QuestComparison quests={quests} progress={progress} />
+            <CompletionForecast quests={visibleQuests} progress={progress} />
+            <QuestComparison quests={visibleQuests} progress={progress} />
             <ActivityHeatmap
               activeDates={progress.activeDates || []}
               activityCounts={progress.activityCounts || {}}
             />
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
-            <BudgetChart quests={quests} progress={progress} />
+            <BudgetChart quests={visibleQuests} progress={progress} />
             <ShareCardButton />
+            <QuestVisibility
+              quests={quests}
+              hiddenQuestIds={progress.hiddenQuestIds || []}
+              onToggle={toggleHideQuest}
+            />
             <DataManagement />
           </motion.div>
         )}
