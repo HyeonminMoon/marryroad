@@ -266,7 +266,7 @@ export function TaskDetailSheet({
                 placeholder="이 작업에 대한 메모..."
                 value={formData.memo}
                 onChange={(e) => setFormData({ ...formData, memo: e.target.value })}
-                className="mt-2 min-h-[80px] bg-white dark:bg-gray-900"
+                className="mt-2 min-h-[120px] bg-white dark:bg-gray-900"
               />
             ) : (
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">

@@ -18,9 +18,10 @@ interface QuestStat {
 interface QuestComparisonProps {
   quests: Quest[];
   progress: QuestProgress;
+  onQuestClick?: (quest: Quest) => void;
 }
 
-export function QuestComparison({ quests, progress }: QuestComparisonProps) {
+export function QuestComparison({ quests, progress, onQuestClick }: QuestComparisonProps) {
   const stats = useMemo(() => {
     const result: QuestStat[] = quests.map(quest => {
       const tp = progress.taskProgress[quest.id];
@@ -67,7 +68,8 @@ export function QuestComparison({ quests, progress }: QuestComparisonProps) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: idx * 0.04 }}
-              className={`flex items-center gap-2.5 ${stat.isQuestComplete ? 'opacity-60' : ''}`}
+              className={`flex items-center gap-2.5 ${stat.isQuestComplete ? 'opacity-60' : ''} ${onQuestClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 -mx-2 px-2 py-1 rounded-lg transition-colors' : ''}`}
+              onClick={() => onQuestClick?.(stat.quest)}
             >
               {/* Quest icon */}
               <div

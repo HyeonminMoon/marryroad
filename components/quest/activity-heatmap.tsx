@@ -23,6 +23,7 @@ const WEEKS = 13; // ~90 days
 export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmapProps) {
   const [open, setOpen] = useState(true);
   const [tooltip, setTooltip] = useState<{ date: string; count: number; x: number; y: number } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const { grid, monthLabels } = useMemo(() => {
     const today = new Date();
@@ -145,11 +146,18 @@ export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmap
                         className={`rounded-sm transition-colors ${
                           day.isFuture
                             ? 'bg-transparent'
+                            : selectedDate === day.date
+                            ? `${getIntensityClass(day.count)} ring-2 ring-blue-500 dark:ring-blue-400`
                             : day.isToday
                             ? `${getIntensityClass(day.count)} ring-2 ring-purple-400 dark:ring-purple-500`
                             : getIntensityClass(day.count)
-                        }`}
+                        } ${!day.isFuture && day.count > 0 ? 'cursor-pointer' : ''}`}
                         style={{ width: '14px', height: '14px' }}
+                        onClick={() => {
+                          if (!day.isFuture && day.count > 0) {
+                            setSelectedDate(prev => prev === day.date ? null : day.date);
+                          }
+                        }}
                         onMouseEnter={(e) => {
                           if (!day.isFuture) {
                             const rect = e.currentTarget.getBoundingClientRect();
@@ -179,6 +187,20 @@ export function ActivityHeatmap({ activeDates, activityCounts }: ActivityHeatmap
               <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">많음</span>
             </div>
           </div>
+
+          {/* Selected date detail */}
+          {selectedDate && activityCounts[selectedDate] > 0 && (
+            <div className="mt-3 bg-purple-50 dark:bg-purple-950/30 rounded-xl p-3 border border-purple-200/50 dark:border-purple-800/30">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
+                  {selectedDate}
+                </span>
+                <span className="text-xs text-purple-500 dark:text-purple-400">
+                  {activityCounts[selectedDate]}개 완료
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Tooltip (fixed position) */}
           {tooltip && (

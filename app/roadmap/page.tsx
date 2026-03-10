@@ -512,7 +512,7 @@ export default function RoadmapPage() {
           >
             <WeeklyTrend activityCounts={progress.activityCounts || {}} />
             <CompletionForecast quests={visibleQuests} progress={progress} />
-            <QuestComparison quests={visibleQuests} progress={progress} />
+            <QuestComparison quests={visibleQuests} progress={progress} onQuestClick={onQuestClick} />
             <ActivityHeatmap
               activeDates={progress.activeDates || []}
               activityCounts={progress.activityCounts || {}}
