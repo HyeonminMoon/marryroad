@@ -75,7 +75,7 @@ export function JourneySummary({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8"
+      className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 p-6 mb-8"
     >
       {/* Progress bar */}
       <div className="mb-4">
@@ -87,9 +87,9 @@ export function JourneySummary({
             {percent}%
           </span>
         </div>
-        <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+        <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"
+            className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 shadow-[0_0_8px_rgba(168,85,247,0.4)]"
             initial={{ width: 0 }}
             animate={{ width: `${percent}%` }}
             transition={{ duration: 0.8, ease: 'easeOut' }}

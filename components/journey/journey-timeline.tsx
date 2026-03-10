@@ -29,17 +29,18 @@ export function JourneyTimeline({ events }: JourneyTimelineProps) {
 
   return (
     <div className="relative">
-      {/* Center timeline line */}
-      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-300 via-purple-300 to-indigo-300 dark:from-pink-700 dark:via-purple-700 dark:to-indigo-700 md:-translate-x-px" />
+      {/* Center timeline line with glow */}
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-400 via-purple-400 to-indigo-400 dark:from-pink-600 dark:via-purple-600 dark:to-indigo-600 md:-translate-x-px shadow-[0_0_6px_rgba(168,85,247,0.5)]" />
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-pink-400/20 via-purple-400/20 to-indigo-400/20 md:-translate-x-0.5 blur-sm" />
 
       <div className="space-y-8">
         {grouped.map((group) => (
           <div key={group.date}>
             {/* Date label */}
             <div className="relative flex items-center mb-4">
-              <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-purple-500 border-2 border-white dark:border-gray-900 z-10" />
+              <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-purple-500 border-2 border-white dark:border-gray-900 z-10 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
               <div className="ml-10 md:ml-0 md:text-center md:w-full">
-                <span className="inline-block bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-bold px-3 py-1 rounded-full">
+                <span className="inline-block bg-purple-100/80 dark:bg-purple-900/40 backdrop-blur-sm text-purple-700 dark:text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-200/50 dark:border-purple-800/30">
                   {formatDate(group.date)}
                 </span>
               </div>

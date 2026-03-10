@@ -21,10 +21,10 @@ export function MilestoneMarker({ event }: MilestoneMarkerProps) {
       className="relative mx-auto max-w-md"
     >
       <div
-        className="rounded-2xl border-2 p-4 text-center shadow-lg"
+        className="rounded-2xl border-2 p-4 text-center shadow-lg backdrop-blur-lg"
         style={{
-          borderColor: event.questColor,
-          background: `linear-gradient(135deg, ${event.questColor}10, ${event.questColor}25)`,
+          borderColor: event.questColor + '60',
+          background: `linear-gradient(135deg, ${event.questColor}15, ${event.questColor}30)`,
         }}
       >
         {/* Stars decoration */}
