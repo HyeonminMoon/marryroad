@@ -80,6 +80,7 @@ interface QuestStore {
   claimWeeklyReward: (challengeId: string, weekStart: string) => void;
   toggleHideQuest: (questId: string) => void;
   uncompleteTask: (questId: string, taskId: string) => void;
+  setCategoryBudget: (questId: string, amount: number) => void;
 
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -172,6 +173,7 @@ export const useQuestStore = create<QuestStore>()(
         decisionSelections: {},
         weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
         hiddenQuestIds: [],
+        categoryBudgets: {},
       },
 
       initialize: () => {
@@ -355,6 +357,7 @@ export const useQuestStore = create<QuestStore>()(
             decisionSelections: state.progress.decisionSelections,
             weeklyChallenge: state.progress.weeklyChallenge,
             hiddenQuestIds: state.progress.hiddenQuestIds || [],
+            categoryBudgets: state.progress.categoryBudgets || {},
           };
 
           // Recalculate quest statuses
@@ -494,6 +497,7 @@ export const useQuestStore = create<QuestStore>()(
             decisionSelections: {},
             weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
             hiddenQuestIds: [],
+            categoryBudgets: {},
           },
         });
 
@@ -641,6 +645,18 @@ export const useQuestStore = create<QuestStore>()(
             },
           };
         });
+      },
+
+      setCategoryBudget: (questId: string, amount: number) => {
+        set(state => ({
+          progress: {
+            ...state.progress,
+            categoryBudgets: {
+              ...state.progress.categoryBudgets,
+              [questId]: amount,
+            },
+          },
+        }));
       },
 
       getQuestStatus: (questId: string) => {

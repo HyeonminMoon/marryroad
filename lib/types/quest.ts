@@ -83,6 +83,7 @@ export interface QuestProgress {
     completedWeeks: string[]; // weekStart dates where all 4 challenges were cleared
   };
   hiddenQuestIds: string[]; // Quests the user chose to hide/skip
+  categoryBudgets: Record<string, number>; // Quest ID -> allocated budget amount
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';

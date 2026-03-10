@@ -10,6 +10,7 @@ import { AchievementGrid } from '@/components/quest/achievement-grid';
 import { AchievementToast } from '@/components/quest/achievement-toast';
 import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
+import { BudgetAllocation } from '@/components/quest/budget-allocation';
 import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
 import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
@@ -526,6 +527,7 @@ export default function RoadmapPage() {
             />
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
             <BudgetChart quests={visibleQuests} progress={progress} />
+            <BudgetAllocation quests={visibleQuests} progress={progress} />
             <ShareCardButton />
             <QuestVisibility
               quests={quests}
