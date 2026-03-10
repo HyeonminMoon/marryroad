@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useQuestStore } from '@/lib/stores/quest-store'
 import { getDdayCount } from '@/lib/utils/dday'
 import { DataManagement } from '@/components/quest/data-management'
+import { QuestVisibility } from '@/components/quest/quest-visibility'
+import { ShareCardButton } from '@/components/quest/share-card-button'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,10 +32,12 @@ function SaveFeedback({ show }: { show: boolean }) {
 
 export default function SettingsPage() {
   const progress = useQuestStore((s) => s.progress)
+  const quests = useQuestStore((s) => s.quests)
   const setCoupleNames = useQuestStore((s) => s.setCoupleNames)
   const setWeddingDate = useQuestStore((s) => s.setWeddingDate)
   const setBudgetTotal = useQuestStore((s) => s.setBudgetTotal)
   const resetProgress = useQuestStore((s) => s.resetProgress)
+  const toggleHideQuest = useQuestStore((s) => s.toggleHideQuest)
 
   // Local form state
   const [userName, setUserName] = useState('')
@@ -236,10 +240,20 @@ export default function SettingsPage() {
             </Button>
           </div>
 
-          {/* Section 4: Data Management */}
+          {/* Section 4: Quest Visibility */}
+          <QuestVisibility
+            quests={quests}
+            hiddenQuestIds={progress.hiddenQuestIds || []}
+            onToggle={toggleHideQuest}
+          />
+
+          {/* Section 5: Share Card */}
+          <ShareCardButton />
+
+          {/* Section 6: Data Management */}
           <DataManagement />
 
-          {/* Section 5: Reset */}
+          {/* Section 7: Reset */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-red-200 dark:border-red-900/50 p-6">
             <div className="flex items-center gap-2 mb-2">
               <Trash2 className="w-4 h-4 text-red-500" />

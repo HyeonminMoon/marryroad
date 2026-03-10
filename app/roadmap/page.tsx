@@ -12,21 +12,14 @@ import { DdayDashboard } from '@/components/quest/dday-dashboard';
 import { BudgetChart } from '@/components/quest/budget-chart';
 import { BudgetAllocation } from '@/components/quest/budget-allocation';
 import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
-import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
-import { WeeklyProgress } from '@/components/quest/weekly-progress';
 import { WeeklyChallenge } from '@/components/quest/weekly-challenge';
-import { SmartRecommendation } from '@/components/quest/smart-recommendation';
 import { DailyStreak } from '@/components/quest/daily-streak';
-import { ProgressMilestone } from '@/components/quest/progress-milestone';
 import { PreparationPace } from '@/components/quest/preparation-pace';
-import { NeglectedQuests } from '@/components/quest/neglected-quests';
 import { WeeklyTrend } from '@/components/quest/weekly-trend';
 import { CompletionForecast } from '@/components/quest/completion-forecast';
 import { QuestComparison } from '@/components/quest/quest-comparison';
-import { QuestVisibility } from '@/components/quest/quest-visibility';
 import { WeddingDateNudge } from '@/components/quest/wedding-date-nudge';
-import { ShareCardButton } from '@/components/quest/share-card-button';
 import { SmartHomeSummary } from '@/components/quest/smart-home-summary';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -361,22 +354,10 @@ export default function RoadmapPage() {
               onQuestClick={onQuestClick}
             />
 
-            <SmartRecommendation
-              quests={visibleQuests}
-              progress={progress}
-              onQuestClick={onQuestClick}
-            />
-
             <TodaySection
               quests={visibleQuests}
               progress={progress}
               onTaskQuickComplete={onTaskQuickComplete}
-              onQuestClick={onQuestClick}
-            />
-
-            <NeglectedQuests
-              quests={visibleQuests}
-              progress={progress}
               onQuestClick={onQuestClick}
             />
 
@@ -406,16 +387,6 @@ export default function RoadmapPage() {
                   >
                     <div className="px-4 pb-4 space-y-4">
                       <DailyStreak activeDates={progress.activeDates || []} />
-                      <ProgressMilestone quests={visibleQuests} progress={progress} />
-                      <WeeklyProgress
-                        activityCounts={progress.activityCounts || {}}
-                        activeDates={progress.activeDates || []}
-                        weddingDate={progress.weddingDate || undefined}
-                        totalRemainingTasks={quests.reduce(
-                          (sum, q) => sum + q.tasks.length - (progress.taskProgress[q.id]?.completedTaskIds?.length || 0),
-                          0
-                        )}
-                      />
                       <WeeklyChallenge />
                     </div>
                   </motion.div>
@@ -535,13 +506,6 @@ export default function RoadmapPage() {
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
             <BudgetChart quests={visibleQuests} progress={progress} />
             <BudgetAllocation quests={visibleQuests} progress={progress} />
-            <ShareCardButton />
-            <QuestVisibility
-              quests={quests}
-              hiddenQuestIds={progress.hiddenQuestIds || []}
-              onToggle={toggleHideQuest}
-            />
-            <DataManagement />
           </motion.div>
         )}
         </AnimatePresence>
