@@ -15,6 +15,7 @@ import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
 import { WeeklyProgress } from '@/components/quest/weekly-progress';
 import { WeeklyChallenge } from '@/components/quest/weekly-challenge';
+import { SmartRecommendation } from '@/components/quest/smart-recommendation';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -332,6 +333,12 @@ export default function RoadmapPage() {
             />
 
             <WeeklyChallenge />
+
+            <SmartRecommendation
+              quests={quests}
+              progress={progress}
+              onQuestClick={onQuestClick}
+            />
 
             <TodaySection
               quests={quests}
