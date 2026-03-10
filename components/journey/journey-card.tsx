@@ -29,7 +29,7 @@ export function JourneyCard({ event, index, side }: JourneyCardProps) {
     >
       <button
         onClick={() => hasDetails && setExpanded(!expanded)}
-        className={`w-full text-left bg-white dark:bg-gray-900 rounded-xl border-2 p-4 shadow-sm transition-all ${
+        className={`w-full text-left bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl border-2 p-4 shadow-sm transition-all ${
           hasDetails ? 'cursor-pointer hover:shadow-md' : 'cursor-default'
         }`}
         style={{ borderColor: event.questColor + '40' }}

@@ -147,7 +147,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
         className={`border rounded-lg p-4 cursor-pointer transition-colors ${
           isCompleted
             ? 'bg-green-50 dark:bg-green-950/30 border-green-300 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-950/50'
-            : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
+            : 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800/80'
         }`}
         onClick={() => setSelectedTask(task)}
       >
@@ -242,7 +242,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
             </div>
           </DialogHeader>
 
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 p-4 rounded-lg mb-4">
+          <div className="bg-gradient-to-r from-purple-50/60 to-pink-50/60 dark:from-purple-950/30 dark:to-pink-950/20 backdrop-blur-sm p-4 rounded-xl border border-white/30 dark:border-gray-700/30 mb-4">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-semibold">전체 진행률</span>
               <span className="text-lg font-bold" style={{ color: quest.color }}>
@@ -274,7 +274,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
                         {/* 그룹 헤더 */}
                         <button
                           onClick={() => toggleGroup(group.prefix)}
-                          className="w-full flex items-center gap-2 py-2 px-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors"
+                          className="w-full flex items-center gap-2 py-2 px-3 bg-white/50 dark:bg-gray-800/50 rounded-lg hover:bg-white/70 dark:hover:bg-gray-800/70 transition-colors"
                         >
                           <ChevronDown
                             className={`w-4 h-4 text-gray-500 transition-transform ${
