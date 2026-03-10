@@ -106,12 +106,14 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
     date?: string;
     vendorInfo?: TaskExtendedData['vendorInfo'];
     rating?: number;
+    photos?: string[];
   }) => {
     const extendedData = {
       memo: data.memo,
       completedDate: data.date || new Date().toISOString().split('T')[0],
       vendorInfo: data.vendorInfo,
       rating: data.rating,
+      photos: data.photos,
     };
 
     completeTask(quest.id, taskId, data.cost, extendedData);
@@ -320,6 +322,7 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
           date: selectedTaskExtData?.completedDate,
           vendorInfo: selectedTaskExtData?.vendorInfo,
           rating: selectedTaskExtData?.rating,
+          photos: selectedTaskExtData?.photos,
         }}
         open={!!selectedTask}
         onClose={() => setSelectedTask(null)}

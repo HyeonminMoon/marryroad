@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Task, Quest, TaskExtendedData } from '@/lib/types/quest';
+import { resizeImage } from '@/lib/utils/image-resize';
 import {
   Sheet,
   SheetContent,
@@ -30,6 +31,8 @@ import {
   Check,
   Sparkles,
   ArrowRight,
+  Camera,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuestStore } from '@/lib/stores/quest-store';
@@ -45,6 +48,7 @@ interface TaskDetailSheetProps {
     date?: string;
     vendorInfo?: TaskExtendedData['vendorInfo'];
     rating?: number;
+    photos?: string[];
   };
   open: boolean;
   onClose: () => void;
@@ -54,6 +58,7 @@ interface TaskDetailSheetProps {
     date?: string;
     vendorInfo?: TaskExtendedData['vendorInfo'];
     rating?: number;
+    photos?: string[];
   }) => void;
   onQuickComplete: (taskId: string) => void;
 }
@@ -70,6 +75,8 @@ export function TaskDetailSheet({
 }: TaskDetailSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [showVendor, setShowVendor] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     cost: '',
     memo: '',
@@ -96,6 +103,7 @@ export function TaskDetailSheet({
       });
       setIsEditing(false);
       setShowVendor(!!(existingData?.vendorInfo?.name));
+      setPhotos(existingData?.photos || []);
     }
   }, [task, existingData]);
 
@@ -103,6 +111,28 @@ export function TaskDetailSheet({
 
   const hasCostField = task.typicalCostMin !== null || task.typicalCostMax !== null;
   const canEdit = !isCompleted || isEditing;
+
+  const handleAddPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const remaining = 3 - photos.length;
+    const toProcess = Array.from(files).slice(0, remaining);
+    const newPhotos: string[] = [];
+    for (const file of toProcess) {
+      try {
+        const resized = await resizeImage(file);
+        newPhotos.push(resized);
+      } catch {
+        // skip failed images
+      }
+    }
+    setPhotos(prev => [...prev, ...newPhotos]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = () => {
     onComplete(task.id, {
@@ -116,6 +146,7 @@ export function TaskDetailSheet({
         address: formData.vendorAddress || undefined,
       } : undefined,
       rating: formData.rating > 0 ? formData.rating : undefined,
+      photos: photos.length > 0 ? photos : undefined,
     });
     onClose();
   };
@@ -242,6 +273,49 @@ export function TaskDetailSheet({
                 {formData.memo || '메모 없음'}
               </p>
             )}
+          </div>
+
+          {/* Photo Card */}
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+            <Label className="text-sm font-semibold flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
+              <Camera className="w-4 h-4" />
+              사진
+              <span className="text-[10px] font-normal text-gray-400">
+                (최대 3장)
+              </span>
+            </Label>
+            <div className="flex gap-2 flex-wrap">
+              {photos.map((photo, i) => (
+                <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden group">
+                  <img src={photo} alt="" className="w-full h-full object-cover" />
+                  {canEdit && (
+                    <button
+                      onClick={() => removePhoto(i)}
+                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3 text-white" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              {canEdit && photos.length < 3 && (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center gap-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                >
+                  <Camera className="w-5 h-5" />
+                  <span className="text-[10px]">추가</span>
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleAddPhotos}
+              className="hidden"
+            />
           </div>
 
           {/* Date Card */}
