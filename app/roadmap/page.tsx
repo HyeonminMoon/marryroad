@@ -14,6 +14,7 @@ import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
 import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
 import { WeeklyProgress } from '@/components/quest/weekly-progress';
+import { ShareCardButton } from '@/components/quest/share-card-button';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
 import { Header } from '@/components/header';
@@ -422,6 +423,7 @@ export default function RoadmapPage() {
             />
             <AchievementGrid unlockedIds={unlockedAchievementIds} />
             <BudgetChart quests={quests} progress={progress} />
+            <ShareCardButton />
             <DataManagement />
           </motion.div>
         )}
