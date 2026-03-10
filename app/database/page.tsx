@@ -11,6 +11,7 @@ import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion } from 'framer-motion';
 import { Task } from '@/lib/types/quest';
 import { VendorCompare } from '@/components/database/vendor-compare';
+import { CostBreakdown } from '@/components/database/cost-breakdown';
 
 /** 플랫 리스트용 확장 Task 타입 - Quest 메타정보 포함 */
 interface FlatTask extends Task {
@@ -238,6 +239,9 @@ export default function DatabasePage() {
             </div>
           </div>
         </div>
+
+        {/* Cost Breakdown */}
+        <CostBreakdown quests={quests} progress={progress} />
 
         {/* Vendor Compare */}
         <VendorCompare quests={quests} progress={progress} />
