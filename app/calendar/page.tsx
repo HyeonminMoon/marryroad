@@ -117,7 +117,7 @@ export default function CalendarPage() {
     // Empty cells for previous month
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(
-        <div key={`empty-${i}`} className="h-20 md:h-32 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800" />
+        <div key={`empty-${i}`} className="h-20 md:h-32 bg-gray-50/50 dark:bg-gray-900/30 border border-gray-200/50 dark:border-gray-800/50" />
       );
     }
 
@@ -137,12 +137,12 @@ export default function CalendarPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: day * 0.01 }}
-          className={`h-20 md:h-32 border border-gray-200 dark:border-gray-700 p-1 md:p-2 overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-            isToday ? 'bg-blue-50 dark:bg-blue-950 border-blue-400 dark:border-blue-600' : 'bg-white dark:bg-gray-900'
+          className={`h-20 md:h-32 border border-gray-200/50 dark:border-gray-700/50 p-1 md:p-2 overflow-hidden hover:bg-purple-50/30 dark:hover:bg-gray-800/50 transition-colors ${
+            isToday ? 'bg-purple-50/60 dark:bg-purple-950/30 border-purple-300 dark:border-purple-700' : 'bg-white/50 dark:bg-gray-900/30'
           }`}
         >
           <div className="flex items-center justify-between mb-0.5 md:mb-1">
-            <span className={`text-xs md:text-sm font-semibold ${isToday ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+            <span className={`text-xs md:text-sm font-semibold ${isToday ? 'text-purple-600 dark:text-purple-400' : ''}`}>
               {day}
             </span>
             <div className="flex gap-0.5">
@@ -201,7 +201,7 @@ export default function CalendarPage() {
   const monthName = currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50/30 via-white to-pink-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950/20">
       <Header />
 
       <div className="container mx-auto px-2 md:px-4 py-4 md:py-8">
@@ -220,18 +220,18 @@ export default function CalendarPage() {
 
             {/* Stats */}
             <div className="flex gap-2 md:gap-3">
-              <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-gray-200 dark:border-gray-700 text-center">
+              <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg px-3 py-2 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 text-center">
                 <div className="text-[10px] md:text-xs text-gray-500 mb-0.5">완료</div>
                 <div className="text-lg md:text-2xl font-bold text-green-600">{stats.completed}</div>
               </div>
               {weddingDate && (
                 <>
-                  <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-gray-200 dark:border-gray-700 text-center">
+                  <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg px-3 py-2 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50 text-center">
                     <div className="text-[10px] md:text-xs text-gray-500 mb-0.5">예정</div>
                     <div className="text-lg md:text-2xl font-bold text-purple-600">{stats.planned}</div>
                   </div>
                   {stats.overdue > 0 && (
-                    <div className="bg-white dark:bg-gray-800 px-3 py-2 rounded-lg shadow border border-red-200 dark:border-red-700 text-center">
+                    <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg px-3 py-2 rounded-xl shadow-sm border border-red-200/50 dark:border-red-700/50 text-center">
                       <div className="text-[10px] md:text-xs text-red-500 mb-0.5">지연</div>
                       <div className="text-lg md:text-2xl font-bold text-red-600">{stats.overdue}</div>
                     </div>
@@ -242,7 +242,7 @@ export default function CalendarPage() {
           </div>
 
           {/* Month navigation */}
-          <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-3 md:p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg p-3 md:p-4 rounded-xl shadow-sm border border-white/30 dark:border-gray-700/50">
             <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -290,7 +290,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar grid */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
           {/* Day of week header */}
           <div className="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
             {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
@@ -313,7 +313,7 @@ export default function CalendarPage() {
 
         {/* Empty state */}
         {stats.completed === 0 && stats.planned === 0 && (
-          <div className="mt-8 text-center p-8 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="mt-8 text-center p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50">
             <CalendarIcon className="w-12 h-12 mx-auto mb-4 text-blue-400" />
             <p className="text-gray-600 dark:text-gray-400">
               {weddingDate
