@@ -83,7 +83,8 @@ export function DailyMessage({ userName, partnerName, onEditNames }: DailyMessag
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
-      className="relative bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-2xl border border-pink-200/50 dark:border-pink-800/50 px-5 py-4"
+      className="relative bg-gradient-to-r from-pink-50/80 to-purple-50/80 dark:from-pink-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl border border-pink-200/30 dark:border-pink-800/30 px-5 py-4 shadow-sm"
+      style={{ boxShadow: '0 0 20px rgba(236, 72, 153, 0.06)' }}
     >
       <p className="text-sm text-gray-700 dark:text-gray-300 text-center leading-relaxed">
         {message}

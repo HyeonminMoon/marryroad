@@ -107,7 +107,8 @@ export function WeeklyProgress({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/40 dark:to-blue-950/40 rounded-2xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/50"
+      className="bg-gradient-to-br from-purple-50/80 to-blue-50/80 dark:from-purple-950/40 dark:to-blue-950/40 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-purple-100/50 dark:border-purple-900/30"
+      style={{ boxShadow: '0 0 20px rgba(139, 92, 246, 0.06)' }}
     >
       {/* Header row */}
       <div className="flex items-center justify-between mb-3">
@@ -161,21 +162,24 @@ export function WeeklyProgress({
       <div className="flex items-end gap-1.5 h-10 mb-1">
         {thisWeekCounts.map((count, i) => {
           const height = count > 0 ? Math.max(4, (count / maxCount) * 32) : 2;
-          const isToday = i === ((new Date().getDay() + 6) % 7); // Adjust for Mon=0
+          const isToday = i === ((new Date().getDay() + 6) % 7);
 
           return (
             <motion.div
               key={i}
-              className="flex-1 rounded-t-sm"
+              className="flex-1 rounded-full"
               initial={{ height: 0 }}
               animate={{ height }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
               style={{
                 backgroundColor: count > 0
                   ? isToday
-                    ? 'rgb(147, 51, 234)' // purple-600
-                    : 'rgb(192, 132, 252)' // purple-400
-                  : 'rgb(229, 231, 235)', // gray-200
+                    ? 'rgb(147, 51, 234)'
+                    : 'rgb(192, 132, 252)'
+                  : 'rgb(229, 231, 235)',
+                boxShadow: count > 0 && isToday
+                  ? '0 0 8px rgba(147, 51, 234, 0.4)'
+                  : 'none',
               }}
             />
           );

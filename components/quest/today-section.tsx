@@ -132,14 +132,14 @@ export function TodaySection({
   const streak = calculateStreak(progress.activeDates || []);
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 p-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
           다음 할 일
         </h2>
         {streak > 0 && (
-          <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded-full">
+          <div className="flex items-center gap-1.5 bg-orange-50/80 dark:bg-orange-950/40 backdrop-blur-sm text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded-full shadow-sm">
             <Flame className="w-4 h-4" />
             <span className="text-sm font-bold">{streak}일 연속</span>
           </div>
@@ -172,7 +172,7 @@ export function TodaySection({
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
                   onClick={() => onQuestClick(quest)}
-                  className="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors"
+                  className="flex items-center gap-3 bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/80 dark:border-gray-700/50 p-4 cursor-pointer hover:border-purple-200 dark:hover:border-purple-700/50 hover:shadow-md hover:shadow-purple-100/50 dark:hover:shadow-purple-900/20 transition-all duration-200"
                 >
                   {/* 퀘스트 아이콘 */}
                   <div
@@ -238,9 +238,10 @@ export function TodaySection({
             {progressPercent}%
           </span>
         </div>
-        <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-700/50 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+            className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
+            style={{ boxShadow: '0 0 8px rgba(139, 92, 246, 0.3)' }}
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
