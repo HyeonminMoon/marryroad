@@ -27,6 +27,7 @@ import { QuestComparison } from '@/components/quest/quest-comparison';
 import { QuestVisibility } from '@/components/quest/quest-visibility';
 import { WeddingDateNudge } from '@/components/quest/wedding-date-nudge';
 import { ShareCardButton } from '@/components/quest/share-card-button';
+import { SmartHomeSummary } from '@/components/quest/smart-home-summary';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
@@ -353,6 +354,12 @@ export default function RoadmapPage() {
             {!progress.weddingDate && (
               <WeddingDateNudge onSetDate={setWeddingDate} />
             )}
+
+            <SmartHomeSummary
+              quests={visibleQuests}
+              progress={progress}
+              onQuestClick={onQuestClick}
+            />
 
             <SmartRecommendation
               quests={visibleQuests}
