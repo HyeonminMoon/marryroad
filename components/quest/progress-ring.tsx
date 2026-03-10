@@ -16,8 +16,8 @@ interface ProgressRingProps {
   nextLevelXp: number;
 }
 
-const RING_SIZE = 96;
-const STROKE_WIDTH = 8;
+const RING_SIZE = 72;
+const STROKE_WIDTH = 6;
 const RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
@@ -100,7 +100,7 @@ export function ProgressRing({
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xl font-bold text-gray-900 dark:text-gray-100 leading-none">
+          <span className="text-base font-bold text-gray-900 dark:text-gray-100 leading-none">
             {animatedPercent}%
           </span>
         </div>
