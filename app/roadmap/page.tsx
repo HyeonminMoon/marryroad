@@ -20,6 +20,7 @@ import { DailyStreak } from '@/components/quest/daily-streak';
 import { ProgressMilestone } from '@/components/quest/progress-milestone';
 import { PreparationPace } from '@/components/quest/preparation-pace';
 import { NeglectedQuests } from '@/components/quest/neglected-quests';
+import { WeeklyTrend } from '@/components/quest/weekly-trend';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -463,6 +464,7 @@ export default function RoadmapPage() {
             transition={{ duration: 0.15 }}
             className="space-y-4"
           >
+            <WeeklyTrend activityCounts={progress.activityCounts || {}} />
             <ActivityHeatmap
               activeDates={progress.activeDates || []}
               activityCounts={progress.activityCounts || {}}
