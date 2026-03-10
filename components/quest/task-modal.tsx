@@ -15,6 +15,8 @@ import {
   Building2,
   Star,
   Check,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -57,6 +59,8 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [justCompleted, setJustCompleted] = useState<Set<string>>(new Set());
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkSelected, setBulkSelected] = useState<Set<string>>(new Set());
 
   if (!quest) return null;
 
@@ -125,6 +129,27 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
     });
   };
 
+  const toggleBulkSelect = (taskId: string) => {
+    setBulkSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(taskId)) next.delete(taskId);
+      else next.add(taskId);
+      return next;
+    });
+  };
+
+  const handleBulkComplete = () => {
+    const today = new Date().toISOString().split('T')[0];
+    for (const taskId of bulkSelected) {
+      completeTask(quest.id, taskId, undefined, { completedDate: today });
+    }
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+    setBulkSelected(new Set());
+    setBulkMode(false);
+  };
+
+  const incompleteTasks = quest.tasks.filter(t => !completedTaskIds.includes(t.id));
+
   const Icon = getQuestIcon(quest.icon);
 
   // Get existing data for selected task
@@ -149,13 +174,26 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
         className={`border rounded-lg p-4 cursor-pointer transition-colors ${
           isCompleted
             ? 'bg-green-50 dark:bg-green-950/30 border-green-300 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-950/50'
+            : bulkMode && bulkSelected.has(task.id)
+            ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-300 dark:border-purple-800'
             : 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800/80'
         }`}
-        onClick={() => setSelectedTask(task)}
+        onClick={() => bulkMode && !isCompleted ? toggleBulkSelect(task.id) : setSelectedTask(task)}
       >
         <div className="flex items-start gap-3">
-          {/* 퀵 컴플리트 원형 체크 버튼 */}
-          {!isCompleted ? (
+          {/* Bulk mode checkbox or quick complete */}
+          {bulkMode && !isCompleted ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); toggleBulkSelect(task.id); }}
+              className="flex-shrink-0 mt-0.5"
+            >
+              {bulkSelected.has(task.id) ? (
+                <CheckSquare className="w-6 h-6 text-purple-500" />
+              ) : (
+                <Square className="w-6 h-6 text-gray-300 dark:text-gray-600" />
+              )}
+            </button>
+          ) : !isCompleted ? (
             <motion.button
               onClick={(e) => { e.stopPropagation(); handleQuickComplete(task.id); }}
               className={`flex-shrink-0 w-6 h-6 mt-0.5 rounded-full border-2 flex items-center justify-center transition-colors ${
@@ -303,7 +341,40 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
             </AnimatePresence>
           </div>
 
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex items-center justify-between">
+            {incompleteTasks.length > 1 && (
+              bulkMode ? (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    onClick={handleBulkComplete}
+                    disabled={bulkSelected.size === 0}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    <CheckSquare className="w-3.5 h-3.5 mr-1.5" />
+                    {bulkSelected.size}개 완료
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setBulkMode(false); setBulkSelected(new Set()); }}
+                  >
+                    취소
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBulkMode(true)}
+                  className="text-xs"
+                >
+                  <CheckSquare className="w-3.5 h-3.5 mr-1.5" />
+                  일괄 완료
+                </Button>
+              )
+            )}
+            {!incompleteTasks.length || incompleteTasks.length <= 1 ? <div /> : null}
             <Button variant="outline" onClick={onClose}>
               닫기
             </Button>
