@@ -19,6 +19,7 @@ import { SmartRecommendation } from '@/components/quest/smart-recommendation';
 import { DailyStreak } from '@/components/quest/daily-streak';
 import { ProgressMilestone } from '@/components/quest/progress-milestone';
 import { PreparationPace } from '@/components/quest/preparation-pace';
+import { NeglectedQuests } from '@/components/quest/neglected-quests';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -342,6 +343,12 @@ export default function RoadmapPage() {
             <WeeklyChallenge />
 
             <SmartRecommendation
+              quests={quests}
+              progress={progress}
+              onQuestClick={onQuestClick}
+            />
+
+            <NeglectedQuests
               quests={quests}
               progress={progress}
               onQuestClick={onQuestClick}
