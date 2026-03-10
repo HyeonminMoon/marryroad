@@ -168,7 +168,7 @@ export const useQuestStore = create<QuestStore>()(
         activityCounts: {},
         coupleNames: null,
         decisionSelections: {},
-        weeklyChallenge: { weekStart: '', claimedRewards: [] },
+        weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
       },
 
       initialize: () => {
@@ -488,7 +488,7 @@ export const useQuestStore = create<QuestStore>()(
             activityCounts: {},
             coupleNames: get().progress.coupleNames, // Preserve couple names
             decisionSelections: {},
-            weeklyChallenge: { weekStart: '', claimedRewards: [] },
+            weeklyChallenge: { weekStart: '', claimedRewards: [], completedWeeks: [] },
           },
         });
 
@@ -564,6 +564,7 @@ export const useQuestStore = create<QuestStore>()(
 
       claimWeeklyReward: (challengeId: string, weekStart: string) => {
         const CHALLENGE_XP = 25;
+        const TOTAL_CHALLENGES = 4;
         set(state => {
           const wc = state.progress.weeklyChallenge;
           // Reset if different week
@@ -573,12 +574,19 @@ export const useQuestStore = create<QuestStore>()(
           if (claimed.includes(challengeId)) return state;
           claimed.push(challengeId);
           const newXp = state.progress.xp + CHALLENGE_XP;
+
+          // Track completed weeks (all challenges cleared)
+          const completedWeeks = [...(wc.completedWeeks || [])];
+          if (claimed.length >= TOTAL_CHALLENGES && !completedWeeks.includes(weekStart)) {
+            completedWeeks.push(weekStart);
+          }
+
           return {
             progress: {
               ...state.progress,
               xp: newXp,
               level: calculateLevel(newXp),
-              weeklyChallenge: { weekStart, claimedRewards: claimed },
+              weeklyChallenge: { weekStart, claimedRewards: claimed, completedWeeks },
             },
           };
         });

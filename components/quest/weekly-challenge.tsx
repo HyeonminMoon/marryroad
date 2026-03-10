@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { QuestProgress } from '@/lib/types/quest';
 import { useQuestStore } from '@/lib/stores/quest-store';
-import { Trophy, Zap, FileText, DollarSign, Flame } from 'lucide-react';
+import { Trophy, Zap, FileText, DollarSign, Flame, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -208,15 +208,30 @@ export function WeeklyChallenge() {
         })}
       </div>
 
-      {/* All complete message */}
+      {/* All clear — badge celebration */}
       {claimedCount === challenges.length && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center text-xs text-purple-500 dark:text-purple-400 font-medium mt-3"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200 }}
+          className="mt-3 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/20 rounded-xl p-3 border border-yellow-200/50 dark:border-yellow-800/30 flex items-center gap-3"
         >
-          🎉 이번 주 챌린지 올클리어!
-        </motion.p>
+          <motion.div
+            animate={{ rotate: [0, -10, 10, -5, 5, 0], scale: [1, 1.2, 1] }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-sm"
+          >
+            <Award className="w-5 h-5 text-white" />
+          </motion.div>
+          <div>
+            <p className="text-xs font-bold text-yellow-700 dark:text-yellow-300">
+              🏆 주간 올클리어!
+            </p>
+            <p className="text-[10px] text-yellow-600/70 dark:text-yellow-400/70 mt-0.5">
+              업적 &ldquo;주간 올클리어&rdquo; 뱃지를 확인하세요
+            </p>
+          </div>
+        </motion.div>
       )}
     </div>
   );

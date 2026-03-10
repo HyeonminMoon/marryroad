@@ -80,6 +80,7 @@ export interface QuestProgress {
   weeklyChallenge: {
     weekStart: string; // ISO date of Monday
     claimedRewards: string[]; // challenge IDs that have been claimed
+    completedWeeks: string[]; // weekStart dates where all 4 challenges were cleared
   };
 }
 

@@ -57,6 +57,16 @@ function totalTaskCount(quests: Quest[]): number {
 }
 
 export const ACHIEVEMENTS: AchievementDef[] = [
+  // Bronze (easy) — Challenges
+  {
+    id: 'challenge-starter',
+    name: '챌린지 도전자',
+    description: '첫 주간 챌린지를 완료하세요',
+    tier: 'bronze',
+    xp: 25,
+    icon: '🏅',
+    check: (p) => (p.weeklyChallenge?.claimedRewards?.length || 0) >= 1,
+  },
   // Bronze (easy)
   {
     id: 'first-step',
@@ -95,6 +105,37 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (p) => totalCostsRecorded(p) >= 5,
   },
 
+  // Silver (medium) — Challenges
+  {
+    id: 'challenge-week-clear',
+    name: '주간 올클리어',
+    description: '한 주에 챌린지 4개를 모두 완료하세요',
+    tier: 'silver',
+    xp: 50,
+    icon: '🏆',
+    check: (p) => (p.weeklyChallenge?.completedWeeks?.length || 0) >= 1,
+  },
+  {
+    id: 'challenge-streak-2',
+    name: '2주 연속 클리어',
+    description: '2주 연속으로 챌린지를 올클리어하세요',
+    tier: 'silver',
+    xp: 50,
+    icon: '⚡',
+    check: (p) => {
+      const weeks = p.weeklyChallenge?.completedWeeks || [];
+      if (weeks.length < 2) return false;
+      // Check for consecutive weeks
+      const sorted = [...weeks].sort();
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const d1 = new Date(sorted[i] + 'T00:00:00');
+        const d2 = new Date(sorted[i + 1] + 'T00:00:00');
+        const diff = (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24);
+        if (diff === 7) return true;
+      }
+      return false;
+    },
+  },
   // Silver (medium)
   {
     id: 'ten-tasks',
@@ -142,6 +183,33 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (p) => calculateStreak(p.activeDates || []) >= 7,
   },
 
+  // Gold (hard) — Challenges
+  {
+    id: 'challenge-streak-4',
+    name: '4주 연속 클리어',
+    description: '4주 연속으로 챌린지를 올클리어하세요',
+    tier: 'gold',
+    xp: 100,
+    icon: '👑',
+    check: (p) => {
+      const weeks = p.weeklyChallenge?.completedWeeks || [];
+      if (weeks.length < 4) return false;
+      const sorted = [...weeks].sort();
+      let consecutive = 1;
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const d1 = new Date(sorted[i] + 'T00:00:00');
+        const d2 = new Date(sorted[i + 1] + 'T00:00:00');
+        const diff = (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24);
+        if (diff === 7) {
+          consecutive++;
+          if (consecutive >= 4) return true;
+        } else {
+          consecutive = 1;
+        }
+      }
+      return false;
+    },
+  },
   // Gold (hard)
   {
     id: 'two-week-streak',
