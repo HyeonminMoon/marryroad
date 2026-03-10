@@ -95,6 +95,32 @@ export default function CalendarPage() {
     };
   }, [quests, progress, weddingDate]);
 
+  // Monthly stats for the viewed month
+  const monthlyStats = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    let completed = 0;
+    let planned = 0;
+    let cost = 0;
+
+    for (const [dateKey, tasks] of Object.entries(tasksByDate)) {
+      const d = new Date(dateKey);
+      if (d.getFullYear() !== year || d.getMonth() !== month) continue;
+      for (const task of tasks) {
+        if (task.isPlanned) {
+          planned++;
+        } else {
+          completed++;
+          const tp = progress.taskProgress[task.questId];
+          const taskCost = tp?.taskCosts[task.id];
+          if (taskCost && taskCost > 0) cost += taskCost;
+        }
+      }
+    }
+
+    return { completed, planned, cost };
+  }, [tasksByDate, currentDate, progress]);
+
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
@@ -324,6 +350,30 @@ export default function CalendarPage() {
             </div>
           )}
         </div>
+
+        {/* Monthly insight bar */}
+        {(monthlyStats.completed > 0 || monthlyStats.planned > 0) && (
+          <div className="mb-3 bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl border border-white/30 dark:border-gray-700/50 px-4 py-2.5 flex items-center gap-4 text-xs">
+            <span className="text-gray-500 dark:text-gray-400 font-medium">이번 달</span>
+            {monthlyStats.completed > 0 && (
+              <span className="text-green-600 dark:text-green-400 font-bold">
+                완료 {monthlyStats.completed}
+              </span>
+            )}
+            {monthlyStats.planned > 0 && (
+              <span className="text-purple-600 dark:text-purple-400 font-bold">
+                예정 {monthlyStats.planned}
+              </span>
+            )}
+            {monthlyStats.cost > 0 && (
+              <span className="ml-auto text-gray-600 dark:text-gray-300 font-bold">
+                {monthlyStats.cost >= 10000
+                  ? `${Math.round(monthlyStats.cost / 10000).toLocaleString()}만원`
+                  : `${monthlyStats.cost.toLocaleString()}원`}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Calendar grid */}
         <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50 overflow-hidden">
