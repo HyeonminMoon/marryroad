@@ -14,6 +14,7 @@ import { ActivityHeatmap } from '@/components/quest/activity-heatmap';
 import { DataManagement } from '@/components/quest/data-management';
 import { ProgressRing } from '@/components/quest/progress-ring';
 import { WeeklyProgress } from '@/components/quest/weekly-progress';
+import { WeeklyChallenge } from '@/components/quest/weekly-challenge';
 import { ShareCardButton } from '@/components/quest/share-card-button';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
@@ -329,6 +330,8 @@ export default function RoadmapPage() {
                 0
               )}
             />
+
+            <WeeklyChallenge />
 
             <TodaySection
               quests={quests}

@@ -77,6 +77,7 @@ interface QuestStore {
   setCoupleNames: (user: string, partner: string) => void;
   setDecisionSelection: (taskId: string, checklistIdx: number, option: string | null) => void;
   getDecisionSelection: (taskId: string, checklistIdx: number) => string | undefined;
+  claimWeeklyReward: (challengeId: string, weekStart: string) => void;
 
   // Quest Logic
   getQuestStatus: (questId: string) => QuestStatus;
@@ -167,6 +168,7 @@ export const useQuestStore = create<QuestStore>()(
         activityCounts: {},
         coupleNames: null,
         decisionSelections: {},
+        weeklyChallenge: { weekStart: '', claimedRewards: [] },
       },
 
       initialize: () => {
@@ -348,6 +350,7 @@ export const useQuestStore = create<QuestStore>()(
             activityCounts: newActivityCounts,
             coupleNames: state.progress.coupleNames,
             decisionSelections: state.progress.decisionSelections,
+            weeklyChallenge: state.progress.weeklyChallenge,
           };
 
           // Recalculate quest statuses
@@ -485,6 +488,7 @@ export const useQuestStore = create<QuestStore>()(
             activityCounts: {},
             coupleNames: get().progress.coupleNames, // Preserve couple names
             decisionSelections: {},
+            weeklyChallenge: { weekStart: '', claimedRewards: [] },
           },
         });
 
@@ -556,6 +560,28 @@ export const useQuestStore = create<QuestStore>()(
       getDecisionSelection: (taskId: string, checklistIdx: number) => {
         const key = `${taskId}-${checklistIdx}`;
         return get().progress.decisionSelections[key];
+      },
+
+      claimWeeklyReward: (challengeId: string, weekStart: string) => {
+        const CHALLENGE_XP = 25;
+        set(state => {
+          const wc = state.progress.weeklyChallenge;
+          // Reset if different week
+          const claimed = wc.weekStart === weekStart
+            ? [...wc.claimedRewards]
+            : [];
+          if (claimed.includes(challengeId)) return state;
+          claimed.push(challengeId);
+          const newXp = state.progress.xp + CHALLENGE_XP;
+          return {
+            progress: {
+              ...state.progress,
+              xp: newXp,
+              level: calculateLevel(newXp),
+              weeklyChallenge: { weekStart, claimedRewards: claimed },
+            },
+          };
+        });
       },
 
       getQuestStatus: (questId: string) => {

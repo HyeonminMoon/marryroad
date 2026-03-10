@@ -77,6 +77,10 @@ export interface QuestProgress {
   activityCounts: Record<string, number>; // Date -> task count for heatmap intensity
   coupleNames: { user: string; partner: string } | null;
   decisionSelections: Record<string, string>; // "{taskId}-{checklistIdx}" -> selected option text
+  weeklyChallenge: {
+    weekStart: string; // ISO date of Monday
+    claimedRewards: string[]; // challenge IDs that have been claimed
+  };
 }
 
 export type QuestStatus = 'locked' | 'available' | 'in-progress' | 'completed';
