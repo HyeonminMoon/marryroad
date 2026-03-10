@@ -20,12 +20,13 @@ import {
   Calendar,
   Building2,
   Star,
-  ChevronRight,
   AlertTriangle,
   Pencil,
   Clock,
   Tag,
   ChevronDown,
+  Lightbulb,
+  Info,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -185,29 +186,48 @@ export function TaskDetailSheet({
             </div>
           )}
 
-          {/* Checklist */}
+          {/* Decision Guide (formerly Checklist) */}
           {task.checklist.length > 0 && (
-            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                체크리스트
+            <div className="bg-purple-50/50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-100/50 dark:border-purple-900/30">
+              <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300 mb-3 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4" />
+                참고 가이드
               </h4>
-              <div className="space-y-2.5">
-                {task.checklist.map((item, idx) => (
-                  <div key={idx}>
-                    <div className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400" />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
+              <div className="space-y-3">
+                {task.checklist.map((item, idx) => {
+                  // Parse tips into individual options (split by " / ")
+                  const options = item.tips
+                    ? item.tips.split(' / ').map(opt => opt.trim()).filter(Boolean)
+                    : [];
+
+                  return (
+                    <div key={idx} className="bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl p-3 border border-gray-100/50 dark:border-gray-700/30">
+                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
                         {item.text}
-                      </span>
+                        {item.isOptional && (
+                          <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(선택)</span>
+                        )}
+                      </p>
+                      {options.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {options.map((opt, optIdx) => (
+                            <span
+                              key={optIdx}
+                              className="inline-flex items-center text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2.5 py-1.5 rounded-lg border border-purple-100/50 dark:border-purple-800/30"
+                            >
+                              {opt}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    {item.tips && (
-                      <div className="ml-6 mt-1.5 text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 p-2 rounded-lg border border-gray-100 dark:border-gray-700">
-                        {item.tips}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 flex items-center gap-1">
+                <Info className="w-3 h-3" />
+                의사결정 시 참고하세요
+              </p>
             </div>
           )}
 
