@@ -7,6 +7,7 @@ import { Header } from '@/components/header';
 import { JourneySummary } from '@/components/journey/journey-summary';
 import { JourneyTimeline } from '@/components/journey/journey-timeline';
 import { JourneyFilter } from '@/components/journey/journey-filter';
+import { JourneyMonthlyRecap } from '@/components/journey/journey-monthly-recap';
 import { JourneyEmpty } from '@/components/journey/journey-empty';
 
 export default function JourneyPage() {
@@ -51,6 +52,7 @@ export default function JourneyPage() {
               daysSinceStart={stats.daysSinceStart}
               level={stats.level}
             />
+            <JourneyMonthlyRecap events={events} />
             <JourneyFilter
               quests={quests}
               events={events}
