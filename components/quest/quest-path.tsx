@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useId } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Check, Star, Sparkles } from 'lucide-react';
+import { Lock, Check, Sparkles } from 'lucide-react';
 import { Quest, QuestProgress, QuestStatus } from '@/lib/types/quest';
 import { getQuestIcon } from '@/lib/utils/icon-map';
 
@@ -14,7 +14,7 @@ interface QuestPathProps {
   onQuestClick: (quest: Quest) => void;
 }
 
-// ─── Status Calculation (props 기반, store 직접 호출 안 함) ──────────
+// ─── Status Calculation ──────────────────────────────────────────────
 
 function calculateQuestStatus(
   questId: string,
@@ -47,49 +47,12 @@ function getCompletedCount(
   return taskProgress[questId]?.completedTaskIds?.length ?? 0;
 }
 
-// ─── SVG Connector Path ──────────────────────────────────────────────
-
-function ConnectorPath({
-  fromX,
-  fromY,
-  toX,
-  toY,
-  status,
-}: {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-  status: QuestStatus;
-}) {
-  const midY = (fromY + toY) / 2;
-  const d = `M ${fromX} ${fromY} C ${fromX} ${midY}, ${toX} ${midY}, ${toX} ${toY}`;
-  const isActive = status !== 'locked';
-
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 0 }}
-    >
-      <path
-        d={d}
-        fill="none"
-        stroke={isActive ? '#a78bfa' : '#d1d5db'}
-        strokeWidth={3}
-        strokeDasharray={isActive ? 'none' : '8 6'}
-        strokeLinecap="round"
-        opacity={isActive ? 0.6 : 0.3}
-      />
-    </svg>
-  );
-}
-
-// ─── Progress Ring ───────────────────────────────────────────────────
+// ─── Progress Ring (in-progress nodes) ──────────────────────────────
 
 function ProgressRing({
   percent,
-  size = 88,
-  strokeWidth = 4,
+  size = 92,
+  strokeWidth = 3,
 }: {
   percent: number;
   size?: number;
@@ -106,16 +69,14 @@ function ProgressRing({
       className="absolute inset-0 -rotate-90"
       style={{ zIndex: 2 }}
     >
-      {/* Background circle */}
       <circle
         cx={size / 2}
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="rgba(255,255,255,0.2)"
+        stroke="rgba(255,255,255,0.15)"
         strokeWidth={strokeWidth}
       />
-      {/* Progress circle */}
       <motion.circle
         cx={size / 2}
         cy={size / 2}
@@ -130,40 +91,6 @@ function ProgressRing({
         transition={{ duration: 0.8, ease: 'easeOut' }}
       />
     </svg>
-  );
-}
-
-// ─── Star Burst Effect (completed) ──────────────────────────────────
-
-function StarBurst() {
-  return (
-    <>
-      {[0, 60, 120, 180, 240, 300].map((angle) => (
-        <motion.div
-          key={angle}
-          className="absolute"
-          style={{
-            top: '50%',
-            left: '50%',
-          }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{
-            opacity: [0, 1, 0],
-            scale: [0, 1.2, 0],
-            x: Math.cos((angle * Math.PI) / 180) * 50 - 6,
-            y: Math.sin((angle * Math.PI) / 180) * 50 - 6,
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatDelay: 3,
-            delay: angle * 0.05,
-          }}
-        >
-          <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-        </motion.div>
-      ))}
-    </>
   );
 }
 
@@ -185,29 +112,28 @@ function QuestBubble({
   const Icon = getQuestIcon(quest.icon);
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // 상태별 스타일
-  const bubbleStyle = (() => {
+  const bubbleClasses = (() => {
     switch (status) {
       case 'completed':
-        return 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-300';
-      case 'available':
-        return 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-300';
+        return 'bg-gradient-to-br from-emerald-400 to-green-500 border-white/30';
       case 'in-progress':
-        return 'bg-gradient-to-br from-amber-400 to-orange-500 border-amber-300';
+        return 'bg-gradient-to-br from-violet-500 to-purple-600 border-white/20';
+      case 'available':
+        return 'bg-gradient-to-br from-white/30 to-white/10 dark:from-white/15 dark:to-white/5 backdrop-blur-xl border-purple-400/50 border-dashed';
       case 'locked':
       default:
-        return 'bg-gray-400 dark:bg-gray-600 border-gray-300 dark:border-gray-500';
+        return 'bg-gray-200/30 dark:bg-gray-700/20 backdrop-blur-sm border-gray-300/30 dark:border-gray-600/30 border-dashed';
     }
   })();
 
   const glowStyle = (() => {
     switch (status) {
       case 'completed':
-        return '0 0 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.2)';
-      case 'available':
-        return '0 0 20px rgba(99, 102, 241, 0.4), 0 0 40px rgba(99, 102, 241, 0.2)';
+        return '0 0 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(34, 197, 94, 0.15), inset 0 1px 1px rgba(255,255,255,0.3)';
       case 'in-progress':
-        return '0 0 20px rgba(245, 158, 11, 0.4), 0 0 40px rgba(245, 158, 11, 0.2)';
+        return '0 0 20px rgba(139, 92, 246, 0.4), 0 0 40px rgba(139, 92, 246, 0.15), inset 0 1px 1px rgba(255,255,255,0.2)';
+      case 'available':
+        return '0 0 24px rgba(139, 92, 246, 0.3), 0 0 48px rgba(139, 92, 246, 0.1)';
       default:
         return 'none';
     }
@@ -215,76 +141,89 @@ function QuestBubble({
 
   return (
     <div className="flex flex-col items-center gap-2" style={{ zIndex: 1 }}>
-      {/* 버블 */}
+      {/* Bubble */}
       <motion.button
         onClick={onClick}
         disabled={status === 'locked'}
-        className={`relative w-20 h-20 rounded-full border-4 flex items-center justify-center
-          ${bubbleStyle}
-          ${status === 'locked' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          transition-colors
+        className={`relative w-[84px] h-[84px] rounded-full border-[3px] flex items-center justify-center
+          ${bubbleClasses}
+          ${status === 'locked' ? 'cursor-not-allowed' : 'cursor-pointer'}
+          transition-all duration-300
         `}
         style={{ boxShadow: glowStyle }}
-        // available 노드 bounce 애니메이션
         animate={
           status === 'available'
-            ? { y: [0, -8, 0] }
+            ? { y: [0, -6, 0], scale: [1, 1.02, 1] }
+            : status === 'completed'
+            ? { boxShadow: [
+                '0 0 20px rgba(34,197,94,0.4), 0 0 40px rgba(34,197,94,0.15), inset 0 1px 1px rgba(255,255,255,0.3)',
+                '0 0 28px rgba(34,197,94,0.6), 0 0 56px rgba(34,197,94,0.2), inset 0 1px 1px rgba(255,255,255,0.3)',
+                '0 0 20px rgba(34,197,94,0.4), 0 0 40px rgba(34,197,94,0.15), inset 0 1px 1px rgba(255,255,255,0.3)',
+              ]}
             : {}
         }
         transition={
           status === 'available'
-            ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+            ? { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
+            : status === 'completed'
+            ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
             : {}
         }
-        whileHover={
-          status !== 'locked'
-            ? { scale: 1.1 }
-            : {}
-        }
-        whileTap={
-          status !== 'locked'
-            ? { scale: 0.95 }
-            : {}
-        }
+        whileHover={status !== 'locked' ? { scale: 1.08 } : {}}
+        whileTap={status !== 'locked' ? { scale: 0.95 } : {}}
       >
-        {/* Progress Ring (in-progress) */}
-        {status === 'in-progress' && (
-          <ProgressRing percent={progressPercent} size={88} strokeWidth={4} />
+        {/* Shimmer effect for available */}
+        {status === 'available' && (
+          <div
+            className="absolute inset-0 rounded-full animate-shimmer opacity-40"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.3) 50%, transparent 100%)',
+              backgroundSize: '200% 100%',
+            }}
+          />
         )}
 
-        {/* Star Burst (completed) */}
-        {status === 'completed' && <StarBurst />}
+        {/* Progress Ring */}
+        {status === 'in-progress' && (
+          <ProgressRing percent={progressPercent} size={92} strokeWidth={3} />
+        )}
 
-        {/* 아이콘 */}
-        <div className="relative z-10 text-white">
+        {/* Icon */}
+        <div className="relative z-10">
           {status === 'locked' ? (
-            <Lock className="w-7 h-7" />
+            <Lock className="w-6 h-6 text-gray-400 dark:text-gray-500" />
           ) : status === 'completed' ? (
-            <Check className="w-8 h-8 stroke-[3]" />
+            <Check className="w-8 h-8 text-white stroke-[3] drop-shadow-sm" />
+          ) : status === 'available' ? (
+            <Icon className="w-7 h-7 text-purple-600 dark:text-purple-300 drop-shadow-sm" />
           ) : (
-            <Icon className="w-7 h-7" />
+            <Icon className="w-7 h-7 text-white drop-shadow-sm" />
           )}
         </div>
       </motion.button>
 
-      {/* "시작!" 텍스트 (available) */}
+      {/* "시작!" badge */}
       {status === 'available' && (
         <motion.div
-          className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-md -mt-1"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-3.5 py-1 rounded-full shadow-lg -mt-1"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.2 }}
         >
           시작!
         </motion.div>
       )}
 
-      {/* 퀘스트 제목 */}
-      <h3 className="text-sm font-bold text-gray-800 dark:text-gray-100 text-center leading-tight line-clamp-2 max-w-[120px]">
+      {/* Quest title */}
+      <h3 className={`text-sm font-bold text-center leading-tight line-clamp-2 max-w-[120px] ${
+        status === 'locked'
+          ? 'text-gray-400 dark:text-gray-500'
+          : 'text-gray-800 dark:text-gray-100'
+      }`}>
         {quest.title}
       </h3>
 
-      {/* 진행률 배지 */}
+      {/* Progress badge */}
       {status !== 'locked' && (
         <div className="flex items-center gap-1 text-xs">
           {status === 'completed' ? (
@@ -293,8 +232,8 @@ function QuestBubble({
               완료!
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full font-medium">
-              {completedCount}/{totalCount} 완료
+            <span className="inline-flex items-center gap-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-600 dark:text-gray-300 px-2.5 py-0.5 rounded-full font-medium shadow-sm">
+              {completedCount}/{totalCount}
             </span>
           )}
         </div>
@@ -305,14 +244,14 @@ function QuestBubble({
 
 // ─── Main Component ─────────────────────────────────────────────────
 
-const NODE_GAP = 160; // 노드 간 세로 간격
-const ZIGZAG_OFFSET = 60; // 좌우 지그재그 오프셋
+const NODE_GAP = 160;
+const ZIGZAG_OFFSET = 60;
 
 export default function QuestPath({ quests, progress, onQuestClick }: QuestPathProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const gradientId = useId();
 
-  // 퀘스트별 상태 계산
   const questsWithStatus = useMemo(() => {
     return quests.map(quest => ({
       quest,
@@ -327,18 +266,15 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
     }));
   }, [quests, progress]);
 
-  // 첫 번째 available 퀘스트 찾기
   const firstAvailableIndex = useMemo(() => {
     return questsWithStatus.findIndex(q => q.status === 'available');
   }, [questsWithStatus]);
 
-  // 첫 available 퀘스트로 자동 스크롤
   useEffect(() => {
     if (firstAvailableIndex === -1) return;
     const questId = questsWithStatus[firstAvailableIndex]?.quest.id;
     if (!questId) return;
 
-    // 약간의 딜레이로 DOM 렌더 이후 스크롤
     const timer = setTimeout(() => {
       const node = nodeRefs.current.get(questId);
       if (node && scrollRef.current) {
@@ -356,10 +292,8 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
     return () => clearTimeout(timer);
   }, [firstAvailableIndex, questsWithStatus]);
 
-  // 전체 경로 높이
   const totalHeight = questsWithStatus.length * NODE_GAP + 200;
 
-  // 노드 위치 계산
   const getNodePosition = (index: number) => {
     const x = index % 2 === 0 ? -ZIGZAG_OFFSET : ZIGZAG_OFFSET;
     const y = index * NODE_GAP;
@@ -373,7 +307,6 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
         -webkit-overflow-scrolling-touch"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      {/* 경로 컨테이너 */}
       <div
         className="relative mx-auto"
         style={{
@@ -382,43 +315,71 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
           maxWidth: 400,
         }}
       >
-        {/* SVG 커넥터 라인 */}
+        {/* SVG Connectors */}
         <svg
           className="absolute inset-0 w-full pointer-events-none"
           style={{ height: totalHeight, zIndex: 0 }}
         >
+          <defs>
+            <linearGradient id={`${gradientId}-active`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#a78bfa" />
+              <stop offset="100%" stopColor="#ec4899" />
+            </linearGradient>
+            <filter id={`${gradientId}-glow`}>
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
           {questsWithStatus.map((item, index) => {
             if (index === 0) return null;
             const from = getNodePosition(index - 1);
             const to = getNodePosition(index);
 
-            // 중앙 기준 오프셋 + 버블 중심
-            const centerX = 200; // maxWidth/2
+            const centerX = 200;
             const fromX = centerX + from.x;
-            const fromY = from.y + 100 + 40; // padding-top + 버블 반지름 아래
+            const fromY = from.y + 100 + 42;
             const toX = centerX + to.x;
-            const toY = to.y + 100 - 10; // padding-top + 버블 상단 약간 위
+            const toY = to.y + 100 - 10;
 
             const isActive = item.status !== 'locked';
             const midY = (fromY + toY) / 2;
             const d = `M ${fromX} ${fromY} C ${fromX} ${midY}, ${toX} ${midY}, ${toX} ${toY}`;
 
             return (
-              <path
-                key={`connector-${index}`}
-                d={d}
-                fill="none"
-                stroke={isActive ? '#a78bfa' : '#d1d5db'}
-                strokeWidth={3}
-                strokeDasharray={isActive ? 'none' : '8 6'}
-                strokeLinecap="round"
-                opacity={isActive ? 0.6 : 0.3}
-              />
+              <g key={`connector-${index}`}>
+                {/* Glow layer */}
+                {isActive && (
+                  <path
+                    d={d}
+                    fill="none"
+                    stroke={`url(#${gradientId}-active)`}
+                    strokeWidth={6}
+                    strokeLinecap="round"
+                    opacity={0.15}
+                    filter={`url(#${gradientId}-glow)`}
+                  />
+                )}
+                {/* Main path */}
+                <path
+                  d={d}
+                  fill="none"
+                  stroke={isActive ? `url(#${gradientId}-active)` : '#d1d5db'}
+                  strokeWidth={isActive ? 2.5 : 1.5}
+                  strokeDasharray={isActive ? '8 4' : '4 8'}
+                  strokeLinecap="round"
+                  opacity={isActive ? 0.7 : 0.2}
+                  className={isActive ? 'animate-flow-dash' : ''}
+                />
+              </g>
             );
           })}
         </svg>
 
-        {/* 퀘스트 노드들 */}
+        {/* Quest Nodes */}
         {questsWithStatus.map((item, index) => {
           const pos = getNodePosition(index);
 
@@ -430,7 +391,7 @@ export default function QuestPath({ quests, progress, onQuestClick }: QuestPathP
               }}
               className="absolute flex justify-center"
               style={{
-                top: pos.y + 100, // 상단 패딩
+                top: pos.y + 100,
                 left: '50%',
                 transform: `translateX(calc(-50% + ${pos.x}px))`,
                 zIndex: 1,
