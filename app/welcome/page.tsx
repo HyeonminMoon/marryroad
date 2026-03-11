@@ -246,10 +246,11 @@ export default function WelcomePage() {
             </motion.div>
 
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              결혼식 날짜가 정해졌나요?
+              결혼식 날짜가 있나요?
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-              날짜를 알려주시면 일정에 맞춰 안내해드릴게요
+              아직 정해지지 않았다면 건너뛰어도 돼요<br />
+              나중에 설정에서 언제든 추가할 수 있어요
             </p>
 
             <div className="mb-6">
@@ -265,7 +266,7 @@ export default function WelcomePage() {
               onClick={handleStep2}
               className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl text-sm font-medium hover:from-purple-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-2"
             >
-              다음
+              {dateInput ? '다음' : '건너뛰기'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </motion.div>

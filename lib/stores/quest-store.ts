@@ -330,7 +330,7 @@ export const useQuestStore = create<QuestStore>()(
           const cutoff = new Date();
           cutoff.setDate(cutoff.getDate() - 90);
           const cutoffStr = cutoff.toISOString().split('T')[0];
-          const trimmedDates = state.progress.activeDates.filter(d => d >= cutoffStr);
+          const trimmedDates = (state.progress.activeDates || []).filter(d => d >= cutoffStr);
           const newActiveDates = trimmedDates.includes(today)
             ? trimmedDates
             : [...trimmedDates, today];
@@ -449,7 +449,7 @@ export const useQuestStore = create<QuestStore>()(
           const cutoff = new Date();
           cutoff.setDate(cutoff.getDate() - 90);
           const cutoffStr = cutoff.toISOString().split('T')[0];
-          const trimmedDates = state.progress.activeDates.filter(d => d >= cutoffStr);
+          const trimmedDates = (state.progress.activeDates || []).filter(d => d >= cutoffStr);
           const newActiveDates = trimmedDates.includes(today) ? trimmedDates : [...trimmedDates, today];
           const prevCounts = state.progress.activityCounts || {};
           const newActivityCounts = { ...prevCounts, [today]: (prevCounts[today] || 0) + newTaskIds.length };
@@ -726,6 +726,25 @@ export const useQuestStore = create<QuestStore>()(
     {
       name: 'marryroad-quest-storage',
       partialize: (state) => ({ progress: state.progress }),
+      merge: (persisted, current) => {
+        const p = persisted as { progress?: Partial<QuestProgress> };
+        const c = current as QuestStore;
+        return {
+          ...c,
+          progress: {
+            ...c.progress,
+            ...(p.progress || {}),
+            // Ensure new fields always have defaults even if missing from old persist data
+            activeDates: p.progress?.activeDates ?? c.progress.activeDates,
+            activityCounts: p.progress?.activityCounts ?? c.progress.activityCounts,
+            weeklyChallenge: p.progress?.weeklyChallenge ?? c.progress.weeklyChallenge,
+            hiddenQuestIds: p.progress?.hiddenQuestIds ?? c.progress.hiddenQuestIds,
+            categoryBudgets: p.progress?.categoryBudgets ?? c.progress.categoryBudgets,
+            decisionSelections: p.progress?.decisionSelections ?? c.progress.decisionSelections,
+            coupleNames: p.progress?.coupleNames !== undefined ? p.progress.coupleNames : c.progress.coupleNames,
+          },
+        };
+      },
     }
   )
 );

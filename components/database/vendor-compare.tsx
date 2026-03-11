@@ -49,7 +49,7 @@ export function VendorCompare({ quests, progress }: VendorCompareProps) {
           vendorContact: ext.vendorInfo.contact,
           vendorWebsite: ext.vendorInfo.website,
           vendorAddress: ext.vendorInfo.address,
-          cost: qp.taskCosts[task.id],
+          cost: qp.taskCosts?.[task.id],
           rating: ext.rating,
         });
       });

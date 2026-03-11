@@ -48,7 +48,7 @@ export default function DatabasePage() {
 
       quest.tasks.forEach(task => {
         const isCompleted = completedTaskIds.includes(task.id);
-        const userCost = questProgress?.taskCosts[task.id];
+        const userCost = questProgress?.taskCosts?.[task.id];
         const extData = questProgress?.taskExtendedData?.[task.id];
 
         tasks.push({

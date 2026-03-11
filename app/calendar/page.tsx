@@ -113,7 +113,7 @@ export default function CalendarPage() {
         } else {
           completed++;
           const tp = progress.taskProgress[task.questId];
-          const taskCost = tp?.taskCosts[task.id];
+          const taskCost = tp?.taskCosts?.[task.id];
           if (taskCost && taskCost > 0) cost += taskCost;
         }
       }
@@ -443,7 +443,7 @@ export default function CalendarPage() {
         if (!quest) return null;
         const questProgress = progress.taskProgress[quest.id];
         const isCompleted = questProgress?.completedTaskIds?.includes(selectedTask.id) || false;
-        const taskCost = questProgress?.taskCosts[selectedTask.id];
+        const taskCost = questProgress?.taskCosts?.[selectedTask.id];
         const taskExtData = questProgress?.taskExtendedData?.[selectedTask.id];
 
         return (

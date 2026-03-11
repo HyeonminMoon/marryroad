@@ -46,7 +46,7 @@ function getDaysLeftInWeek(): number {
 function buildChallenges(progress: QuestProgress, weekDates: string[]): Challenge[] {
   // Count tasks completed this week
   const weekTaskCount = weekDates.reduce((sum, date) => {
-    return sum + (progress.activityCounts[date] || 0);
+    return sum + ((progress.activityCounts || {})[date] || 0);
   }, 0);
 
   // Count cost entries this week
@@ -61,7 +61,7 @@ function buildChallenges(progress: QuestProgress, weekDates: string[]): Challeng
   }
 
   // Count streak days this week
-  const activeDaysThisWeek = weekDates.filter(d => progress.activeDates.includes(d)).length;
+  const activeDaysThisWeek = weekDates.filter(d => (progress.activeDates || []).includes(d)).length;
 
   return [
     {
@@ -106,8 +106,9 @@ export function WeeklyChallenge() {
   const challenges = useMemo(() => buildChallenges(progress, weekDates), [progress, weekDates]);
   const daysLeft = getDaysLeftInWeek();
 
-  const claimedRewards = progress.weeklyChallenge.weekStart === weekStart
-    ? progress.weeklyChallenge.claimedRewards
+  const wc = progress.weeklyChallenge || { weekStart: '', claimedRewards: [], completedWeeks: [] };
+  const claimedRewards = wc.weekStart === weekStart
+    ? wc.claimedRewards
     : [];
 
   const completedCount = challenges.filter(c => c.current >= c.target).length;

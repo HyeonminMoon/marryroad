@@ -154,13 +154,13 @@ export function TaskModal({ quest, open, onClose }: TaskModalProps) {
 
   // Get existing data for selected task
   const selectedTaskCompleted = selectedTask ? completedTaskIds.includes(selectedTask.id) : false;
-  const selectedTaskCost = selectedTask ? questProgress?.taskCosts[selectedTask.id] : undefined;
+  const selectedTaskCost = selectedTask ? questProgress?.taskCosts?.[selectedTask.id] : undefined;
   const selectedTaskExtData = selectedTask ? questProgress?.taskExtendedData?.[selectedTask.id] : undefined;
 
   /** 개별 태스크 렌더링 */
   const renderTaskItem = (task: Task, index: number) => {
     const isCompleted = completedTaskIds.includes(task.id);
-    const userCost = questProgress?.taskCosts[task.id];
+    const userCost = questProgress?.taskCosts?.[task.id];
     const extData = questProgress?.taskExtendedData?.[task.id];
     const isJustDone = justCompleted.has(task.id);
 
