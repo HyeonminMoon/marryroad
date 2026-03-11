@@ -43,8 +43,8 @@ export function ShareCardButton() {
       setPreviewUrl(url);
       setBlob(generatedBlob);
       setDialogOpen(true);
-    } catch (err) {
-      console.error('Failed to generate share card:', err);
+    } catch {
+      // silently fail — user can retry
     } finally {
       setIsGenerating(false);
     }

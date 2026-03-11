@@ -116,7 +116,7 @@ export function JourneyCard({ event, index, side }: JourneyCardProps) {
                   >
                     <img
                       src={photo}
-                      alt=""
+                      alt={`${event.taskTitle} 사진 ${i + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </div>

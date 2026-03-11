@@ -287,7 +287,7 @@ export function TaskDetailSheet({
             <div className="flex gap-2 flex-wrap">
               {photos.map((photo, i) => (
                 <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden group">
-                  <img src={photo} alt="" className="w-full h-full object-cover" />
+                  <img src={photo} alt={`첨부 사진 ${i + 1}`} className="w-full h-full object-cover" />
                   {canEdit && (
                     <button
                       onClick={() => removePhoto(i)}
