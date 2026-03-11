@@ -101,7 +101,7 @@ export default function SettingsPage() {
     : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-gray-950 dark:to-gray-900">
+    <div className="min-h-screen pb-20 md:pb-0 bg-gradient-to-b from-slate-50 to-white dark:from-gray-950 dark:to-gray-900">
       <div className="container mx-auto max-w-2xl px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">

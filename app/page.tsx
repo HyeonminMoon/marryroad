@@ -70,7 +70,7 @@ export default function Home() {
         </p>
 
         <p className="text-base text-gray-500 dark:text-gray-400 mb-10 leading-relaxed">
-          137개 할 일을 19개 퀘스트로 정리했습니다.
+          137개 할 일을 14개 퀘스트로 정리했습니다.
           <br />
           하나씩, 당신의 속도로.
         </p>

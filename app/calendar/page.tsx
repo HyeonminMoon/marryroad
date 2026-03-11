@@ -264,7 +264,7 @@ export default function CalendarPage() {
   const monthName = currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50/30 via-white to-pink-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950/20">
+    <div className="min-h-screen pb-20 md:pb-0 flex flex-col bg-gradient-to-br from-purple-50/30 via-white to-pink-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950/20">
       <Header />
 
       <div className="container mx-auto px-2 md:px-4 py-4 md:py-8">

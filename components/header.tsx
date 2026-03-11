@@ -18,15 +18,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Bell, User, LogOut, Settings, Home, DollarSign, Calendar, Gamepad2, Database, Menu, X, BookHeart } from 'lucide-react'
+import { Bell, User, LogOut, Settings, Home, Calendar, Database, BookHeart } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
 
 function CoupleNamesBadge() {
   const coupleNames = useQuestStore((state) => state.progress.coupleNames)
@@ -83,7 +76,6 @@ export function Header() {
   const pathname = usePathname()
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [unreadCount, setUnreadCount] = useState(0)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
@@ -218,92 +210,6 @@ export function Header() {
             </Button>
           </Link>
         </nav>
-
-        {/* 모바일 햄버거 메뉴 */}
-        <div className="md:hidden">
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="메뉴 열기">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[280px]">
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2">
-                  <span className="text-xl">💍</span>
-                  MarryRoad
-                </SheetTitle>
-              </SheetHeader>
-              <nav className="flex flex-col gap-2 mt-6">
-                <Link href="/roadmap" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
-                      isActive('/roadmap')
-                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <Home className="h-4 w-4" />
-                    홈
-                  </Button>
-                </Link>
-                <Link href="/journey" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
-                      isActive('/journey')
-                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <BookHeart className="h-4 w-4" />
-                    여정
-                  </Button>
-                </Link>
-                <Link href="/calendar" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
-                      isActive('/calendar')
-                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <Calendar className="h-4 w-4" />
-                    캘린더
-                  </Button>
-                </Link>
-                <Link href="/database" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
-                      isActive('/database')
-                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <Database className="h-4 w-4" />
-                    데이터베이스
-                  </Button>
-                </Link>
-                <Link href="/guests" onClick={() => setMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    className={`w-full justify-start gap-2 border-l-[3px] rounded-none ${
-                      isActive('/guests')
-                        ? 'border-purple-500 text-purple-600 dark:text-purple-400 font-bold bg-purple-50 dark:bg-purple-950/30'
-                        : 'border-transparent'
-                    }`}
-                  >
-                    <User className="h-4 w-4" />
-                    하객
-                  </Button>
-                </Link>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
 
         {/* 우측 메뉴 */}
         <div className="flex items-center space-x-4">
