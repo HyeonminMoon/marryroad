@@ -26,12 +26,20 @@
 /public       — static assets
 ```
 
+## Mobile Navigation
+- 모바일: 하단 탭 바 (`components/mobile-bottom-nav.tsx`) — 5개 탭 (홈, 여정, 캘린더, 하객, 설정)
+- 데스크탑: 헤더 네비 (`components/header.tsx`)
+- 새 페이지 추가 시 하단 패딩 적용 필수: `pb-20 md:pb-0`
+
 ## Tech Constraints
 - State: Zustand with persist middleware (localStorage)
 - Heavy components (React Flow): use dynamic import
 - Styling: Tailwind CSS only, no CSS modules
 - Animations: Framer Motion
-- No backend changes without explicit need — prefer client-side first
+- No backend — client-side only (localStorage), Supabase 코드 사용 금지
+- Error boundaries 필수: `app/error.tsx`, `app/not-found.tsx` 유지
+- 프로덕션에 `console.log`/`console.error` 금지
+- 이미지 `alt` 속성 필수 (접근성)
 
 ## Build & Verify
 ```bash
