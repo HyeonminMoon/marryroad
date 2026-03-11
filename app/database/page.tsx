@@ -334,7 +334,7 @@ export default function DatabasePage() {
           })}
           {filteredAndSortedTasks.length === 0 && (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              검색 결과가 없습니다.
+              조건에 맞는 태스크가 없어요. 필터를 조정해보세요.
             </div>
           )}
         </div>
@@ -469,7 +469,7 @@ export default function DatabasePage() {
 
           {filteredAndSortedTasks.length === 0 && (
             <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              검색 결과가 없습니다.
+              조건에 맞는 태스크가 없어요. 필터를 조정해보세요.
             </div>
           )}
         </div>

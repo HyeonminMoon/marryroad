@@ -316,9 +316,20 @@ export default function GuestsPage() {
           {filteredGuests.length === 0 && (
             <div className="text-center py-12">
               <Users className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {guests.length === 0 ? '하객 명단을 추가해보세요' : '검색 결과가 없습니다'}
-              </p>
+              {guests.length === 0 ? (
+                <>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    하객 명부를 만들어보세요
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    참석 인원, 식사 선택, 축의금까지<br />한눈에 관리할 수 있어요
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  검색 결과가 없습니다
+                </p>
+              )}
             </div>
           )}
 

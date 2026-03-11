@@ -405,12 +405,25 @@ export default function CalendarPage() {
         {stats.completed === 0 && stats.planned === 0 && (
           <div className="mt-8 text-center p-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-sm border border-white/30 dark:border-gray-700/50">
             <CalendarIcon className="w-12 h-12 mx-auto mb-4 text-blue-400" />
-            <p className="text-gray-600 dark:text-gray-400">
-              {weddingDate
-                ? '로드맵에서 작업을 시작해보세요!'
-                : <>결혼 날짜를 설정하면 예정 일정이 표시됩니다.<br />로드맵에서 작업을 완료하고 날짜를 기록해보세요!</>
-              }
-            </p>
+            {weddingDate ? (
+              <>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  아직 일정이 비어있어요
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  로드맵에서 태스크를 완료하면<br />결혼 준비 타임라인이 자동으로 채워져요
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  결혼 날짜를 먼저 설정해보세요
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                  D-day가 정해지면 준비 일정이<br />달력에 자동으로 표시됩니다
+                </p>
+              </>
+            )}
           </div>
         )}
       </div>
