@@ -46,3 +46,58 @@
 npm run build    # must pass before committing
 npm run dev      # local dev server at localhost:3000
 ```
+
+## Agent Coding Guidelines (QA Lessons Learned)
+
+3차 QA를 통해 발견된 에이전트 실수 패턴과 방지책.
+
+### 1. useEffect 콜백 안정성
+- **문제**: useEffect deps에 인라인 콜백(예: `onDismiss`)을 넣으면 매 렌더마다 재실행됨 (타이머 리셋 등)
+- **해결**: `useRef`로 최신 콜백을 보관하고, useEffect deps에서 제거
+```tsx
+const onDismissRef = useRef(onDismiss);
+useEffect(() => { onDismissRef.current = onDismiss; }, [onDismiss]);
+// useEffect deps에서 onDismiss 제거, onDismissRef.current() 호출
+```
+
+### 2. Zustand persist merge — 중첩 객체 보호
+- **문제**: persist의 기본 merge는 shallow merge → 중첩 객체(budget 등)가 통째로 덮어써짐
+- **해결**: merge 함수에서 중첩 객체를 수동 deep merge
+```ts
+budget: { ...currentState.progress.budget, ...(persistedState.progress?.budget || {}) }
+```
+
+### 3. localStorage 키 일관성
+- **문제**: Zustand persist `name`과 실제 사용하는 키가 불일치하면 export/import 깨짐
+- **해결**: 키를 상수로 정의하고, persist name과 data-io에서 동일 상수 참조
+
+### 4. 전역 기능 추가 시 모든 페이지 점검
+- **문제**: `hiddenQuestIds` 같은 전역 필터를 추가했는데 일부 페이지에만 적용
+- **해결**: 퀘스트를 표시하는 모든 페이지(roadmap, journey, calendar, database)에서 필터 적용 확인
+
+### 5. Export/Import 견고성
+- 항상 try-catch로 감싸기
+- Import 후 파생값(budget.spent 등) 재계산
+- 버전 마이그레이션(v1→v2) 지원
+
+### 6. localStorage QuotaExceededError
+- localStorage에 쓰는 모든 곳에서 QuotaExceededError 처리
+- Zustand persist: `createJSONStorage`에서 setItem을 try-catch로 래핑
+
+### 7. SSR/CSR Hydration
+- **문제**: useState 초기값에서 localStorage를 읽으면 hydration mismatch
+- **해결**: useState는 기본값으로 초기화, useEffect에서 localStorage 읽어 setState
+
+### 8. 파생 상태 일관성
+- 태스크 완료/취소 시 관련 퀘스트 상태도 재계산 (`calculateQuestStatus`)
+- XP 차감 시 퀘스트 보너스 XP까지 고려
+- `uncompleteTask` 시 activeDates/activityCounts 복원
+
+### 9. 병렬 에이전트 작업 시 충돌 방지
+- 에이전트별 수정 파일을 명시적으로 분리 (겹치는 파일 금지)
+- 공유 파일(quest-store.ts 등)은 한 에이전트만 담당
+
+### 10. 데이터 정리 (메모리 관리)
+- activityCounts: 90일 초과 항목 trim
+- completedWeeks: 52주 초과 항목 trim
+- resetProgress: 관련 localStorage 키(prevLevel, seen-achievements 등) 모두 제거
