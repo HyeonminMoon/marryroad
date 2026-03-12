@@ -39,6 +39,8 @@ export function BudgetAllocation({ quests, progress }: BudgetAllocationProps) {
     ? Math.round((allocated / progress.budget.total) * 100)
     : 0
 
+  const isOverBudget = unallocated < 0
+
   const handleSave = (questId: string) => {
     const v = parseInt(editValue)
     if (!isNaN(v) && v >= 0) {
@@ -46,6 +48,19 @@ export function BudgetAllocation({ quests, progress }: BudgetAllocationProps) {
     }
     setEditingId(null)
   }
+
+  // Preview: how much would the total change if current edit is saved
+  const previewOverAmount = useMemo(() => {
+    if (!editingId || !editValue) return null
+    const v = parseInt(editValue)
+    if (isNaN(v) || v < 0) return null
+    const newAmount = v * 10000
+    const currentAmount = progress.categoryBudgets?.[editingId] || 0
+    const diff = newAmount - currentAmount
+    const newTotal = allocated + diff
+    const over = newTotal - progress.budget.total
+    return over > 0 ? over : null
+  }, [editingId, editValue, allocated, progress.budget.total, progress.categoryBudgets])
 
   const getSpentForQuest = (questId: string) => {
     const tp = progress.taskProgress[questId]
@@ -69,7 +84,7 @@ export function BudgetAllocation({ quests, progress }: BudgetAllocationProps) {
       <div className="mb-4">
         <div className="h-2 bg-gray-100 dark:bg-gray-700/50 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-blue-500"
+            className={`h-full rounded-full ${isOverBudget ? 'bg-red-500' : 'bg-blue-500'}`}
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(100, allocationPercent)}%` }}
             transition={{ duration: 0.5 }}
@@ -79,10 +94,20 @@ export function BudgetAllocation({ quests, progress }: BudgetAllocationProps) {
           <span className="text-[10px] text-gray-400">
             배분: {formatAmount(allocated)}원
           </span>
-          <span className={`text-[10px] ${unallocated < 0 ? 'text-red-500' : 'text-gray-400'}`}>
+          <span className={`text-[10px] ${unallocated < 0 ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
             {unallocated >= 0 ? `미배분: ${formatAmount(unallocated)}원` : `초과: ${formatAmount(Math.abs(unallocated))}원`}
           </span>
         </div>
+        {isOverBudget && (
+          <div className="mt-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-lg px-3 py-2">
+            <p className="text-[11px] text-red-600 dark:text-red-400 font-medium">
+              ⚠ 카테고리 예산 합계가 총 예산보다 {formatAmount(Math.abs(unallocated))}원 초과했습니다
+            </p>
+            <p className="text-[10px] text-red-500/70 dark:text-red-400/60 mt-0.5">
+              카테고리 예산을 조정하거나 총 예산을 늘려주세요
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Category list */}
@@ -103,26 +128,35 @@ export function BudgetAllocation({ quests, progress }: BudgetAllocationProps) {
                   </span>
                 </div>
                 {isEditing ? (
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSave(quest.id)
-                        if (e.key === 'Escape') setEditingId(null)
-                      }}
-                      autoFocus
-                      className="w-16 text-right text-xs border border-gray-300 dark:border-gray-600 rounded px-1.5 py-0.5 bg-white dark:bg-gray-800"
-                      placeholder="만원"
-                    />
-                    <span className="text-[10px] text-gray-400">만</span>
-                    <button onClick={() => handleSave(quest.id)} className="text-green-600 p-0.5">
-                      <Check className="w-3 h-3" />
-                    </button>
-                    <button onClick={() => setEditingId(null)} className="text-gray-400 p-0.5">
-                      <X className="w-3 h-3" />
-                    </button>
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSave(quest.id)
+                          if (e.key === 'Escape') setEditingId(null)
+                        }}
+                        autoFocus
+                        className={`w-16 text-right text-xs border rounded px-1.5 py-0.5 bg-white dark:bg-gray-800 ${
+                          previewOverAmount ? 'border-red-400 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                        }`}
+                        placeholder="만원"
+                      />
+                      <span className="text-[10px] text-gray-400">만</span>
+                      <button onClick={() => handleSave(quest.id)} className="text-green-600 p-0.5">
+                        <Check className="w-3 h-3" />
+                      </button>
+                      <button onClick={() => setEditingId(null)} className="text-gray-400 p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    {previewOverAmount && (
+                      <p className="text-[10px] text-red-500 text-right mt-0.5">
+                        총 예산 {formatAmount(previewOverAmount)}원 초과
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <button

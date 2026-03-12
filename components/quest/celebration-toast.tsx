@@ -27,6 +27,10 @@ export function CelebrationToast({
   const [elapsed, setElapsed] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
 
   // Auto-dismiss timer
   useEffect(() => {
@@ -41,7 +45,7 @@ export function CelebrationToast({
         setElapsed(prev => {
           const next = prev + 100;
           if (next >= AUTO_DISMISS_MS) {
-            onDismiss();
+            onDismissRef.current();
             return 0;
           }
           return next;
@@ -52,7 +56,7 @@ export function CelebrationToast({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [visible, paused, onDismiss]);
+  }, [visible, paused]);
 
   const handleSubmit = useCallback(() => {
     if (memo.trim()) {
@@ -76,7 +80,7 @@ export function CelebrationToast({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 80 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
+          className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -93,6 +97,7 @@ export function CelebrationToast({
               </div>
               <button
                 onClick={onDismiss}
+                aria-label="닫기"
                 className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <X className="w-4 h-4" />

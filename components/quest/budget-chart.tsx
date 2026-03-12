@@ -164,7 +164,7 @@ export function BudgetChart({ quests, progress }: BudgetChartProps) {
               placeholder="만원"
             />
             <span className="text-[10px] text-gray-500">만원</span>
-            <button onClick={saveBudget} className="p-0.5 text-green-600 hover:text-green-700">
+            <button onClick={saveBudget} aria-label="예산 저장" className="p-0.5 text-green-600 hover:text-green-700">
               <Check className="w-3.5 h-3.5" />
             </button>
           </div>

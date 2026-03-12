@@ -24,6 +24,7 @@ import { SmartHomeSummary } from '@/components/quest/smart-home-summary';
 import { QuestCompletionOverlay } from '@/components/quest/quest-completion-overlay';
 import { CoupleSetup, DailyMessage } from '@/components/quest/couple-message';
 import { getUnlockedAchievements, getNewAchievements, type AchievementDef } from '@/lib/data/achievements';
+import { useGuestStore } from '@/lib/stores/guest-store';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,6 +40,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 const FullMapView = dynamic(
@@ -80,12 +82,16 @@ export default function RoadmapPage() {
     uncompleteTask,
   } = useQuestStore();
 
+  const clearAllGuests = useGuestStore((s) => s.clearAll);
+
   const visibleQuests = useMemo(
     () => quests.filter(q => !(progress.hiddenQuestIds || []).includes(q.id)),
     [quests, progress.hiddenQuestIds]
   );
 
+  const router = useRouter();
   const isMobile = useIsMobile();
+  const [initialized, setInitialized] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('today');
   const prevTabIndexRef = useRef(0);
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
@@ -102,23 +108,36 @@ export default function RoadmapPage() {
   const [achievementToast, setAchievementToast] = useState<AchievementDef | null>(null);
   const achievementQueueRef = useRef<AchievementDef[]>([]);
   const [completedQuestOverlay, setCompletedQuestOverlay] = useState<Quest | null>(null);
+  const [isGrandComplete, setIsGrandComplete] = useState(false);
   const prevCompletedQuestIdsRef = useRef<string[]>([]);
   const [editingCoupleNames, setEditingCoupleNames] = useState(false);
   const [undoToast, setUndoToast] = useState<{ questId: string; taskId: string; taskTitle: string } | null>(null);
   const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [insightsExpanded, setInsightsExpanded] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('marryroad-insights-expanded') === 'true';
-  });
-  const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('marryroad-couple-setup-dismissed') === 'true';
-  });
+  const [insightsExpanded, setInsightsExpanded] = useState(false);
+  const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(false);
 
   // Initialize on mount
   useEffect(() => {
     initialize();
+    setInitialized(true);
+    // Hydration-safe: read localStorage after mount
+    const savedInsights = localStorage.getItem('marryroad-insights-expanded');
+    if (savedInsights === 'true') setInsightsExpanded(true);
   }, [initialize]);
+
+  // Guard: redirect to /welcome if no onboarding data
+  useEffect(() => {
+    if (!initialized) return;
+    const { progress: p } = useQuestStore.getState();
+    const hasNoProgress =
+      p.completedQuestIds.length === 0 &&
+      Object.keys(p.taskProgress).length === 0 &&
+      p.xp === 0 &&
+      !p.coupleNames;
+    if (hasNoProgress) {
+      router.replace('/welcome');
+    }
+  }, [initialized, router]);
 
   // Quest completion detection
   useEffect(() => {
@@ -130,18 +149,33 @@ export default function RoadmapPage() {
       if (newIds.length > 0) {
         const quest = quests.find(q => q.id === newIds[0]);
         if (quest) {
+          const allVisible = visibleQuests.length;
+          const allCompleted = current.filter(
+            id => !(progress.hiddenQuestIds || []).includes(id)
+          ).length;
+          setIsGrandComplete(allCompleted >= allVisible && allVisible > 0);
           setCompletedQuestOverlay(quest);
         }
       }
     }
     prevCompletedQuestIdsRef.current = current;
-  }, [progress.completedQuestIds, quests]);
+  }, [progress.completedQuestIds, quests, visibleQuests, progress.hiddenQuestIds]);
 
   // Achievement detection
   const unlockedAchievementIds = useMemo(
     () => getUnlockedAchievements(progress, quests),
     [progress, quests]
   );
+
+  // Guard: reset seen achievements if progress was reset (xp === 0)
+  useEffect(() => {
+    if (progress.xp === 0 && typeof window !== 'undefined') {
+      const seen: string[] = JSON.parse(localStorage.getItem('marryroad-seen-achievements') || '[]');
+      if (seen.length > 0) {
+        localStorage.removeItem('marryroad-seen-achievements');
+      }
+    }
+  }, [progress.xp]);
 
   // Stats tab badge: check for unseen achievements
   const hasNewAchievements = useMemo(() => {
@@ -203,7 +237,9 @@ export default function RoadmapPage() {
   // Quick complete task from TodaySection
   const onTaskQuickComplete = useCallback(
     (questId: string, taskId: string) => {
-      completeTask(questId, taskId);
+      completeTask(questId, taskId, undefined, {
+        completedDate: new Date().toISOString().split('T')[0],
+      });
 
       const quest = quests.find(q => q.id === questId);
       const task = quest?.tasks.find(t => t.id === taskId);
@@ -232,8 +268,9 @@ export default function RoadmapPage() {
 
   const confirmReset = useCallback(() => {
     resetProgress();
+    clearAllGuests();
     setResetDialogOpen(false);
-  }, [resetProgress]);
+  }, [resetProgress, clearAllGuests]);
 
   // Level up effect
   useEffect(() => {
@@ -250,8 +287,23 @@ export default function RoadmapPage() {
 
   // Computed values
   const totalQuests = visibleQuests.length;
-  const completedQuests = progress.completedQuestIds.length;
+  const completedQuests = progress.completedQuestIds.filter(
+    id => !(progress.hiddenQuestIds || []).includes(id)
+  ).length;
   const lvlProgress = calculateLevelProgress(progress.xp);
+
+  // Show loading state until initialized and quests loaded
+  if (!initialized || quests.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <Header />
+        <div className="flex flex-col items-center justify-center h-[60vh] gap-3">
+          <div className="w-8 h-8 border-3 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+          <p className="text-sm text-gray-400">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-20 md:pb-0 bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -329,7 +381,7 @@ export default function RoadmapPage() {
                 partnerName={progress.coupleNames.partner}
                 onEditNames={() => setEditingCoupleNames(true)}
               />
-            ) : (editingCoupleNames || !coupleSetupDismissed) ? (
+            ) : (editingCoupleNames || (!progress.coupleNames && !coupleSetupDismissed)) ? (
               <CoupleSetup
                 onSave={(user, partner) => {
                   setCoupleNames(user, partner);
@@ -338,7 +390,6 @@ export default function RoadmapPage() {
                 onSkip={() => {
                   setEditingCoupleNames(false);
                   setCoupleSetupDismissed(true);
-                  localStorage.setItem('marryroad-couple-setup-dismissed', 'true');
                 }}
               />
             ) : null}
@@ -532,25 +583,13 @@ export default function RoadmapPage() {
 
       {/* Locked quest toast */}
       {lockedMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center gap-3 bg-gray-900 text-white px-5 py-3 rounded-lg shadow-xl border border-gray-700 max-w-md">
             <Lock className="w-5 h-5 text-amber-400 flex-shrink-0" />
             <p className="text-sm flex-1">{lockedMessage.text}</p>
             <button
-              onClick={() => {
-                const quest = quests.find(q => q.id === lockedMessage.questId);
-                if (quest) {
-                  setSelectedQuest(quest);
-                  setModalOpen(true);
-                }
-                setLockedMessage(null);
-              }}
-              className="text-xs text-purple-300 hover:text-purple-200 font-medium whitespace-nowrap ml-2"
-            >
-              그래도 열기
-            </button>
-            <button
               onClick={() => setLockedMessage(null)}
+              aria-label="닫기"
               className="text-gray-500 hover:text-gray-300 ml-1"
             >
               &times;
@@ -609,7 +648,11 @@ export default function RoadmapPage() {
       {/* Quest Completion Overlay */}
       <QuestCompletionOverlay
         quest={completedQuestOverlay}
-        onDismiss={() => setCompletedQuestOverlay(null)}
+        isGrandComplete={isGrandComplete}
+        onDismiss={() => {
+          setCompletedQuestOverlay(null);
+          setIsGrandComplete(false);
+        }}
       />
 
       {/* Celebration Memo Toast */}

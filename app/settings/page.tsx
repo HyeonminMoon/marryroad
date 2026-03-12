@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useQuestStore } from '@/lib/stores/quest-store'
+import { useGuestStore } from '@/lib/stores/guest-store'
 import { getDdayCount } from '@/lib/utils/dday'
 import { DataManagement } from '@/components/quest/data-management'
 import { QuestVisibility } from '@/components/quest/quest-visibility'
@@ -11,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Settings, Heart, Calendar, Wallet, Trash2, Check, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Header } from '@/components/header'
 
 function SaveFeedback({ show }: { show: boolean }) {
   return (
@@ -33,6 +35,7 @@ function SaveFeedback({ show }: { show: boolean }) {
 export default function SettingsPage() {
   const progress = useQuestStore((s) => s.progress)
   const quests = useQuestStore((s) => s.quests)
+  const initialize = useQuestStore((s) => s.initialize)
   const setCoupleNames = useQuestStore((s) => s.setCoupleNames)
   const setWeddingDate = useQuestStore((s) => s.setWeddingDate)
   const setBudgetTotal = useQuestStore((s) => s.setBudgetTotal)
@@ -46,6 +49,11 @@ export default function SettingsPage() {
   const [budgetInput, setBudgetInput] = useState('')
   const [saved, setSaved] = useState<string | null>(null)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+
+  // Initialize quests for QuestVisibility
+  useEffect(() => {
+    initialize()
+  }, [initialize])
 
   // Initialize from store
   useEffect(() => {
@@ -70,9 +78,24 @@ export default function SettingsPage() {
     showSaved('couple')
   }
 
+  const [showPastDateConfirm, setShowPastDateConfirm] = useState(false)
+
   const handleSaveWeddingDate = () => {
     if (!weddingDate) return
+    const selected = new Date(weddingDate)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (selected < today) {
+      setShowPastDateConfirm(true)
+      return
+    }
     setWeddingDate(weddingDate)
+    showSaved('date')
+  }
+
+  const confirmPastDate = () => {
+    setWeddingDate(weddingDate)
+    setShowPastDateConfirm(false)
     showSaved('date')
   }
 
@@ -83,14 +106,18 @@ export default function SettingsPage() {
   }
 
   const handleSaveBudget = () => {
+    if (budgetInput === '') return
     const value = parseInt(budgetInput)
-    if (isNaN(value) || value <= 0) return
+    if (isNaN(value) || value < 0) return
     setBudgetTotal(value * 10000)
     showSaved('budget')
   }
 
+  const clearAllGuests = useGuestStore((s) => s.clearAll)
+
   const handleReset = () => {
     resetProgress()
+    clearAllGuests()
     setShowResetConfirm(false)
     window.location.reload()
   }
@@ -102,6 +129,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen pb-20 md:pb-0 bg-gradient-to-b from-slate-50 to-white dark:from-gray-950 dark:to-gray-900">
+      <Header />
       <div className="container mx-auto max-w-2xl px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
@@ -198,6 +226,29 @@ export default function SettingsPage() {
                 </Button>
               )}
             </div>
+            <AnimatePresence>
+              {showPastDateConfirm && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 border border-amber-200 dark:border-amber-800"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
+                    <span className="text-xs font-medium text-amber-700 dark:text-amber-400">이미 지난 날짜입니다. 설정하시겠습니까?</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={confirmPastDate} className="bg-amber-600 hover:bg-amber-700 text-white text-xs">
+                      설정
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setShowPastDateConfirm(false)} className="text-xs">
+                      취소
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Section 3: Budget */}
@@ -233,7 +284,7 @@ export default function SettingsPage() {
             <Button
               size="sm"
               onClick={handleSaveBudget}
-              disabled={!budgetInput || parseInt(budgetInput) <= 0}
+              disabled={budgetInput === '' || isNaN(parseInt(budgetInput)) || parseInt(budgetInput) < 0}
               className="bg-purple-600 hover:bg-purple-700 text-white"
             >
               저장
@@ -260,7 +311,7 @@ export default function SettingsPage() {
               <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">데이터 초기화</h2>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-              모든 진행 상황, 설정, 하객 데이터를 삭제하고 처음부터 시작합니다. 이 작업은 되돌릴 수 없습니다.
+              모든 진행 상황과 하객 데이터를 삭제합니다. (커플 이름, 결혼식 날짜, 예산 설정은 유지됩니다) 이 작업은 되돌릴 수 없습니다.
             </p>
 
             <AnimatePresence>

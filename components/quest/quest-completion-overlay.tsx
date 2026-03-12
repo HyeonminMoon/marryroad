@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Quest } from '@/lib/types/quest';
 import { getQuestIcon } from '@/lib/utils/icon-map';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,40 +8,65 @@ import confetti from 'canvas-confetti';
 
 interface QuestCompletionOverlayProps {
   quest: Quest | null;
+  isGrandComplete?: boolean;
   onDismiss: () => void;
 }
 
-export function QuestCompletionOverlay({ quest, onDismiss }: QuestCompletionOverlayProps) {
+export function QuestCompletionOverlay({ quest, isGrandComplete, onDismiss }: QuestCompletionOverlayProps) {
+  // Capture onDismiss in a ref to avoid effect re-runs from inline arrow functions
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
   // Confetti bursts
   useEffect(() => {
     if (!quest) return;
 
+    const colors = isGrandComplete
+      ? ['#fbbf24', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981', '#ef4444']
+      : ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+
     // Burst 1: left side
     confetti({
-      particleCount: 80,
-      spread: 70,
+      particleCount: isGrandComplete ? 150 : 80,
+      spread: isGrandComplete ? 100 : 70,
       origin: { x: 0.3, y: 0.5 },
-      colors: ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981'],
+      colors,
     });
 
     // Burst 2: right side, delayed
     const timer = setTimeout(() => {
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: isGrandComplete ? 150 : 80,
+        spread: isGrandComplete ? 100 : 70,
         origin: { x: 0.7, y: 0.5 },
-        colors: ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981'],
+        colors,
       });
     }, 400);
 
-    // Auto-dismiss
-    const dismissTimer = setTimeout(onDismiss, 4000);
+    // Burst 3: center (grand complete only)
+    let timer2: ReturnType<typeof setTimeout> | undefined;
+    if (isGrandComplete) {
+      timer2 = setTimeout(() => {
+        confetti({
+          particleCount: 200,
+          spread: 120,
+          origin: { x: 0.5, y: 0.4 },
+          colors,
+        });
+      }, 800);
+    }
+
+    // Auto-dismiss (longer for grand complete)
+    const dismissTimer = setTimeout(() => onDismissRef.current(), isGrandComplete ? 6000 : 4000);
 
     return () => {
       clearTimeout(timer);
+      if (timer2) clearTimeout(timer2);
       clearTimeout(dismissTimer);
     };
-  }, [quest, onDismiss]);
+  }, [quest, isGrandComplete]);
 
   const handleClick = useCallback(() => {
     onDismiss();
@@ -85,28 +110,45 @@ export function QuestCompletionOverlay({ quest, onDismiss }: QuestCompletionOver
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl font-bold text-white mb-2"
+              className={`font-bold text-white mb-2 ${isGrandComplete ? 'text-4xl' : 'text-3xl'}`}
             >
-              퀘스트 완료!
+              {isGrandComplete ? '축하합니다!' : '퀘스트 완료!'}
             </motion.h2>
 
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-xl text-white/80 mb-6"
+              className="text-xl text-white/80 mb-2"
             >
-              {quest.title}
+              {isGrandComplete ? '모든 결혼 준비를 완료했습니다!' : quest.title}
             </motion.p>
+
+            {isGrandComplete && (
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-base text-white/60 mb-6"
+              >
+                그랜드 마스터 달성 — 행복한 결혼 생활을 응원합니다
+              </motion.p>
+            )}
+
+            {!isGrandComplete && <div className="mb-4" />}
 
             {/* XP Badge */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.6, type: 'spring', stiffness: 400 }}
-              className="bg-yellow-400 text-yellow-900 px-6 py-2 rounded-full text-lg font-bold shadow-lg"
+              className={`px-6 py-2 rounded-full text-lg font-bold shadow-lg ${
+                isGrandComplete
+                  ? 'bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 text-white'
+                  : 'bg-yellow-400 text-yellow-900'
+              }`}
             >
-              +{quest.xp} XP
+              {isGrandComplete ? 'Grand Master!' : `+${quest.xp} XP`}
             </motion.div>
 
             {/* Dismiss hint */}

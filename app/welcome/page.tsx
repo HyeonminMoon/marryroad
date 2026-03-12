@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { Heart, Calendar, ArrowRight, Sparkles, CheckCircle, Minus, ChevronDown } from 'lucide-react';
@@ -15,10 +15,18 @@ type QuestSetupState = 'none' | 'partial' | 'done';
 
 export default function WelcomePage() {
   const router = useRouter();
-  const { setCoupleNames, setWeddingDate, bulkCompleteQuest, completeTask } = useQuestStore();
+  const { setCoupleNames, setWeddingDate, bulkCompleteQuest, completeTask, progress } = useQuestStore();
   const [step, setStep] = useState(0);
   const [userName, setUserName] = useState('');
   const [partnerName, setPartnerName] = useState('');
+
+  // Hydration-safe: read coupleNames from store after mount
+  useEffect(() => {
+    if (progress.coupleNames) {
+      setUserName(prev => prev || progress.coupleNames!.user);
+      setPartnerName(prev => prev || progress.coupleNames!.partner);
+    }
+  }, [progress.coupleNames]);
   const [dateInput, setDateInput] = useState('');
 
   // Quick setup state

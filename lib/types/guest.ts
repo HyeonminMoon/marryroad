@@ -1,6 +1,6 @@
 export type GuestSide = 'groom' | 'bride' | 'shared';
 export type GuestRelation = 'family' | 'friend' | 'work' | 'other';
-export type RsvpStatus = 'pending' | 'confirmed' | 'declined' | 'maybe';
+export type RsvpStatus = 'pending' | 'confirmed' | 'declined';
 export type MealType = 'standard' | 'vegetarian' | 'none';
 
 export interface Guest {
@@ -26,6 +26,7 @@ export interface GuestStats {
   pending: number;
   groomSide: number;
   brideSide: number;
+  sharedSide: number;
   totalGiftAmount: number;
   mealCounts: Record<MealType, number>;
 }

@@ -40,11 +40,6 @@
     "type": "required"
   },
   {
-    "source": "2.2.1",
-    "target": "2.2.1",
-    "type": "required"
-  },
-  {
     "source": "3.1.1",
     "target": "3.2.1",
     "type": "required"
@@ -60,11 +55,6 @@
     "type": "required"
   },
   {
-    "source": "3.2.3",
-    "target": "3.2.3",
-    "type": "required"
-  },
-  {
     "source": "4.1.1",
     "target": "4.1.2",
     "type": "required"
@@ -72,11 +62,6 @@
   {
     "source": "1.2.1",
     "target": "4.1.2",
-    "type": "required"
-  },
-  {
-    "source": "4.2.1",
-    "target": "4.2.1",
     "type": "required"
   },
   {
@@ -332,11 +317,6 @@
   {
     "source": "4.4.1",
     "target": "15.1.2",
-    "type": "required"
-  },
-  {
-    "source": "15.2.1",
-    "target": "15.2.1",
     "type": "required"
   },
   {

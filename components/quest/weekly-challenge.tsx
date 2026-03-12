@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { QuestProgress } from '@/lib/types/quest';
 import { useQuestStore } from '@/lib/stores/quest-store';
-import { Trophy, Zap, FileText, DollarSign, Flame, Award } from 'lucide-react';
+import { Trophy, Zap, FileText, DollarSign, Flame, Award, PartyPopper } from 'lucide-react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -91,7 +91,7 @@ function buildChallenges(progress: QuestProgress, weekDates: string[]): Challeng
     {
       id: 'streak-3',
       icon: <Flame className="w-4 h-4 text-orange-500" />,
-      title: '3일 연속 활동',
+      title: '이번 주 3일 활동',
       current: Math.min(activeDaysThisWeek, 3),
       target: 3,
       xp: 25,
@@ -100,11 +100,14 @@ function buildChallenges(progress: QuestProgress, weekDates: string[]): Challeng
 }
 
 export function WeeklyChallenge() {
-  const { progress, claimWeeklyReward } = useQuestStore();
+  const { progress, claimWeeklyReward, quests } = useQuestStore();
   const weekStart = getWeekStart();
   const weekDates = useMemo(() => getWeekDates(weekStart), [weekStart]);
   const challenges = useMemo(() => buildChallenges(progress, weekDates), [progress, weekDates]);
   const daysLeft = getDaysLeftInWeek();
+
+  // Check if all quests are completed
+  const allQuestsCompleted = quests.length > 0 && progress.completedQuestIds.length >= quests.length;
 
   const wc = progress.weeklyChallenge || { weekStart: '', claimedRewards: [], completedWeeks: [] };
   const claimedRewards = wc.weekStart === weekStart
@@ -123,6 +126,38 @@ export function WeeklyChallenge() {
       colors: ['#a855f7', '#ec4899', '#6366f1'],
     });
   };
+
+  // All quests completed — show celebration instead of challenges
+  if (allQuestsCompleted) {
+    return (
+      <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 dark:from-purple-950/30 dark:to-pink-950/20 backdrop-blur-lg rounded-2xl border border-purple-200/30 dark:border-purple-800/30 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Trophy className="w-4 h-4 text-purple-500" />
+          <span className="text-sm font-bold text-gray-900 dark:text-gray-100">주간 챌린지</span>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200 }}
+          className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/20 rounded-xl p-5 border border-emerald-200/50 dark:border-emerald-800/30 text-center"
+        >
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="inline-flex w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 items-center justify-center mb-3 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30"
+          >
+            <PartyPopper className="w-6 h-6 text-white" />
+          </motion.div>
+          <p className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
+            모든 준비를 마쳤어요!
+          </p>
+          <p className="text-xs text-emerald-600/70 dark:text-emerald-400/60 mt-1">
+            결혼 준비가 모두 완료되었습니다. 행복한 결혼식 되세요!
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 dark:from-purple-950/30 dark:to-pink-950/20 backdrop-blur-lg rounded-2xl border border-purple-200/30 dark:border-purple-800/30 p-4">

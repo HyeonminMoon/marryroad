@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/header';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,12 @@ type SortOrder = 'asc' | 'desc';
 type FilterStatus = 'all' | 'completed' | 'incomplete';
 
 export default function DatabasePage() {
-  const { quests, progress } = useQuestStore();
+  const { quests, progress, initialize } = useQuestStore();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<SortField>('title');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -38,11 +43,16 @@ export default function DatabasePage() {
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [filterQuest, setFilterQuest] = useState<string | null>(null);
 
+  const hiddenQuestIds = progress.hiddenQuestIds || [];
+
   // 모든 작업을 플랫 리스트로 변환
   const allTasks = useMemo(() => {
     const tasks: FlatTask[] = [];
 
     quests.forEach(quest => {
+      // H-07: Skip hidden quests
+      if (hiddenQuestIds.includes(quest.id)) return;
+
       const questProgress = progress.taskProgress[quest.id];
       const completedTaskIds = questProgress?.completedTaskIds || [];
 
@@ -65,7 +75,7 @@ export default function DatabasePage() {
     });
 
     return tasks;
-  }, [quests, progress]);
+  }, [quests, progress, hiddenQuestIds]);
 
   // 필터링 및 정렬
   const filteredAndSortedTasks = useMemo(() => {
@@ -99,6 +109,28 @@ export default function DatabasePage() {
 
     // 정렬
     filtered.sort((a, b) => {
+      // M-10: completedDate — tasks without date always go to the end
+      if (sortField === 'completedDate') {
+        const aHas = !!a.completedDate;
+        const bHas = !!b.completedDate;
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        if (!aHas && !bHas) return 0;
+        const cmp = a.completedDate!.localeCompare(b.completedDate!);
+        return sortOrder === 'asc' ? cmp : -cmp;
+      }
+
+      // M-09: cost — null/undefined always go to the end, 0 is a valid value
+      if (sortField === 'cost') {
+        const aHas = a.userCost != null;
+        const bHas = b.userCost != null;
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        if (!aHas && !bHas) return 0;
+        const diff = a.userCost! - b.userCost!;
+        return sortOrder === 'asc' ? diff : -diff;
+      }
+
       let aValue: string | number, bValue: string | number;
 
       switch (sortField) {
@@ -114,14 +146,6 @@ export default function DatabasePage() {
         case 'status':
           aValue = a.isCompleted ? 1 : 0;
           bValue = b.isCompleted ? 1 : 0;
-          break;
-        case 'completedDate':
-          aValue = a.completedDate || '';
-          bValue = b.completedDate || '';
-          break;
-        case 'cost':
-          aValue = a.userCost || 0;
-          bValue = b.userCost || 0;
           break;
         default:
           return 0;

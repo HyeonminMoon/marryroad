@@ -29,7 +29,7 @@ export function ProgressRing({
   nextLevelXp,
 }: ProgressRingProps) {
   const gradientId = useId();
-  const overallPercent = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
+  const overallPercent = totalQuests > 0 ? Math.min(100, Math.round((completedQuests / totalQuests) * 100)) : 0;
   const animatedPercent = useCountUp(overallPercent, 800);
   const animatedXp = useCountUp(currentLevelXp, 800);
 
@@ -116,6 +116,11 @@ export function ProgressRing({
           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             레벨 {progress.level}
           </span>
+          {progress.level >= 5 && (
+            <span className="text-[10px] font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">
+              MAX
+            </span>
+          )}
           <span className="text-xs text-gray-400">
             {completedQuests}/{totalQuests} 퀘스트
           </span>

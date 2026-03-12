@@ -13,12 +13,8 @@ export function DataManagement() {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   const handleExport = () => {
-    try {
-      exportData();
-      setFeedback({ type: 'success', message: '백업 파일이 다운로드되었습니다.' });
-    } catch {
-      setFeedback({ type: 'error', message: '내보내기에 실패했습니다.' });
-    }
+    const result = exportData();
+    setFeedback({ type: result.success ? 'success' : 'error', message: result.message });
     setTimeout(() => setFeedback(null), 3000);
   };
 

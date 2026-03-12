@@ -378,6 +378,7 @@ export function TaskDetailSheet({
                         <div>
                           <Label className="text-xs text-gray-500">연락처</Label>
                           <Input
+                            type="tel"
                             placeholder="010-0000-0000"
                             value={formData.vendorContact}
                             onChange={(e) => setFormData({ ...formData, vendorContact: e.target.value })}
@@ -387,6 +388,7 @@ export function TaskDetailSheet({
                         <div>
                           <Label className="text-xs text-gray-500">웹사이트</Label>
                           <Input
+                            type="url"
                             placeholder="https://..."
                             value={formData.vendorWebsite}
                             onChange={(e) => setFormData({ ...formData, vendorWebsite: e.target.value })}

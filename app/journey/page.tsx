@@ -18,9 +18,17 @@ export default function JourneyPage() {
     initialize();
   }, [initialize]);
 
+  const hiddenQuestIds = progress.hiddenQuestIds || [];
+
+  // H-07: Filter out hidden quests before extracting journey events
+  const visibleQuests = useMemo(
+    () => quests.filter(q => !hiddenQuestIds.includes(q.id)),
+    [quests, hiddenQuestIds]
+  );
+
   const events = useMemo(
-    () => extractJourneyEvents(quests, progress),
-    [quests, progress]
+    () => extractJourneyEvents(visibleQuests, progress),
+    [visibleQuests, progress]
   );
   const stats = useMemo(
     () => calculateJourneyStats(events, progress),
@@ -45,16 +53,16 @@ export default function JourneyPage() {
           <>
             <JourneySummary
               completedTasks={stats.completedTasks}
-              totalTasks={quests.reduce((sum, q) => sum + q.tasks.length, 0)}
+              totalTasks={visibleQuests.reduce((sum, q) => sum + q.tasks.length, 0)}
               completedQuests={stats.completedQuests}
-              totalQuests={quests.length}
+              totalQuests={visibleQuests.length}
               totalCost={stats.totalCost}
               daysSinceStart={stats.daysSinceStart}
               level={stats.level}
             />
             <JourneyMonthlyRecap events={events} />
             <JourneyFilter
-              quests={quests}
+              quests={visibleQuests}
               events={events}
               selectedQuestId={selectedQuestId}
               onSelect={setSelectedQuestId}

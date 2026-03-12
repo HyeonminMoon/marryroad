@@ -16,7 +16,6 @@ const RSVP_LABELS: Record<RsvpStatus, { label: string; color: string; icon: type
   confirmed: { label: '참석', color: 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950/30', icon: UserCheck },
   declined: { label: '불참', color: 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/30', icon: UserX },
   pending: { label: '미정', color: 'text-gray-500 bg-gray-50 dark:text-gray-400 dark:bg-gray-800/50', icon: Clock },
-  maybe: { label: '미정', color: 'text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30', icon: Clock },
 };
 const MEAL_LABELS: Record<MealType, string> = { standard: '일반식', vegetarian: '채식', none: '식사안함' };
 
@@ -37,11 +36,18 @@ function GuestForm({
   const [meal, setMeal] = useState<MealType>(initial?.meal || 'standard');
   const [phone, setPhone] = useState(initial?.phone || '');
   const [memo, setMemo] = useState(initial?.memo || '');
+  const [giftAmount, setGiftAmount] = useState<string>(initial?.giftAmount ? String(Math.round(initial.giftAmount / 10000)) : '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    onSave({ name: name.trim(), side, relation, rsvp, plusOne, meal, phone: phone || undefined, memo: memo || undefined });
+    const parsedGift = giftAmount ? parseInt(giftAmount, 10) * 10000 : undefined;
+    onSave({
+      name: name.trim(), side, relation, rsvp, plusOne, meal,
+      phone: phone || undefined,
+      memo: memo || undefined,
+      giftAmount: parsedGift && parsedGift > 0 ? parsedGift : undefined,
+    });
   };
 
   return (
@@ -155,6 +161,25 @@ function GuestForm({
           />
         </div>
 
+        {/* Gift Amount */}
+        <div>
+          <label className="text-[10px] text-gray-500 dark:text-gray-400 mb-1 block">축의금</label>
+          <div className="relative">
+            <input
+              type="number"
+              placeholder="0"
+              min="0"
+              value={giftAmount}
+              onChange={e => {
+                const v = e.target.value;
+                if (v === '' || parseInt(v, 10) >= 0) setGiftAmount(v);
+              }}
+              className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 pr-12"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">만원</span>
+          </div>
+        </div>
+
         {/* Memo */}
         <input
           type="text"
@@ -201,7 +226,7 @@ export default function GuestsPage() {
     let result = guests;
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter(g => g.name.toLowerCase().includes(q) || g.memo?.toLowerCase().includes(q));
+      result = result.filter(g => g.name.toLowerCase().includes(q) || g.memo?.toLowerCase().includes(q) || g.phone?.toLowerCase().includes(q));
     }
     if (filterSide !== 'all') result = result.filter(g => g.side === filterSide);
     if (filterRsvp !== 'all') result = result.filter(g => g.rsvp === filterRsvp);
@@ -246,14 +271,31 @@ export default function GuestsPage() {
           <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-xl border border-white/30 dark:border-gray-700/50 p-3 mb-6">
             <div className="flex items-center justify-between text-xs mb-2">
               <span className="text-blue-600 dark:text-blue-400 font-medium">신랑측 {stats.groomSide}명</span>
+              {stats.sharedSide > 0 && (
+                <span className="text-purple-600 dark:text-purple-400 font-medium">공통 {stats.sharedSide}명</span>
+              )}
               <span className="text-pink-600 dark:text-pink-400 font-medium">신부측 {stats.brideSide}명</span>
             </div>
             <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
-              <div
-                className="h-full bg-blue-500 transition-all"
-                style={{ width: `${stats.total > 0 ? (stats.groomSide / (stats.groomSide + stats.brideSide || 1)) * 100 : 50}%` }}
-              />
-              <div className="h-full bg-pink-500 flex-1" />
+              {(() => {
+                const sideTotal = stats.groomSide + stats.brideSide + stats.sharedSide;
+                if (sideTotal === 0) return <div className="h-full bg-gray-300 flex-1" />;
+                return (
+                  <>
+                    <div
+                      className="h-full bg-blue-500 transition-all"
+                      style={{ width: `${(stats.groomSide / sideTotal) * 100}%` }}
+                    />
+                    {stats.sharedSide > 0 && (
+                      <div
+                        className="h-full bg-purple-500 transition-all"
+                        style={{ width: `${(stats.sharedSide / sideTotal) * 100}%` }}
+                      />
+                    )}
+                    <div className="h-full bg-pink-500 flex-1" />
+                  </>
+                );
+              })()}
             </div>
           </div>
         )}
@@ -264,7 +306,7 @@ export default function GuestsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="이름 검색..."
+              placeholder="이름, 연락처 검색..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full pl-9 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-400 outline-none"
@@ -343,7 +385,7 @@ export default function GuestsPage() {
                 key={guest.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.03 }}
+                transition={{ delay: idx < 10 ? idx * 0.03 : 0.3 }}
               >
                 <AnimatePresence mode="wait">
                   {isEditing ? (
@@ -405,12 +447,14 @@ export default function GuestsPage() {
                         <div className="flex gap-1 flex-shrink-0">
                           <button
                             onClick={() => setEditingId(guest.id)}
+                            aria-label="수정"
                             className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
                           <button
-                            onClick={() => removeGuest(guest.id)}
+                            onClick={() => { if (window.confirm(`${guest.name}님을 삭제하시겠습니까?`)) removeGuest(guest.id) }}
+                            aria-label="삭제"
                             className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

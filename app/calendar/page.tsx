@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/header';
 import { useQuestStore } from '@/lib/stores/quest-store';
 import { Button } from '@/components/ui/button';
@@ -19,11 +19,25 @@ import confetti from 'canvas-confetti';
 type CalendarTask = CalendarDayTask;
 
 export default function CalendarPage() {
-  const { quests, progress, completeTask } = useQuestStore();
+  const { quests, progress, completeTask, initialize } = useQuestStore();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<CalendarDayTask | null>(null);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
   const weddingDate = progress.weddingDate;
+  const hiddenQuestIds = progress.hiddenQuestIds || [];
+
+  // Local date formatting helper to avoid timezone issues with toISOString
+  const toLocalDateString = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  };
 
   // First/last day of current month
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -37,7 +51,12 @@ export default function CalendarPage() {
     let plannedCount = 0;
     let overdueCount = 0;
 
+    const todayStr = toLocalDateString(new Date());
+
     quests.forEach(quest => {
+      // H-07: Skip hidden quests
+      if (hiddenQuestIds.includes(quest.id)) return;
+
       const questProgress = progress.taskProgress[quest.id];
       const completedIds = questProgress?.completedTaskIds || [];
 
@@ -45,14 +64,14 @@ export default function CalendarPage() {
         const isCompleted = completedIds.includes(task.id);
         const extData = questProgress?.taskExtendedData?.[task.id];
 
-        // Completed tasks with date
-        if (isCompleted && extData?.completedDate) {
-          const dateKey = extData.completedDate;
+        // Completed tasks — M-03: fallback to today if no completedDate
+        if (isCompleted) {
+          const dateKey = extData?.completedDate || todayStr;
           if (!grouped[dateKey]) grouped[dateKey] = [];
           grouped[dateKey].push({
             ...task,
             questId: quest.id,
-            completedDate: extData.completedDate,
+            completedDate: dateKey,
             questTitle: quest.title,
             questColor: quest.color,
             questIcon: quest.icon,
@@ -61,15 +80,15 @@ export default function CalendarPage() {
           completedCount++;
         }
 
-        // Planned tasks (uncompleted, with wedding date)
-        if (!isCompleted && weddingDate) {
+        // Planned tasks (uncompleted, with wedding date) — skip locked quests
+        if (!isCompleted && weddingDate && quest.status !== 'locked') {
           const daysBefore = parseRecommendedTiming(task.recommendedTiming);
           if (daysBefore === null) return;
 
           const wedding = new Date(weddingDate);
           const targetDate = new Date(wedding);
           targetDate.setDate(targetDate.getDate() - daysBefore);
-          const dateKey = targetDate.toISOString().split('T')[0];
+          const dateKey = toLocalDateString(targetDate);
 
           const urgency = getTaskUrgency(task.recommendedTiming, weddingDate);
 
@@ -94,7 +113,7 @@ export default function CalendarPage() {
       tasksByDate: grouped,
       stats: { completed: completedCount, planned: plannedCount, overdue: overdueCount },
     };
-  }, [quests, progress, weddingDate]);
+  }, [quests, progress, weddingDate, hiddenQuestIds]);
 
   // Monthly stats for the viewed month
   const monthlyStats = useMemo(() => {
@@ -155,7 +174,7 @@ export default function CalendarPage() {
     if (!selectedTask) return;
     completeTask(selectedTask.questId, taskId, data.cost, {
       memo: data.memo,
-      completedDate: data.date || new Date().toISOString().split('T')[0],
+      completedDate: data.date || toLocalDateString(new Date()),
       vendorInfo: data.vendorInfo,
       rating: data.rating,
     });
@@ -165,7 +184,7 @@ export default function CalendarPage() {
   const handleQuickComplete = (taskId: string) => {
     if (!selectedTask) return;
     completeTask(selectedTask.questId, taskId, undefined, {
-      completedDate: new Date().toISOString().split('T')[0],
+      completedDate: toLocalDateString(new Date()),
     });
     confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
   };
@@ -183,7 +202,7 @@ export default function CalendarPage() {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-      const dateKey = date.toISOString().split('T')[0];
+      const dateKey = toLocalDateString(date);
       const tasksForDay = tasksByDate[dateKey] || [];
       const isToday = new Date().toDateString() === date.toDateString();
 

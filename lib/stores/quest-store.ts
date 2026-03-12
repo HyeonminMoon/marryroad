@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { Quest, QuestProgress, QuestStatus, Task, TaskExtendedData } from '../types/quest';
 import questsData from '../data/quests.json';
 import { DEFAULT_BUDGET } from '../constants';
@@ -10,6 +10,10 @@ const QUESTS = questsData as Quest[];
 
 /** Task 1개 완료 시 부여하는 기본 XP */
 const TASK_XP = 10;
+
+/** Weekly challenge IDs — keep in sync with weekly-challenge.tsx buildChallenges */
+const WEEKLY_CHALLENGE_IDS = ['tasks-3', 'tasks-5', 'cost-1', 'streak-3'] as const;
+const TOTAL_CHALLENGES = WEEKLY_CHALLENGE_IDS.length;
 
 /**
  * 레벨업에 필요한 누적 XP를 계산
@@ -336,10 +340,30 @@ export const useQuestStore = create<QuestStore>()(
             : [...trimmedDates, today];
 
           // Track activity count per day for heatmap intensity
+          // M-18: Also trim activityCounts to match the 90-day window
           const prevCounts = state.progress.activityCounts || {};
+          const trimmedCounts: Record<string, number> = {};
+          for (const [date, count] of Object.entries(prevCounts)) {
+            if (date >= cutoffStr) {
+              trimmedCounts[date] = count;
+            }
+          }
           const newActivityCounts = !isAlreadyCompleted
-            ? { ...prevCounts, [today]: (prevCounts[today] || 0) + 1 }
-            : prevCounts;
+            ? { ...trimmedCounts, [today]: (trimmedCounts[today] || 0) + 1 }
+            : trimmedCounts;
+
+          // M-18: Trim completedWeeks to last 52 weeks
+          const weekCutoff = new Date();
+          weekCutoff.setDate(weekCutoff.getDate() - 52 * 7);
+          const weekCutoffStr = weekCutoff.toISOString().split('T')[0];
+          const prevWeeklyChallenge = state.progress.weeklyChallenge;
+          const trimmedCompletedWeeks = (prevWeeklyChallenge.completedWeeks || []).filter(
+            w => w >= weekCutoffStr
+          );
+          const trimmedWeeklyChallenge = {
+            ...prevWeeklyChallenge,
+            completedWeeks: trimmedCompletedWeeks,
+          };
 
           const newProgress: QuestProgress = {
             completedQuestIds: newCompletedQuestIds,
@@ -355,7 +379,7 @@ export const useQuestStore = create<QuestStore>()(
             activityCounts: newActivityCounts,
             coupleNames: state.progress.coupleNames,
             decisionSelections: state.progress.decisionSelections,
-            weeklyChallenge: state.progress.weeklyChallenge,
+            weeklyChallenge: trimmedWeeklyChallenge,
             hiddenQuestIds: state.progress.hiddenQuestIds || [],
             categoryBudgets: state.progress.categoryBudgets || {},
           };
@@ -452,22 +476,40 @@ export const useQuestStore = create<QuestStore>()(
           const trimmedDates = (state.progress.activeDates || []).filter(d => d >= cutoffStr);
           const newActiveDates = trimmedDates.includes(today) ? trimmedDates : [...trimmedDates, today];
           const prevCounts = state.progress.activityCounts || {};
-          const newActivityCounts = { ...prevCounts, [today]: (prevCounts[today] || 0) + newTaskIds.length };
+          const trimmedCounts: Record<string, number> = {};
+          for (const [date, count] of Object.entries(prevCounts)) {
+            if (date >= cutoffStr) {
+              trimmedCounts[date] = count;
+            }
+          }
+          const newActivityCounts = { ...trimmedCounts, [today]: (trimmedCounts[today] || 0) + newTaskIds.length };
+
+          const newCompletedQuestIds = state.progress.completedQuestIds.includes(questId)
+            ? state.progress.completedQuestIds
+            : [...state.progress.completedQuestIds, questId];
+
+          const newTaskProgress = {
+            ...state.progress.taskProgress,
+            [questId]: {
+              completedTaskIds: allTaskIds,
+              taskCosts: prevQP?.taskCosts ?? {},
+              taskExtendedData: newExtData,
+            },
+          };
+
+          // H-08: Recalculate quest statuses
+          const updatedQuests = state.quests.map(q => ({
+            ...q,
+            status: calculateQuestStatus(q.id, newCompletedQuestIds, QUESTS, newTaskProgress),
+            progress: calculateQuestProgressPercent(q.id, newTaskProgress),
+          }));
 
           return {
+            quests: updatedQuests,
             progress: {
               ...state.progress,
-              completedQuestIds: state.progress.completedQuestIds.includes(questId)
-                ? state.progress.completedQuestIds
-                : [...state.progress.completedQuestIds, questId],
-              taskProgress: {
-                ...state.progress.taskProgress,
-                [questId]: {
-                  completedTaskIds: allTaskIds,
-                  taskCosts: prevQP?.taskCosts ?? {},
-                  taskExtendedData: newExtData,
-                },
-              },
+              completedQuestIds: newCompletedQuestIds,
+              taskProgress: newTaskProgress,
               xp: newXp,
               level: calculateLevel(newXp),
               activeDates: newActiveDates,
@@ -501,11 +543,20 @@ export const useQuestStore = create<QuestStore>()(
           },
         });
 
+        // H-06: Clear related localStorage keys
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('prevLevel');
+          localStorage.removeItem('marryroad-seen-achievements');
+          localStorage.removeItem('marryroad-couple-setup-dismissed');
+          localStorage.removeItem('marryroad-insights-expanded');
+        }
+
         // Re-initialize to reset statuses
         get().initialize();
       },
 
-      setBudgetTotal: (total: number) => {
+      setBudgetTotal: (amount: number) => {
+        const total = Math.max(0, amount);
         set(state => ({
           progress: {
             ...state.progress,
@@ -573,7 +624,6 @@ export const useQuestStore = create<QuestStore>()(
 
       claimWeeklyReward: (challengeId: string, weekStart: string) => {
         const CHALLENGE_XP = 25;
-        const TOTAL_CHALLENGES = 4;
         set(state => {
           const wc = state.progress.weeklyChallenge;
           // Reset if different week
@@ -625,23 +675,64 @@ export const useQuestStore = create<QuestStore>()(
           const newExtData = { ...(tp.taskExtendedData || {}) };
           delete newExtData[taskId];
 
+          // H-01: Deduct quest bonus XP if quest was completed
+          let xpDelta = TASK_XP;
+          const wasQuestCompleted = state.progress.completedQuestIds.includes(questId);
+          if (wasQuestCompleted) {
+            const quest = state.quests.find(q => q.id === questId) || QUESTS.find(q => q.id === questId);
+            if (quest) {
+              xpDelta += quest.xp;
+            }
+          }
+          const newXp = Math.max(0, state.progress.xp - xpDelta);
+
+          // H-02: Restore activeDates/activityCounts
+          const today = new Date().toISOString().split('T')[0];
+          const prevCounts = state.progress.activityCounts || {};
+          const newCount = Math.max(0, (prevCounts[today] || 0) - 1);
+          const newActivityCounts = { ...prevCounts };
+          if (newCount === 0) {
+            delete newActivityCounts[today];
+          } else {
+            newActivityCounts[today] = newCount;
+          }
+          const newActiveDates = newCount === 0
+            ? (state.progress.activeDates || []).filter(d => d !== today)
+            : [...(state.progress.activeDates || [])];
+
+          const newCompletedQuestIds = state.progress.completedQuestIds.filter(id => id !== questId);
+
+          const newTaskProgress = {
+            ...state.progress.taskProgress,
+            [questId]: {
+              ...tp,
+              completedTaskIds: newCompletedIds,
+              taskCosts: newTaskCosts,
+              taskExtendedData: newExtData,
+            },
+          };
+
+          // M-02: Recalculate quest statuses
+          const updatedQuests = state.quests.map(q => ({
+            ...q,
+            status: calculateQuestStatus(q.id, newCompletedQuestIds, QUESTS, newTaskProgress),
+            progress: calculateQuestProgressPercent(q.id, newTaskProgress),
+          }));
+
           return {
+            quests: updatedQuests,
             progress: {
               ...state.progress,
-              taskProgress: {
-                ...state.progress.taskProgress,
-                [questId]: {
-                  ...tp,
-                  completedTaskIds: newCompletedIds,
-                  taskCosts: newTaskCosts,
-                  taskExtendedData: newExtData,
-                },
-              },
-              completedQuestIds: state.progress.completedQuestIds.filter(id => id !== questId),
+              xp: newXp,
+              level: calculateLevel(newXp),
+              taskProgress: newTaskProgress,
+              completedQuestIds: newCompletedQuestIds,
               budget: {
                 ...state.progress.budget,
                 spent: Math.max(0, state.progress.budget.spent - taskCost),
               },
+              activeDates: newActiveDates,
+              activityCounts: newActivityCounts,
             },
           };
         });
@@ -725,6 +816,19 @@ export const useQuestStore = create<QuestStore>()(
     }),
     {
       name: 'marryroad-quest-storage',
+      storage: createJSONStorage(() => ({
+        getItem: (name: string) => localStorage.getItem(name),
+        setItem: (name: string, value: string) => {
+          try {
+            localStorage.setItem(name, value);
+          } catch (err) {
+            if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+              window.alert('저장 공간이 부족합니다. 불필요한 데이터를 정리한 후 다시 시도해주세요.');
+            }
+          }
+        },
+        removeItem: (name: string) => localStorage.removeItem(name),
+      })),
       partialize: (state) => ({ progress: state.progress }),
       merge: (persisted, current) => {
         const p = persisted as { progress?: Partial<QuestProgress> };
@@ -734,6 +838,8 @@ export const useQuestStore = create<QuestStore>()(
           progress: {
             ...c.progress,
             ...(p.progress || {}),
+            // Deep merge budget to protect nested spent field
+            budget: { ...c.progress.budget, ...(p.progress?.budget || {}) },
             // Ensure new fields always have defaults even if missing from old persist data
             activeDates: p.progress?.activeDates ?? c.progress.activeDates,
             activityCounts: p.progress?.activityCounts ?? c.progress.activityCounts,

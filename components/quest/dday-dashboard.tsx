@@ -142,7 +142,7 @@ function DdayCountdown({
                 autoFocus
                 className="border border-gray-300 dark:border-gray-600 rounded px-2 py-0.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               />
-              <button onClick={saveDate} className="p-0.5 text-green-600 hover:text-green-700">
+              <button onClick={saveDate} aria-label="날짜 저장" className="p-0.5 text-green-600 hover:text-green-700">
                 <CheckIcon className="w-4 h-4" />
               </button>
             </div>
