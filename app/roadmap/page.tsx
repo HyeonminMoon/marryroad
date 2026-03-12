@@ -42,6 +42,8 @@ import confetti from 'canvas-confetti';
 import { Quest } from '@/lib/types/quest';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { GuideFab } from '@/components/guide/guide-fab';
+import { OnboardingGuide } from '@/components/guide/onboarding-guide';
 
 const FullMapView = dynamic(
   () => import('@/components/quest/full-map-view').then(mod => ({ default: mod.FullMapView })),
@@ -115,6 +117,7 @@ export default function RoadmapPage() {
   const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insightsExpanded, setInsightsExpanded] = useState(false);
   const [coupleSetupDismissed, setCoupleSetupDismissed] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   // Initialize on mount
   useEffect(() => {
@@ -123,6 +126,11 @@ export default function RoadmapPage() {
     // Hydration-safe: read localStorage after mount
     const savedInsights = localStorage.getItem('marryroad-insights-expanded');
     if (savedInsights === 'true') setInsightsExpanded(true);
+    // Auto-open guide on first visit
+    if (!localStorage.getItem('marryroad-guide-seen')) {
+      setGuideOpen(true);
+      localStorage.setItem('marryroad-guide-seen', 'true');
+    }
   }, [initialize]);
 
   // Guard: redirect to /welcome if no onboarding data
@@ -652,6 +660,20 @@ export default function RoadmapPage() {
         onDismiss={() => {
           setCompletedQuestOverlay(null);
           setIsGrandComplete(false);
+        }}
+      />
+
+      {/* Onboarding Guide */}
+      <GuideFab onClick={() => setGuideOpen(true)} />
+      <OnboardingGuide
+        isOpen={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        onNavigate={(target) => {
+          if (target === 'settings') {
+            router.push('/settings');
+          } else if (target === 'today' || target === 'quest') {
+            setActiveTab('today');
+          }
         }}
       />
 
