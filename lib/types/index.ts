@@ -2,7 +2,6 @@ export * from './quest';
 
 /**
  * 커플 정보 타입
- * Supabase couples 테이블과 매핑됩니다.
  */
 export interface Couple {
   id: string;

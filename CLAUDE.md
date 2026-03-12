@@ -11,7 +11,7 @@
 
 핵심 규칙:
 1. 새 사이클을 시작하기 전에 이전 사이클의 `learning_report.md`와 `improvement_tasks.md`를 반드시 읽을 것
-2. 모든 사이클은 `/cycles/cycle_XX/` 폴더에 10개 문서를 모두 생성할 것 (스킵 금지)
+2. 모든 사이클은 `/cycles/cycle_XX/` 폴더에 필요한 문서를 모두 생성할 것 (스킵 금지, 구조는 AGENT_SYSTEM.md 참조)
 3. 구현 후 반드시 `npm run build` 로 빌드 검증할 것
 4. 사이클당 1 커밋: `feat: <기능 요약>`
 5. 한 사이클 끝나면 즉시 다음 사이클 시작 — 멈추지 말 것
@@ -93,7 +93,7 @@ budget: { ...currentState.progress.budget, ...(persistedState.progress?.budget |
 - XP 차감 시 퀘스트 보너스 XP까지 고려
 - `uncompleteTask` 시 activeDates/activityCounts 복원
 
-### 9. 병렬 에이전트 작업 시 충돌 방지
+### 9. 병렬 에이전트 작업 시 충돌 방지 (QA/대규모 수정 시)
 - 에이전트별 수정 파일을 명시적으로 분리 (겹치는 파일 금지)
 - 공유 파일(quest-store.ts 등)은 한 에이전트만 담당
 

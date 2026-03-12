@@ -30,7 +30,7 @@ Focus on tools that create **emotional impact** and **practical value**.
 - **Canvas**: React Flow + Dagre layout
 - **Animation**: Framer Motion
 - **Styling**: Tailwind CSS
-- **Backend**: Supabase (PostgreSQL)
+- **Backend**: None — client-side only (localStorage)
 
 ---
 
@@ -228,33 +228,7 @@ Cycle → Build → Critique → Learn → New Idea → Next Cycle → ...
 
 ---
 
-## Current State (as of Cycle 3)
+## Current State
 
-### Completed Features
-| Cycle | Feature | Commit |
-|-------|---------|--------|
-| 1 | Wedding Journey Timeline (`/journey`) | `dd22d51` |
-| 2 | Celebration Memo Toast (post-completion memo) | `25a1631` |
-| 3 | Achievement Badge System (12 badges, 3 tiers) | `dc0798e` |
-
-### Existing Feature Loop
-```
-Complete task
-  → Celebration toast prompts memo
-    → Memo enriches journey timeline
-      → Achievement unlocks reward behavior
-        → User motivated to complete more tasks
-```
-
-### Known Issues (from Cycle 3)
-- P1: First-visit achievement flood (3+ unseen → show summary toast)
-- P2: Achievement XP not actually granted
-- P2: Achievements not shown in journey timeline
-- P2: Budget default (30000000) not extracted to constant
-- P3: D-Day Dashboard (high practical value)
-- P3: Achievement sound effects
-- P3: Achievement social sharing
-
-### Next Cycle Should
-- Fix P1 issues first
-- Then build next high-impact feature (D-Day Dashboard or Budget Visualization recommended)
+항상 최신 사이클의 `updated_context.md`와 `learning_report.md`를 참조할 것.
+사이클 문서는 `/cycles/cycle_XX/` 에 있음.
