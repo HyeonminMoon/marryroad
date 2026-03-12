@@ -75,16 +75,34 @@ export default function Home() {
           하나씩, 당신의 속도로.
         </p>
 
-        {/* 단순한 CTA */}
-        <Button
-          size="lg"
+        {/* CTA 버튼들 */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button
+            size="lg"
+            onClick={() => router.push('/signup')}
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            회원가입
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => router.push('/login')}
+            className="text-lg px-8 py-6 rounded-2xl"
+          >
+            로그인
+          </Button>
+        </div>
+
+        {/* 게스트 모드 */}
+        <button
           onClick={() => router.push('/welcome')}
-          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-lg px-10 py-7 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
+          className="mt-6 text-sm text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 underline"
         >
-          <Sparkles className="w-5 h-5 mr-2" />
-          시작하기
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
+          게스트로 시작하기
+        </button>
       </motion.div>
 
       {/* 하단 부가 텍스트 */}
@@ -94,7 +112,7 @@ export default function Home() {
         transition={{ delay: 0.8, duration: 0.6 }}
         className="mt-16 text-sm text-gray-400 dark:text-gray-500"
       >
-        무료 / 로그인 없이 바로 시작
+        계정을 만들고 데이터를 저장하세요
       </motion.p>
     </div>
   );
